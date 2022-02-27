@@ -31,19 +31,46 @@ public class Climber extends SubsystemBase {
 
   public void init() {
     // setDefaultCommand(new ClimberDefault(this));
+
+    rightClimber.setSelectedSensorPosition(0);
+    leftClimber.setSelectedSensorPosition(0);
+
+    leftClimber.configPeakOutputForward(1);
+    leftClimber.configPeakOutputReverse(-1);
+    leftClimber.setInverted(true);
+
     leftClimber.config_kF(0, 0);
-    leftClimber.config_kP(0, 0);
+    leftClimber.config_kP(0, 1);
     leftClimber.config_kI(0, 0);
     leftClimber.config_kD(0, 0);
 
+    rightClimber.configPeakOutputForward(1);
+    rightClimber.configPeakOutputReverse(-1);
+
     rightClimber.config_kF(0, 0);
-    rightClimber.config_kP(0, 0);
+    rightClimber.config_kP(0, 1);
     rightClimber.config_kI(0, 0);
     rightClimber.config_kD(0, 0);
   }
 
+  public double getRightClimberPosition() {
+    return rightClimber.getSelectedSensorPosition();
+  }
+
+  public double getLeftClimberPosition() {
+    return leftClimber.getSelectedSensorPosition();
+  }
+
   public double getClimberEncoder() {
-      return climberEncoder.get();
+    return climberEncoder.get();
+  }
+
+  public void lockExtendingClimber() {
+    pneumatics.engageClimberBrake();
+  }
+
+  public void unlockExtendingClimber() {
+    pneumatics.releaseClimberBrake();
   }
 
   public void setClimberPercents(double percent) {

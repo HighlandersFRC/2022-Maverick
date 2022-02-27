@@ -52,6 +52,6 @@ public class SpinShooter extends CommandBase {
       System.out.println("00000000000000000000000000000000000");
       return true;
     }
-    return true;
+    return false;
   }
 }

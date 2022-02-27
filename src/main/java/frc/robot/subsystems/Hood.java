@@ -93,6 +93,10 @@ public class Hood extends SubsystemBase {
     return hoodPosition;
   }
 
+  public void zeroHood() {
+    hoodMotor.setSelectedSensorPosition(0);
+  }
+
   public void setHoodPosition(double position) {
     // 81 * (42)/(24)
     // position = 10.0;

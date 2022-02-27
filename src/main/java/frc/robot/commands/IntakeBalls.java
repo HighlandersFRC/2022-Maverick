@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.MagIntake;
@@ -23,6 +24,7 @@ public class IntakeBalls extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    magIntake.rotateBackMag(270.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -30,8 +32,11 @@ public class IntakeBalls extends CommandBase {
   public void execute() {
     lights.setMode(LEDMode.YELLOW);
     magIntake.setIntakeDown();
-    magIntake.setIntakePercent(-0.5);
-
+    //magIntake.setFrontMagRPM(-1500);
+    magIntake.setFrontMagazine(0.5);
+    
+    //SmartDashboard.putNumber("front mag rpm", magIntake.getFrontMagRPM());
+    magIntake.setIntakePercent(0.5);
     magIntake.moveMagazine();
   }
 

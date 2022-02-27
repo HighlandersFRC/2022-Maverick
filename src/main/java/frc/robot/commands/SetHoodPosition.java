@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hood;
 
@@ -12,6 +13,7 @@ public class SetHoodPosition extends CommandBase {
   private Hood hood;
   private double position;
   private double distance;
+  private double startTime = Timer.getFPGATimestamp();
 
   public SetHoodPosition(Hood hood, double position, double distance) {
     this.hood = hood;
@@ -47,7 +49,7 @@ public class SetHoodPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Math.abs(hood.getHoodPosition() - position) < 0.5){
+    if(Math.abs(hood.getHoodPosition() - position) < 0.5 || Timer.getFPGATimestamp() - startTime > 1){
       System.out.println("`````````````````````````");
       return true;
     }

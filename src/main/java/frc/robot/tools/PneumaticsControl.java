@@ -11,6 +11,7 @@ public class PneumaticsControl {
     private final PneumaticsControlModule hub = new PneumaticsControlModule();
 
     private final DoubleSolenoid intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+    private final DoubleSolenoid climberSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
     // private final DoubleSolenoid leftClimberBrake = new DoubleSolenoid(PneumaticsModuleType.REVPH, 10, 11);
 
     public void setIntakeUp() {
@@ -21,12 +22,12 @@ public class PneumaticsControl {
         intakeSolenoid.set(Value.kReverse);
     }
 
-    // public void engageClimberBrake() {
-    //     leftClimberBrake.set(Value.kReverse);
-    // }
+    public void engageClimberBrake() {
+        climberSolenoid.set(Value.kReverse);
+    }
 
-    // public void releaseClimberBrake() {
-    //     leftClimberBrake.set(Value.kForward);
-    // }
+    public void releaseClimberBrake() {
+        climberSolenoid.set(Value.kForward);
+    }
 
 }

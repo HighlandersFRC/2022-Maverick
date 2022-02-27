@@ -25,7 +25,12 @@ public class HoodDefaultCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    hood.setHoodPosition(2);
+    if (!hood.getLowerLimitSwitch()) {
+      hood.setHoodPercent(0);
+      hood.zeroHood();
+    } else {
+      hood.setHoodPercent(-0.1);
+    }
     // System.out.println("Position: " + hood.getSensorPosition());
   }
 

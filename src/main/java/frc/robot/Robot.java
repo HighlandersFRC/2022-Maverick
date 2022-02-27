@@ -1,5 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,6 +15,7 @@ import frc.robot.commands.EjectBalls;
 import frc.robot.commands.FireBalls;
 import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.Outtake;
+import frc.robot.commands.RaiseClimber;
 import frc.robot.commands.SetHoodPosition;
 import frc.robot.commands.SpinShooter;
 import frc.robot.commands.ZeroNavxMidMatch;
@@ -20,13 +24,11 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Lights;
-// import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.MagIntake;
 import frc.robot.subsystems.MqttPublish;
 import frc.robot.subsystems.MqttSubscribe;
 import frc.robot.subsystems.Peripherals;
 import frc.robot.subsystems.Shooter;
-// import frc.robot.subsystems.Shooter;
 import frc.robot.tools.PneumaticsControl;
 
 import java.io.BufferedWriter;
@@ -73,6 +75,8 @@ public class Robot extends TimedRobot {
 
   private ThreeBallAuto threeBallAuto = new ThreeBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
+  // private UsbCamera camera;
+  // private VideoSink server;
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -102,6 +106,11 @@ public class Robot extends TimedRobot {
     }
 
     drive.init();
+
+    // camera = CameraServer.startAutomaticCapture("Vision Stream", "/dev/video0");
+    // camera.setResolution(320, 240);
+    // camera.setFPS(15);
+    // server.setSource(camera);
 
   }
 
@@ -180,9 +189,11 @@ public class Robot extends TimedRobot {
     OI.driverY.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 20, 2900, 0.5, 0.5));
     OI.driverX.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 3200, 0.5, 0.5));
 
-    OI.driverY.whenPressed(new FaceTarget(drive));
+    //OI.driverY.whenPressed(new FaceTarget(drive));
 
     OI.driverViewButton.whenPressed(new ZeroNavxMidMatch(drive));
+
+    
 
     // OI.driveStartButton.whileHeld(new DriveAlignedToTarget(drive, peripherals));
 
@@ -197,6 +208,22 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Controller X", OI.getDriverLeftX());
     SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
 
+    // if (OI.operatorB.get()) {
+    //   //new RaiseClimber(climber, 0.2);
+    //   climber.unlockExtendingClimber();
+    //   climber.setClimberPercents(0.0);
+    // } else if (OI.operatorX.get()) {
+    //   //new RaiseClimber(climber, -0.2);
+    //   climber.unlockExtendingClimber();
+    //   climber.setClimberPercents(0.0);
+    // } else {
+    //   //new RaiseClimber(climber, 0.0);
+    //   climber.lockExtendingClimber();
+    //   climber.setClimberPercents(0.0);
+    // }
+
+    //System.out.println("RIGHT --> " + climber.getRightClimberPosition());
+    //System.out.println("LEFT --> " + climber.getLeftClimberPosition());
   }
 
   @Override
