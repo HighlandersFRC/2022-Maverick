@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.defaults.ClimberDefault;
 // import frc.robot.commands.defaults.ClimberDefault;
 import frc.robot.tools.PneumaticsControl;
 
@@ -30,7 +31,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void init() {
-    // setDefaultCommand(new ClimberDefault(this));
+    setDefaultCommand(new ClimberDefault(this));
 
     rightClimber.setSelectedSensorPosition(0);
     leftClimber.setSelectedSensorPosition(0);

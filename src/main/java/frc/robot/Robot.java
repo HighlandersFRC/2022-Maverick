@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cscore.VideoSink;
+import edu.wpi.first.cscore.VideoSource;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -76,7 +76,7 @@ public class Robot extends TimedRobot {
   private ThreeBallAuto threeBallAuto = new ThreeBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
   // private UsbCamera camera;
-  // private VideoSink server;
+  // private VideoSource server;
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
