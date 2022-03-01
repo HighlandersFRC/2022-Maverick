@@ -9,7 +9,7 @@ public class PneumaticsControl {
     //private final PneumaticsControlModule hub = new PneumaticsControlModule();
 
     private final DoubleSolenoid intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
-    // private final DoubleSolenoid climberSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
+    private final DoubleSolenoid climberSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
 
     public void setIntakeUp() {
         intakeSolenoid.set(Value.kForward);
@@ -20,11 +20,11 @@ public class PneumaticsControl {
     }
 
     public void engageClimberBrake() {
-        // climberSolenoid.set(Value.kReverse);
+        climberSolenoid.set(Value.kReverse);
     }
 
     public void releaseClimberBrake() {
-        // climberSolenoid.set(Value.kForward);
+        climberSolenoid.set(Value.kForward);
     }
 
 }

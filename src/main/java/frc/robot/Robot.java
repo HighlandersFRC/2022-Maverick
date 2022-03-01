@@ -1,7 +1,9 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.cscore.VideoSource;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -75,14 +77,20 @@ public class Robot extends TimedRobot {
 
   private ThreeBallAuto threeBallAuto = new ThreeBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
-  // private UsbCamera camera;
-  // private VideoSource server;
+  private UsbCamera camera;
+  private VideoSink server;
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
   @Override
   public void robotInit() {
+    camera = CameraServer.startAutomaticCapture("Vision Stream", "/dev/video0");
+    camera.setResolution(320, 240);
+    camera.setFPS(15);
+
+    server = CameraServer.getServer();  
+    server.setSource(camera);
     // System.out.println("###########");
     peripherals.init();
     magIntake.init();
@@ -106,17 +114,10 @@ public class Robot extends TimedRobot {
     }
 
     drive.init();
-
-    // camera = CameraServer.startAutomaticCapture("Vision Stream", "/dev/video0");
-    // camera.setResolution(320, 240);
-    // camera.setFPS(15);
-    // server.setSource(camera);
-
   }
 
   @Override
   public void robotPeriodic() {
-    // System.out.println(climber.getClimberEncoder());
     lights.periodic();
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
@@ -147,6 +148,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    climber.zeroRotatingEncoder();
     System.out.println(pathJSON);
     drive.autoInit(pathJSON);
     // peripherals.init();
@@ -208,19 +210,19 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Controller X", OI.getDriverLeftX());
     SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
 
-    // if (OI.operatorB.get()) {
-    //   //new RaiseClimber(climber, 0.2);
-    //   climber.unlockExtendingClimber();
-    //   climber.setClimberPercents(0.0);
-    // } else if (OI.operatorX.get()) {
-    //   //new RaiseClimber(climber, -0.2);
-    //   climber.unlockExtendingClimber();
-    //   climber.setClimberPercents(0.0);
-    // } else {
-    //   //new RaiseClimber(climber, 0.0);
-    //   climber.lockExtendingClimber();
-    //   climber.setClimberPercents(0.0);
-    // }
+    if (OI.operatorB.get()) {
+      //new RaiseClimber(climber, 0.2);
+      //climber.unlockExtendingClimber();
+      climber.setClimberPercents(0.6);
+    } else if (OI.operatorX.get()) {
+      //new RaiseClimber(climber, -0.2);
+      //climber.unlockExtendingClimber();
+      climber.setClimberPercents(-0.6);
+    } else {
+      //new RaiseClimber(climber, 0.0);
+      //climber.lockExtendingClimber();
+      climber.setClimberPercents(0.0);
+    }
 
     //System.out.println("RIGHT --> " + climber.getRightClimberPosition());
     //System.out.println("LEFT --> " + climber.getLeftClimberPosition());

@@ -32,6 +32,7 @@ public class Climber extends SubsystemBase {
 
   public void init() {
     setDefaultCommand(new ClimberDefault(this));
+    climberEncoder.reset();
 
     rightClimber.setSelectedSensorPosition(0);
     leftClimber.setSelectedSensorPosition(0);
@@ -62,8 +63,12 @@ public class Climber extends SubsystemBase {
     return leftClimber.getSelectedSensorPosition();
   }
 
-  public double getClimberEncoder() {
+  public double getRotatingEncoder() {
     return climberEncoder.get();
+  }
+
+  public void zeroRotatingEncoder() {
+    climberEncoder.reset();
   }
 
   public void lockExtendingClimber() {
