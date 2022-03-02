@@ -16,12 +16,15 @@ public class ClimberDefault extends CommandBase {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+  }
 
   @Override
   public void execute() {
-    //climber.setClimberPercents(0);
+    climber.setClimberPercents(0);
     climber.lockExtendingClimber();
+    climber.setRotatingClimberPercent(0);
   }
 
   @Override

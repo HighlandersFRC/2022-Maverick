@@ -19,6 +19,7 @@ public class Climber extends SubsystemBase {
 
   private final TalonFX leftClimber = new TalonFX(20);
   private final TalonFX rightClimber = new TalonFX(21);
+  private final TalonFX rotatingMotor = new TalonFX(22);
 
   private final DutyCycleEncoder climberEncoder = new DutyCycleEncoder(3);
 
@@ -32,10 +33,13 @@ public class Climber extends SubsystemBase {
 
   public void init() {
     setDefaultCommand(new ClimberDefault(this));
-    climberEncoder.reset();
 
     rightClimber.setSelectedSensorPosition(0);
     leftClimber.setSelectedSensorPosition(0);
+    rotatingMotor.setSelectedSensorPosition(climberEncoder.get());
+
+    rotatingMotor.configPeakOutputForward(1);
+    rotatingMotor.configPeakOutputReverse(-1);
 
     leftClimber.configPeakOutputForward(1);
     leftClimber.configPeakOutputReverse(-1);
@@ -79,18 +83,14 @@ public class Climber extends SubsystemBase {
     pneumatics.releaseClimberBrake();
   }
 
+  public void setRotatingClimberPercent(double percent) {
+    rotatingMotor.set(ControlMode.PercentOutput, percent);
+  }
+
   public void setClimberPercents(double percent) {
     leftClimber.set(ControlMode.PercentOutput, percent);
     rightClimber.set(ControlMode.PercentOutput, percent);
   }
-
-//   public void engageClimberBrake() {
-//     pneumatics.engageClimberBrake();
-//   }
-
-//   public void releaseClimberBrake() {
-//     pneumatics.releaseClimberBrake();
-//   }
 
   public void setClimberPosition(double position) {
     leftClimber.set(ControlMode.Position, getClimberTics(position));

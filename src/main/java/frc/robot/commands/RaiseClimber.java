@@ -26,14 +26,16 @@ public class RaiseClimber extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //climber.releaseClimberBrake();
-    // initTime = Timer.getFPGATimestamp();
+    climber.unlockExtendingClimber();
+    initTime = Timer.getFPGATimestamp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climber.setClimberPercents(percent);
+    if (Timer.getFPGATimestamp() - initTime > 0.1) {
+      climber.setClimberPercents(percent);
+    }
   }
 
   // Called once the command ends or is interrupted.

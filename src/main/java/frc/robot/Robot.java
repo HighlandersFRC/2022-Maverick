@@ -121,7 +121,7 @@ public class Robot extends TimedRobot {
     lights.periodic();
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
-    // System.out.println(hood.getLowerLimitSwitch());
+    System.out.println(climber.getRotatingEncoder());
     }
   
 
@@ -213,15 +213,18 @@ public class Robot extends TimedRobot {
     if (OI.operatorB.get()) {
       //new RaiseClimber(climber, 0.2);
       //climber.unlockExtendingClimber();
-      climber.setClimberPercents(0.6);
+      //climber.setClimberPercents(0.6);
+      climber.setRotatingClimberPercent(0.6);
     } else if (OI.operatorX.get()) {
       //new RaiseClimber(climber, -0.2);
       //climber.unlockExtendingClimber();
-      climber.setClimberPercents(-0.6);
+      //climber.setClimberPercents(-0.6);
+      climber.setRotatingClimberPercent(-0.6);
     } else {
       //new RaiseClimber(climber, 0.0);
       //climber.lockExtendingClimber();
-      climber.setClimberPercents(0.0);
+      //climber.setClimberPercents(0.0);
+      climber.setRotatingClimberPercent(0.0);
     }
 
     //System.out.println("RIGHT --> " + climber.getRightClimberPosition());
