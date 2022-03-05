@@ -20,8 +20,13 @@ import frc.robot.commands.Outtake;
 import frc.robot.commands.RaiseClimber;
 import frc.robot.commands.SetHoodPosition;
 import frc.robot.commands.SpinShooter;
+import frc.robot.commands.VisionAlignment;
 import frc.robot.commands.ZeroNavxMidMatch;
+import frc.robot.commands.autos.FiveBallAuto;
+import frc.robot.commands.autos.OneBallAuto;
+import frc.robot.commands.autos.TestFiveBallAuto;
 import frc.robot.commands.autos.ThreeBallAuto;
+import frc.robot.commands.autos.TwoBallAuto;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Hood;
@@ -77,6 +82,14 @@ public class Robot extends TimedRobot {
 
   private ThreeBallAuto threeBallAuto = new ThreeBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
+  private OneBallAuto oneBallAuto = new OneBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
+
+  private TwoBallAuto twoBallAuto = new TwoBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
+
+  private FiveBallAuto fiveBallAuto = new FiveBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
+
+  private TestFiveBallAuto fiveBallP2 = new TestFiveBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
+
   private UsbCamera camera;
   private VideoSink server;
   /**
@@ -103,16 +116,74 @@ public class Robot extends TimedRobot {
     subscribe.subscribe(subCameraTopic);
     // m_robotContainer = new RobotContainer();
 
-    try {
-      pathingFile = new File("/home/lvuser/deploy/Adj3Ball.json");
-      FileReader scanner = new FileReader(pathingFile);
-      pathJSON = new JSONArray(new JSONTokener(scanner));
-      System.out.println(pathJSON);
+    if(OI.is1BallAuto()) {
+      try {
+        pathingFile = new File("/home/lvuser/deploy/1BallAuto.json");
+        FileReader scanner = new FileReader(pathingFile);
+        pathJSON = new JSONArray(new JSONTokener(scanner));
+        System.out.println(pathJSON);
+      }
+      catch(Exception e) {
+        // System.out.println("ERROR WITH PATH FILE " + e);
+      }
     }
-    catch(Exception e) {
-      System.out.println("ERROR WITH PATH FILE " + e);
+    else if(OI.is2BallAuto()) {
+      try {
+        pathingFile = new File("/home/lvuser/deploy/2BallAuto.json");
+        FileReader scanner = new FileReader(pathingFile);
+        pathJSON = new JSONArray(new JSONTokener(scanner));
+        System.out.println(pathJSON);
+      }
+      catch(Exception e) {
+        // System.out.println("ERROR WITH PATH FILE " + e);
+      }
+    }
+    else if(OI.is3BallAuto()) {
+      try {
+        pathingFile = new File("/home/lvuser/deploy/Adj3Ball.json");
+        FileReader scanner = new FileReader(pathingFile);
+        pathJSON = new JSONArray(new JSONTokener(scanner));
+        System.out.println(pathJSON);
+      }
+      catch(Exception e) {
+        // System.out.println("ERROR WITH PATH FILE " + e);
+      }
+    }
+    else if(OI.is5BallAuto()) {
+      try {
+        pathingFile = new File("/home/lvuser/deploy/Adj3Ball.json");
+        FileReader scanner = new FileReader(pathingFile);
+        pathJSON = new JSONArray(new JSONTokener(scanner));
+        System.out.println(pathJSON);
+      }
+      catch(Exception e) {
+        // System.out.println("ERROR WITH PATH FILE " + e);
+      }
+    }
+    else if(OI.is5BallPt2()) {
+      try {
+        pathingFile = new File("/home/lvuser/deploy/5BallPart2.json");
+        FileReader scanner = new FileReader(pathingFile);
+        pathJSON = new JSONArray(new JSONTokener(scanner));
+        System.out.println(pathJSON);
+      }
+      catch(Exception e) {
+        // System.out.println("ERROR WITH PATH FILE " + e);
+      }
+    }
+    else {
+      try {
+        pathingFile = new File("/home/lvuser/deploy/1BallAuto.json");
+        FileReader scanner = new FileReader(pathingFile);
+        pathJSON = new JSONArray(new JSONTokener(scanner));
+        System.out.println(pathJSON);
+      }
+      catch(Exception e) {
+        // System.out.println("ERROR WITH PATH FILE " + e);
+      }
     }
 
+    System.out.println(pathJSON);
     drive.init();
   }
 
@@ -120,8 +191,9 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     lights.periodic();
     CommandScheduler.getInstance().run();
-    SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
-    System.out.println(climber.getRotatingEncoder());
+    // SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
+    // System.out.println("CAMERA Angle: " + peripherals.getVisionArray()[1]);
+    // System.out.println(climber.getRotatingEncoder());
     }
   
 
@@ -154,7 +226,21 @@ public class Robot extends TimedRobot {
     // peripherals.init();
     // testPath = new ContinuousAccelerationInterpolation(drive, pathJSON);
     // testPath.schedule();
-    threeBallAuto.schedule();
+    if(OI.is3BallAuto()) {
+      threeBallAuto.schedule();
+    }
+    else if(OI.is1BallAuto()) {
+      oneBallAuto.schedule();
+    }
+    else if(OI.is2BallAuto()) {
+      twoBallAuto.schedule();
+    }
+    else if(OI.is5BallAuto()) {
+      fiveBallAuto.schedule();
+    }
+    else if(OI.is5BallPt2()) {
+      fiveBallP2.schedule();
+    }
   }
 
   /** This function is called periodically during autonomous. */
@@ -188,12 +274,14 @@ public class Robot extends TimedRobot {
 
     OI.driverA.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 5, 2200, 0.5, 0.5));
     OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 17, 2600, 0.75, 0.75));
-    OI.driverY.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 20, 2900, 0.5, 0.5));
-    OI.driverX.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 3200, 0.5, 0.5));
+    // OI.driverY.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 20, 2900, 0.5, 0.5));
+    // OI.driverX.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 3200, 0.5, 0.5));
+
+    OI.driverY.whenPressed(new VisionAlignment(drive, peripherals));
 
     //OI.driverY.whenPressed(new FaceTarget(drive));
 
-    OI.driverViewButton.whenPressed(new ZeroNavxMidMatch(drive));
+    OI.driverViewButton.whileHeld(new ZeroNavxMidMatch(drive));
 
     
 

@@ -177,9 +177,9 @@ public class Drive extends SubsystemBase {
 
     public void autoInit(JSONArray pathPoints) {
         double firstPointAngle = pathPoints.getJSONObject(0).getDouble("angle");
-        System.out.println("FIRST POINT ANGLE: " + firstPointAngle);
+        // System.out.println("FIRST POINT ANGLE: " + firstPointAngle);
         peripherals.setNavxAngle(Math.toDegrees(firstPointAngle));
-        System.out.println("************************ ANGLE SET TO: " + peripherals.getNavxAngle() + " ***************************");
+        // System.out.println("************************ ANGLE SET TO: " + peripherals.getNavxAngle() + " ***************************");
         m_odometry.resetPosition(new Pose2d(new Translation2d(pathPoints.getJSONObject(0).getDouble("x"), pathPoints.getJSONObject(0).getDouble("y")),  new Rotation2d(firstPointAngle)), new Rotation2d(firstPointAngle));
         
         estimatedX = getOdometryX();
@@ -482,7 +482,7 @@ public class Drive extends SubsystemBase {
     public void teleopDrive() {
         updateOdometryFusedArray();
 
-        System.out.println("FUSED X: " + getFusedOdometryX() + " FUSED Y: " + getFusedOdometryY() + " Theta: " + getFusedOdometryTheta());
+        // System.out.println("FUSED X: " + getFusedOdometryX() + " FUSED Y: " + getFusedOdometryY() + " Theta: " + getFusedOdometryTheta());
 
         double turnLimit = 1;
         // this is correct, X is forward in field, so originalX should be the y on the joystick
@@ -549,7 +549,7 @@ public class Drive extends SubsystemBase {
 
         // publish.publish("/pathTool", message);
 
-        System.out.println("X: " + getFusedOdometryX() + " Y: " + getFusedOdometryY() + " Theta: " + getFusedOdometryTheta());
+        // System.out.println("X: " + getFusedOdometryX() + " Y: " + getFusedOdometryY() + " Theta: " + getFusedOdometryTheta());
 
         // m_pose = m_odometry.update(new Rotation2d(Math.toRadians(-navxOffset)), leftFront.getState(Math.toRadians(-navxOffset)), rightFront.getState(Math.toRadians(-navxOffset)), leftBack.getState(Math.toRadians(-navxOffset)), rightBack.getState(Math.toRadians(-navxOffset)));
         // m_pose = m_odometry.update(new Rotation2d(navxOffset), leftFront.getState(navxOffset), rightFront.getState(navxOffset), leftBack.getState(navxOffset), rightBack.getState(navxOffset));
@@ -640,7 +640,7 @@ public class Drive extends SubsystemBase {
             // check if within one cycle of endpoint and set velocities
             // only occurs when interpolation range is 1
             if(Math.abs((currentPointTime - time)) < cyclePeriod) {
-                System.out.println("Less than cycle");
+                // System.out.println("Less than cycle");
                 velocityX = currentXVelocity;
                 velocityY = currentYVelocity;
                 thetaChange = currentThetaVelocity;
@@ -663,6 +663,7 @@ public class Drive extends SubsystemBase {
         // if the current point is the first point in the path, continue at same velocity towards point
         else if(currentPointIndex - 1 < 0) {
             nextPoint = pathPointsJSON.getJSONObject(currentPointIndex + 1);
+            System.out.println(nextPoint.toString());
             double nextPointTime = nextPoint.getDouble("time");
             // check if within one cycle of endpoint and set velocities
             // only occurs when interpolation range is 1
@@ -696,6 +697,8 @@ public class Drive extends SubsystemBase {
         // determine which points are the next point and previous point
         nextPoint = pathPointsJSON.getJSONObject(currentPointIndex + 1);
         previousPoint = pathPointsJSON.getJSONObject(currentPointIndex - 1);
+
+        System.out.println(nextPoint.toString());
 
         double nextPointTime = nextPoint.getDouble("time");
         double previousPointTime = previousPoint.getDouble("time");
@@ -734,7 +737,7 @@ public class Drive extends SubsystemBase {
         }
         // if in the interpolation range and curving towards next line segment between current point and next point
         else if(time >= t1 && time < t2) {
-            System.out.println("||||||||||||||||||||||||||");
+            // System.out.println("||||||||||||||||||||||||||");
             // VELOCITIES
             // determine velocities when on line segment going towards t1
             double t1X = (currentPoint.getDouble("x") - previousPoint.getDouble("x"))/timeDiffT1;
@@ -746,7 +749,7 @@ public class Drive extends SubsystemBase {
             // double t2Angle = currentPoint.getDouble("angle") + ((nextPoint.getDouble("angle") - currentPoint.getDouble("angle")) * (1 - turnTimePercent));
             double t2Angle = (getShortestAngle(currentPoint.getDouble("angle"), nextPoint.getDouble("angle")) * turnTimePercent) + currentPoint.getDouble("angle");
 
-            System.out.println("T1: " + t1Angle + " T2: " + t2Angle);
+            // System.out.println("T1: " + t1Angle + " T2: " + t2Angle);
 
             // VELOCITIES
             // determine velocities when on line segment after t2 and heading towards next point

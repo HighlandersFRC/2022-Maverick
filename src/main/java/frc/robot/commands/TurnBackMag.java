@@ -30,7 +30,7 @@ public class TurnBackMag extends CommandBase {
 
   @Override
   public void execute() {
-    System.out.println("Feeder Wheels: " + (magIntake.getBackMagPosition() - endPosition));
+    // System.out.println("Feeder Wheels: " + (magIntake.getBackMagPosition() - endPosition));
   }
 
   @Override

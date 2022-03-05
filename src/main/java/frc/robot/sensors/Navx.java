@@ -93,13 +93,13 @@ public class Navx {
   }
 
   public void softResetAngle() {
-      System.out.println("````````````````````````````````````````````");
+    //   System.out.println("````````````````````````````````````````````");
       originalAngle = imu.getAngle();
   }
 
   public void setNavxAngle(double angle) {
-      System.out.println(">>>>>>>>>>>>>>>>>>>> ORIGINAL ANGLE: " + originalYaw);
-      System.out.println("ANGLE BEING SET: " + angle);
+    //   System.out.println(">>>>>>>>>>>>>>>>>>>> ORIGINAL ANGLE: " + originalYaw);
+    //   System.out.println("ANGLE BEING SET: " + angle);
       originalYaw = originalYaw + angle;
   }
 

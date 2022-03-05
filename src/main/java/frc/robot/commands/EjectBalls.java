@@ -46,7 +46,7 @@ public class EjectBalls extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    // System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
     magIntake.setBackMagazine(backPercent);
     magIntake.setFrontMagazine(frontPercent);
     if(magIntake.getUpperBeamBreak() == false) {
@@ -66,7 +66,7 @@ public class EjectBalls extends CommandBase {
   @Override
   public boolean isFinished() {
     if(beamBreakSeenPositive > 15 && magIntake.getUpperBeamBreak() == true) {
-      System.out.println("=======================================");
+      // System.out.println("=======================================");
       return true;
     }
     if(time != -1) {

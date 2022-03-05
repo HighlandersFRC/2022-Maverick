@@ -5,7 +5,9 @@ import math
 from math import cos, sin, tan, pi
 from paho.mqtt import client as mqtt_client
 from time import sleep
+import time
 from scipy.optimize import minimize
+import datetime
 
 broker = '10.44.99.11'
 port = 1883
@@ -307,7 +309,7 @@ ctrl.setManualFocus(0)
 controlQueue.send(ctrl)
 
 
-configQueue.send(manipConfig)
+# configQueue.send(manipConfig)
 
 cfg = depthai.SpatialLocationCalculatorConfig()
 
@@ -336,6 +338,7 @@ while True:
     in_rgb = q_rgb.tryGet()
     if in_rgb is not None:
         frame = in_rgb.getCvFrame()
+        startTime = time.time()
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         lowerThreshold = np.array([lowerH, lowerS, lowerV])
         upperThreshold = np.array([upperH, upperS, upperV])
@@ -439,8 +442,8 @@ while True:
                 xList.append(convertedCoordinates[0])
                 yList.append(convertedCoordinates[1])
 
-            fontType = cv2.FONT_HERSHEY_TRIPLEX
-            cv2.rectangle(depthFrameColor, (xmin, ymin), (xmax, ymax), color, cv2.FONT_HERSHEY_SCRIPT_SIMPLEX)
+            # fontType = cv2.FONT_HERSHEY_TRIPLEX
+            # cv2.rectangle(depthFrameColor, (xmin, ymin), (xmax, ymax), color, cv2.FONT_HERSHEY_SCRIPT_SIMPLEX)
             # cv2.putText(frame, f"X: {int(depthData.spatialCoordinates.x)} mm", (xmin + 10, ymin + 20), fontType, 0.5, color)
             # cv2.putText(frame, f"Y: {int(depthData.spatialCoordinates.y)} mm", (xmin + 10, ymin + 35), fontType, 0.5, color)
             # cv2.putText(frame, f"Z: {int(depthData.spatialCoordinates.z)} mm", (xmin + 10, ymin + 50), fontType, 0.5, color)
@@ -474,7 +477,11 @@ while True:
 
             publish(client, jsonString)
 
-            print("TargetX: " + str(targetCenterX) + " TargetY: " + str(targetCenterY) + " Distance: " + str(distance) + " Angle: " + str(180 * (angle)/pi))
+            endTime = time.time()
+
+            print("START: " + str(endTime -  startTime))
+
+            # print("TargetX: " + str(targetCenterX) + " TargetY: " + str(targetCenterY) + " Distance: " + str(distance) + " Angle: " + str(180 * (angle)/pi) + " Confidence: " + str(len(xList)))
 
             # print(xList)
         
@@ -487,12 +494,11 @@ while True:
 
         # print(xList)
 
+
         # cv2.imshow("depth", depthFrameColor)
         # cv2.imshow("frame", frame)
         # cv2.imshow("mask", result)
         # cv2.imshow("blur", blur)
-
-        # sleep(0.01)
 
     # newConfig = False
     key = cv2.waitKey(1)

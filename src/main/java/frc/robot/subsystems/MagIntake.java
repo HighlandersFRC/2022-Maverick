@@ -94,10 +94,11 @@ public class MagIntake extends SubsystemBase {
     //System.out.println("BOTTOM: " + getLowerBackBeamBreak() + " UPPER: " + getUpperBeamBreak());
       if(!getUpperBeamBreak()){
         backMagazine.set(ControlMode.PercentOutput, 0.0);
+        frontMagazine.set(ControlMode.PercentOutput, 0.0);
       } else {
         if(!getLowerBackBeamBreak()){
           backMagazine.set(ControlMode.PercentOutput, 0.3);
-          frontMagazine.set(ControlMode.PercentOutput, 0.5);
+          // frontMagazine.set(ControlMode.PercentOutput, 0.5);
         } else{
           backMagazine.set(ControlMode.PercentOutput, 0.0);
         }
@@ -113,7 +114,6 @@ public class MagIntake extends SubsystemBase {
   public void setBackMagazine(double percent) {
     backMagazine.set(ControlMode.PercentOutput, percent);
   } 
-
 public void setFrontMagazine(double percent) {
     frontMagazine.set(ControlMode.PercentOutput, -percent);
   }

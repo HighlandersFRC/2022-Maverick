@@ -29,14 +29,14 @@ import frc.robot.subsystems.Shooter;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ThreeBallAuto extends SequentialCommandGroup {
-  /** Creates a new ThreeBallAuto. */
+public class TwoBallAuto extends SequentialCommandGroup {
+  /** Creates a new TwoBallAuto. */
   private File pathingFile;
   private JSONArray pathJSON;
 
-  public ThreeBallAuto(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights) {
+  public TwoBallAuto(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights) {
     try {
-      pathingFile = new File("/home/lvuser/deploy/Adj3Ball.json");
+      pathingFile = new File("/home/lvuser/deploy/2BallAuto.json");
       FileReader scanner = new FileReader(pathingFile);
       pathJSON = new JSONArray(new JSONTokener(scanner));
     }

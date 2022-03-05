@@ -4,18 +4,77 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Peripherals;
+import frc.robot.tools.controlloops.PID;
+import frc.robot.tools.math.Vector;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class VisionAlignment extends SequentialCommandGroup {
+public class VisionAlignment extends CommandBase {
   /** Creates a new VisionAlignment. */
-  public VisionAlignment(Drive drive) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(drive);
-    // addCommands(new FaceTarget(drive), new DriveAlignedToTarget(drive));
+  private Drive drive;
+  private Peripherals peripherals;
+  private PID pid = new PID(5, 0, 0);
+
+  private double currentCameraAngle = 0;
+
+  private double[] cameraCoordinates;
+
+  private double cameraConfidence;
+
+  private double maxTurnSpeedRadians = Constants.TOP_SPEED/Constants.ROBOT_RADIUS;
+
+  private int lostCameraConfidence = 0;
+
+  private double pidResult = 0;
+  public VisionAlignment(Drive drive, Peripherals peripherals) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.drive = drive;
+    this.peripherals = peripherals;
+    addRequirements(this.drive);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    pid.setSetPoint(0);
+    pid.setMaxOutput(maxTurnSpeedRadians);
+    pid.setMinOutput(-maxTurnSpeedRadians);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    cameraCoordinates = peripherals.getVisionArray();
+    cameraConfidence = cameraCoordinates[2];
+    currentCameraAngle = cameraCoordinates[1];
+
+    // System.out.println("CAM ANGLE: " + currentCameraAngle);
+
+    if(cameraConfidence != 0) {
+      pid.updatePID(currentCameraAngle);
+      pidResult = -pid.getResult();
+      System.out.println("PID RESULT: " + pidResult);
+
+      drive.autoDrive(new Vector(0, 0), pidResult);
+    }
+    else {
+      lostCameraConfidence++;
+    }
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    // if(Math.abs(currentCameraAngle) < 0.5) {
+    //   System.out.println("FINISHED");
+    //   return true;
+    // }
+    return false;
   }
 }

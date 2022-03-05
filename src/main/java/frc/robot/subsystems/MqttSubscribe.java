@@ -36,7 +36,7 @@ public class MqttSubscribe implements MqttCallback  {
 	}
 
     public String getLatestMessage() {
-		System.out.println(latestMessage);
+		// System.out.println(latestMessage);
         return latestMessage;
     }
 
@@ -57,7 +57,7 @@ public class MqttSubscribe implements MqttCallback  {
 					
                     if(connection == false) {
                         sampleClient.connect(connOpts);
-                        System.out.println("Mqtt Connected");
+                        // System.out.println("Mqtt Connected");
                         connection = true;                        
                         sampleClient.setCallback(this);
 					    sampleClient.subscribe(topic);
@@ -70,7 +70,7 @@ public class MqttSubscribe implements MqttCallback  {
 					// System.out.println("Start Time: " + startTime);
 
 				} catch (MqttException me) {
-					System.out.println(me);
+					// System.out.println(me);
 				}
 
 			
@@ -86,10 +86,10 @@ public class MqttSubscribe implements MqttCallback  {
 
 	 //Called when the client lost the connection to the broker
 	public void connectionLost(Throwable arg0) {
-		System.out.println("CONNECTION LOST");
+		// System.out.println("CONNECTION LOST");
 		connection = false;
 		crashTime = Timer.getFPGATimestamp();
-		System.out.println("Crash Time: "+ crashTime);
+		// System.out.println("Crash Time: "+ crashTime);
 		
 	}
 

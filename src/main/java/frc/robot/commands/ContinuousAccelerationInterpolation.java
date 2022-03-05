@@ -89,7 +89,7 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Pathing...");
+    // System.out.println("Pathing...");
     // get odometry positions
     // currentX = drive.getOdometryX();
     // currentY = drive.getOdometryY();
@@ -154,6 +154,7 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
   @Override
   public boolean isFinished() {
     if(currentTime > pathPointsJSON.getJSONObject(pathPointsJSON.length() - 1).getDouble("time")){
+      System.out.println("#####################################       X: " + drive.getFusedOdometryX() + " Y: " + drive.getFusedOdometryY() + " Angle: " + drive.getFusedOdometryTheta());
       return true;
     }
     return false;

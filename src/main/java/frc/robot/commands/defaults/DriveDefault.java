@@ -16,13 +16,13 @@ public class DriveDefault extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
     addRequirements(this.drive);
-    System.out.println("INSIDE DEFAULT CONSTRUCTOR");
+    // System.out.println("INSIDE DEFAULT CONSTRUCTOR");
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      System.out.println("INSIDE DRIVE DEFAULT!");
+      // System.out.println("INSIDE DRIVE DEFAULT!");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

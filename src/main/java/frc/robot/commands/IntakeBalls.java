@@ -33,7 +33,7 @@ public class IntakeBalls extends CommandBase {
     lights.setMode(LEDMode.YELLOW);
     magIntake.setIntakeDown();
     //magIntake.setFrontMagRPM(-1500);
-    magIntake.setFrontMagazine(0.5);
+    // magIntake.setBackMagazine(0.5);
     
     //SmartDashboard.putNumber("front mag rpm", magIntake.getFrontMagRPM());
     magIntake.setIntakePercent(0.5);

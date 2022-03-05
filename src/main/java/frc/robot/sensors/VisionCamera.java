@@ -17,13 +17,16 @@ public class VisionCamera {
             visionArray[0] = (jsonString.getDouble("Distance"))/39.37;
             // System.out.println(visionArray[0]);
             visionArray[1] = jsonString.getDouble("Angle");
+            visionArray[2] = jsonString.getDouble("Confidence");
 
-            if(visionArray[0] > 160) {
-                visionArray[2] = jsonString.getDouble("Confidence");
-            }
-            else {
-                visionArray[2] = 0;
-            }
+            // System.out.println("VISION ARRAY: " + visionArray[2]);
+
+            // if(visionArray[0] > 160) {
+            //     visionArray[2] = jsonString.getDouble("Confidence");
+            // }
+            // else {
+            //     visionArray[2] = 0;
+            // }
 
 
             // System.out.println(visionArray[0]);

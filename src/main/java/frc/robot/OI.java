@@ -3,6 +3,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.tools.TriggerButton;
@@ -25,6 +26,8 @@ public class OI {
 
     public static JoystickButton driverViewButton = new JoystickButton(driverController, 7);
 
+    public static Joystick autoChooser = new Joystick(2);
+
     public static double getDriverLeftX() {
         return driverController.getLeftX();
     }
@@ -39,6 +42,26 @@ public class OI {
 
     public static double getDriverRightY() {
         return driverController.getRightY();
+    }
+
+    public static Boolean is1BallAuto() {
+        return autoChooser.getRawButton(1);
+    }
+
+    public static Boolean is2BallAuto() {
+        return autoChooser.getRawButton(6);
+    }
+
+    public static Boolean is3BallAuto() {
+        return autoChooser.getRawButton(7);
+    }
+
+    public static Boolean is5BallAuto() {
+        return autoChooser.getRawButton(8);
+    }
+
+    public static Boolean is5BallPt2() {
+        return autoChooser.getRawButton(2);
     }
 
 }
