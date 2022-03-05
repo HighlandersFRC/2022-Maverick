@@ -30,7 +30,7 @@ public class IntakeBalls extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    lights.setMode(LEDMode.YELLOW);
+    //lights.setMode(LEDMode.YELLOW);
     magIntake.setIntakeDown();
     //magIntake.setFrontMagRPM(-1500);
     // magIntake.setBackMagazine(0.5);
@@ -38,6 +38,11 @@ public class IntakeBalls extends CommandBase {
     //SmartDashboard.putNumber("front mag rpm", magIntake.getFrontMagRPM());
     magIntake.setIntakePercent(0.5);
     magIntake.moveMagazine();
+    if (!magIntake.getLowerBackBeamBreak()) {
+      lights.setMode(LEDMode.YELLOW);
+    } else {
+      lights.setMode(LEDMode.BLUE);
+    }
   }
 
   // Called once the command ends or is interrupted.

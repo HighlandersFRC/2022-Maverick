@@ -5,19 +5,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.CANSparkMax.IdleMode;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.defaults.ShooterDefault;
-import frc.robot.tools.PneumaticsControl;
 
 public class Shooter extends SubsystemBase {
 
@@ -29,18 +23,11 @@ public class Shooter extends SubsystemBase {
     
   }
 
+  // method run to set PID values and sets motors to Coast
   public void init() {
      leftShooter.setNeutralMode(NeutralMode.Coast);
      rightShooter.setNeutralMode(NeutralMode.Coast);
      rightShooter.setInverted(InvertType.InvertMotorOutput);
-    // rightShooter.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
-    // // rightShooter.configPeakOutputForward(0.7);
-    // rightShooter.configClosedLoopPeakOutput(0, 0.7);
-    // // rightShooter.configPeakOutputReverse(-0.7);
-    // rightShooter.configVoltageCompSaturation(11.7);
-    // rightShooter.enableVoltageCompensation(true);
-    // rightShooter.setSensorPhase(true);
-    // rightShooter.selectProfileSlot(0, 0);
 
     rightShooter.configStatorCurrentLimit(new StatorCurrentLimitConfiguration());
     rightShooter.config_kF(0, 0.02);
@@ -49,25 +36,24 @@ public class Shooter extends SubsystemBase {
     rightShooter.config_kD(0, 0.02);
     leftShooter.set(ControlMode.Follower, 9);
     setDefaultCommand(new ShooterDefault(this));
-    // rightShooter.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 0, 0));
   }
 
+  // zeroes shooter encoder
   public void zeroShooterEncoder() {
-    // rightShooter.setSelectedSensorPosition(0);
     leftShooter.setSelectedSensorPosition(0);
 }
 
-
+  // sets shooter motor to a specified percent
   public void setShooterPercent(double percent) {
     rightShooter.set(ControlMode.PercentOutput, percent);
   }
 
+  // sets shooter to run a velocity PID at given RPM
   public void setShooterRPM(double rpm) {
-    // System.out.println()
     rightShooter.set(ControlMode.Velocity, Constants.shooterRPMToUnitsPer100MS(rpm));
-    // rightShooter.set(ControlMode.PercentOutput, 0.5);
 }
 
+// converts shooter RPM to units/100 ms
 public double getShooterRPM(){
   return Constants.unitsPer100MsToRPM(rightShooter.getSelectedSensorVelocity());
 }

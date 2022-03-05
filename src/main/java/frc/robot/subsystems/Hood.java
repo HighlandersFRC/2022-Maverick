@@ -8,9 +8,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
-import edu.wpi.first.wpilibj.Counter;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.defaults.HoodDefaultCommand;
@@ -30,6 +27,7 @@ public class Hood extends SubsystemBase {
 
   public Hood() {}
 
+  // method run to set PID values and configure motor settings
   public void init() {
     hoodMotor.config_kP(0, 0.1);
     hoodMotor.config_kI(0, 0.00001);
@@ -44,11 +42,6 @@ public class Hood extends SubsystemBase {
 
     hoodMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 
-    // originalAbsolutePosition = getAbsoluteHoodEncoder();
-
-    // ticksOffset = (-(originalAbsolutePosition - 0.54) * 81.0 * 2048.0);
-
-    // hoodMotor.setSelectedSensorPosition(absoluteEncoder.get());
     setDefaultCommand(new HoodDefaultCommand(this));
 
   }
@@ -58,16 +51,6 @@ public class Hood extends SubsystemBase {
     hoodMotor.set(ControlMode.PercentOutput, percent);
   }
 
-  // public double getAbsoluteHoodEncoder() {
-  //   // System.out.println("HOOD ABSOLUTE ENCODER: " + absoluteEncoder.get());
-  //   // return absoluteEncoder.get();
-  //   // double absoluteEncoderDegrees = ((absoluteEncoder.get() + absoluteEncoderOffset) * (24.0/42.0)) * -360;
-  //   // System.out.println("ABSOLUTE DEGREES: " + absoluteEncoder.get());
-
-  //   double absoluteEncoderVal = absoluteEncoder.get();
-  //   return absoluteEncoderVal;
-  // }
-
   public boolean getLowerLimitSwitch() {
     if(hoodMotor.getSensorCollection().isRevLimitSwitchClosed() == 1) {
       return false;
@@ -75,15 +58,7 @@ public class Hood extends SubsystemBase {
     return true;
   }
 
-  // public double absoluteEncoderDegsToMotorTics(double absoluteEncTics) {
-  //   System.out.println("ABS DEGS: " + absoluteEncTics);
-  //   double motorTics = (2048.0 * 81.0 * (42.0/24.0)) * (absoluteEncTics);
-  //   System.out.println("MOTOR TICS CONVERTED: " + motorTics);
-  //   return motorTics;
-  // }
-
   public double getSensorPosition() {
-    // System.out.println("TICKS OFFSET: " + ticksOffset + " OG ABS POSITION: " + originalAbsolutePosition);
     return hoodMotor.getSelectedSensorPosition();
   }
 
@@ -98,13 +73,8 @@ public class Hood extends SubsystemBase {
   }
 
   public void setHoodPosition(double position) {
-    // 81 * (42)/(24)
-    // position = 10.0;
     double positionEncoderTics = (2048.0 * 81.0 * (42.0/24.0)) * (position/360.0);
-    // positionEncoderTics = 8024;
-    // System.out.println(positionEncoderTics);
     hoodMotor.set(ControlMode.Position, positionEncoderTics);
-    // System.out.println("Position: " + getHoodPosition());
   }
 
   @Override

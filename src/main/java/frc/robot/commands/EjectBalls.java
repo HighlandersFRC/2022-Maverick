@@ -50,7 +50,7 @@ public class EjectBalls extends CommandBase {
     magIntake.setBackMagazine(backPercent);
     magIntake.setFrontMagazine(frontPercent);
     if(magIntake.getUpperBeamBreak() == false) {
-      // lights.setMode(LEDMode.GREEN);
+      lights.setMode(LEDMode.VIOLET);
       beamBreakSeenPositive++;
     }
   }

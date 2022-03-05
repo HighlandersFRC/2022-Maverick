@@ -2,11 +2,19 @@ package frc.robot.sensors;
 
 import org.json.JSONObject;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class VisionCamera {
     
     public VisionCamera() {
 
     }
+
+    double initTime = 0;
+    Boolean firstTime = true;
+
+    double currentTime = 0;
 
     public double[] getVisionArray(String message) {
         double[] visionArray = new double[3];
@@ -14,31 +22,30 @@ public class VisionCamera {
         try {
             JSONObject jsonString = new JSONObject(message);
 
+            System.out.println(message);
+
             visionArray[0] = (jsonString.getDouble("Distance"))/39.37;
-            // System.out.println(visionArray[0]);
             visionArray[1] = jsonString.getDouble("Angle");
             visionArray[2] = jsonString.getDouble("Confidence");
 
-            // System.out.println("VISION ARRAY: " + visionArray[2]);
 
-            // if(visionArray[0] > 160) {
-            //     visionArray[2] = jsonString.getDouble("Confidence");
-            // }
-            // else {
-            //     visionArray[2] = 0;
-            // }
-
-
-            // System.out.println(visionArray[0]);
-
+            if(visionArray[2] == 0) {
+                SmartDashboard.putBoolean("HAS LOCK-ON", false);
+                // System.out.println("-----------------------------------------------");
+                visionArray[0] = -1;
+                visionArray[1] = 0;
+            }
+            else {
+                SmartDashboard.putBoolean("HAS LOCK-ON", true);
+                // System.out.println("||||||||||||||||||||||||||||||||||||||||||||||||");
+            }
             return visionArray;
         }
         catch(Exception e) {
-            // System.out.println("Didn't receive message");
         }
 
         visionArray[0] = -1;
-        visionArray[1] = -100;
+        visionArray[1] = 0;
         visionArray[2] = 0;
         return visionArray;
         

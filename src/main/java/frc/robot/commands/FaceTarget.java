@@ -14,12 +14,13 @@ public class FaceTarget extends SequentialCommandGroup {
 
   public FaceTarget(Drive drive) {
 
+    this.turnPath = drive.testGetCameraTurn();
     this.drive = drive;
     // this.turnAngle = turnAngle;
     addRequirements(this.drive);
 
     //this.turnPath = this.drive.getJSONTurnPath(this.turnAngle);
     
-    addCommands(new ContinuousAccelerationInterpolation(drive, turnPath, true));
+    addCommands(new ContinuousAccelerationInterpolation(drive, turnPath));
   }
 }

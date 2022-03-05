@@ -9,6 +9,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class MqttSubscribe implements MqttCallback  {
 
@@ -28,6 +29,9 @@ public class MqttSubscribe implements MqttCallback  {
 
     private String latestMessage = "";
 
+	private MqttClient sampleClient;
+	private MqttConnectOptions connOpts;
+
 	public static void main(String[] args) {
 
 		System.out.println("Subscriber running");
@@ -41,20 +45,22 @@ public class MqttSubscribe implements MqttCallback  {
     }
 
 	public void subscribe(String topic) {
+		MemoryPersistence persistence = new MemoryPersistence();
+		try {
+			sampleClient = new MqttClient(brokerUrl, clientId, persistence);
+			connOpts = new MqttConnectOptions();
+			connOpts.setCleanSession(true);
+		}
+		catch(Exception e) {
+
+		}
+		
 		Runnable task = 
         () -> {
 
 			while(true){
-				MemoryPersistence persistence = new MemoryPersistence();
 				try
 				{
-					MqttClient sampleClient = new MqttClient(brokerUrl, clientId, persistence);
-					MqttConnectOptions connOpts = new MqttConnectOptions();
-					connOpts.setCleanSession(true);
-					
-					// System.out.println("checking");
-					// System.out.println("Mqtt Connecting to broker: " + brokerUrl);
-					
                     if(connection == false) {
                         sampleClient.connect(connOpts);
                         // System.out.println("Mqtt Connected");
@@ -87,6 +93,7 @@ public class MqttSubscribe implements MqttCallback  {
 	 //Called when the client lost the connection to the broker
 	public void connectionLost(Throwable arg0) {
 		// System.out.println("CONNECTION LOST");
+		SmartDashboard.putBoolean("HAS CAMERA", false);
 		connection = false;
 		crashTime = Timer.getFPGATimestamp();
 		// System.out.println("Crash Time: "+ crashTime);
@@ -100,6 +107,7 @@ public class MqttSubscribe implements MqttCallback  {
 
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
         latestMessage = message.toString();
+		SmartDashboard.putBoolean("HAS CAMERA", true);
 		// System.out.println("| Topic:" + topic);
 		// System.out.println("| Message: " +message.toString());
 		// System.out.println("-------------------------------------------------");

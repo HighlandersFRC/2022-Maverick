@@ -20,7 +20,6 @@ import frc.robot.commands.Outtake;
 import frc.robot.commands.RaiseClimber;
 import frc.robot.commands.SetHoodPosition;
 import frc.robot.commands.SpinShooter;
-import frc.robot.commands.VisionAlignment;
 import frc.robot.commands.ZeroNavxMidMatch;
 import frc.robot.commands.autos.FiveBallAuto;
 import frc.robot.commands.autos.OneBallAuto;
@@ -37,6 +36,7 @@ import frc.robot.subsystems.MqttSubscribe;
 import frc.robot.subsystems.Peripherals;
 import frc.robot.subsystems.Shooter;
 import frc.robot.tools.PneumaticsControl;
+import frc.robot.tools.ShotAdjuster;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -62,8 +62,7 @@ public class Robot extends TimedRobot {
   ContinuousAccelerationInterpolation testPath;
 
   private final PneumaticsControl pneumatics = new PneumaticsControl();
-  private MagIntake magIntake = new MagIntake(pneumatics);
-
+ 
   private final String subCameraTopic = "/sensors/camera";
   private final String pubCameraTopic = "/robot/camera";
 
@@ -80,6 +79,8 @@ public class Robot extends TimedRobot {
 
   private Lights lights = new Lights();
 
+  private MagIntake magIntake = new MagIntake(pneumatics);
+
   private ThreeBallAuto threeBallAuto = new ThreeBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
   private OneBallAuto oneBallAuto = new OneBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
@@ -92,6 +93,8 @@ public class Robot extends TimedRobot {
 
   private UsbCamera camera;
   private VideoSink server;
+
+  private ShotAdjuster shotAdjuster = new ShotAdjuster();
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -191,9 +194,13 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     lights.periodic();
     CommandScheduler.getInstance().run();
-    // SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
-    // System.out.println("CAMERA Angle: " + peripherals.getVisionArray()[1]);
-    // System.out.println(climber.getRotatingEncoder());
+    
+    SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
+    SmartDashboard.putNumber("RPM ADJUSTMENT", shotAdjuster.getRPMAdjustment());
+    SmartDashboard.putNumber("HOOD ADJUSTMENT", shotAdjuster.getHoodAdjustment());
+
+    SmartDashboard.putBoolean("BOTTOM BEAM BREAK", magIntake.getLowerBackBeamBreak());
+    SmartDashboard.putBoolean("UPPER BEAM BREAK", magIntake.getUpperBeamBreak());
     }
   
 
@@ -272,12 +279,10 @@ public class Robot extends TimedRobot {
     OI.driverRT.whileHeld(new IntakeBalls(magIntake, lights));
     OI.driverLT.whileHeld(new Outtake(magIntake));
 
-    OI.driverA.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 5, 2200, 0.5, 0.5));
-    OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 17, 2600, 0.75, 0.75));
+    OI.driverA.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 5, 2200, 0.5, 0.5, shotAdjuster));
+    OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 17, 2600, 0.75, 0.75, shotAdjuster));
     // OI.driverY.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 20, 2900, 0.5, 0.5));
     // OI.driverX.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 3200, 0.5, 0.5));
-
-    OI.driverY.whenPressed(new VisionAlignment(drive, peripherals));
 
     //OI.driverY.whenPressed(new FaceTarget(drive));
 
@@ -313,6 +318,26 @@ public class Robot extends TimedRobot {
       //climber.lockExtendingClimber();
       //climber.setClimberPercents(0.0);
       climber.setRotatingClimberPercent(0.0);
+    }
+
+    if(OI.operatorController.getPOV(0) != -1) {
+      shotAdjuster.increaseRPM();
+    }
+    else if(OI.operatorController.getPOV(180) != -1) {
+      shotAdjuster.decreaseRPM();
+    }
+    else {
+
+    }
+
+    if(OI.operatorController.getPOV(270) != -1) {
+      shotAdjuster.increaseHood();
+    }
+    else if(OI.operatorController.getPOV(90) != -1) {
+      shotAdjuster.decreaseHood();
+    }
+    else {
+
     }
 
     //System.out.println("RIGHT --> " + climber.getRightClimberPosition());

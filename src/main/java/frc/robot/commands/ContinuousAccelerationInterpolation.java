@@ -64,7 +64,7 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
 
     private double cyclePeriod = 1.0/50.0;
 
-    public ContinuousAccelerationInterpolation(Drive drive, JSONArray path, boolean generateTurnPath) {
+    public ContinuousAccelerationInterpolation(Drive drive, JSONArray path) {
       this.drive = drive;
       this.pathPointsJSON = path;
       this.generateTurnPath = generateTurnPath;
@@ -76,11 +76,6 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-
-      if (generateTurnPath) {
-        this.pathPointsJSON = drive.getJSONTurnPath();
-      }
-
       initTime = Timer.getFPGATimestamp();
       // System.out.println("Time: " + currentTime + " Angle: " + drive.getOdometryAngle() + " OdometryX: " + currentX + " PredictedX: " + estimatedX + " OdometryY: " + currentY + " PredictedY: " + estimatedY);
 

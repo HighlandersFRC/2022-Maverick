@@ -26,6 +26,7 @@ import frc.robot.subsystems.Peripherals;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shooter;
+import frc.robot.tools.ShotAdjuster;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -37,6 +38,8 @@ public class FiveBallAuto extends SequentialCommandGroup {
 
   private File pathingFile2;
   private JSONArray pathJSON2;
+
+  private ShotAdjuster adjuster = new ShotAdjuster();
 
   public FiveBallAuto(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights) {
     try {
@@ -60,15 +63,15 @@ public class FiveBallAuto extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake);
     addCommands(new IntakeDown(magIntake),
-        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 15, 2300, 0.5, 0.01), 
+        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 15, 2300, 0.5, 0.01, adjuster), 
         new ParallelRaceGroup(
-            new ContinuousAccelerationInterpolation(drive, pathJSON, false),
+            new ContinuousAccelerationInterpolation(drive, pathJSON),
             new IntakeBalls(magIntake, lights)), 
-        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 22, 2500, 0.5, 1),
+        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 22, 2500, 0.5, 1, adjuster),
         new ParallelRaceGroup(
-            new ContinuousAccelerationInterpolation(drive, pathJSON2, false),
+            new ContinuousAccelerationInterpolation(drive, pathJSON2),
             new IntakeBalls(magIntake, lights)), 
-        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 23, 2500, 0.5, 1));
+        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 23, 2500, 0.5, 1, adjuster));
   }
 }
 

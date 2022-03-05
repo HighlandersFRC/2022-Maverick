@@ -13,17 +13,20 @@ import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.MagIntake;
 import frc.robot.subsystems.Peripherals;
 import frc.robot.subsystems.Shooter;
+import frc.robot.tools.ShotAdjuster;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class FireBalls extends SequentialCommandGroup {
   /** Creates a new FireBalls. */
-  public FireBalls(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights, double hoodPosition, double shooterRPM, double firstBallTimeout, double secondBallTimeout) {
+  public FireBalls(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights, double hoodPosition, double shooterRPM, double firstBallTimeout, double secondBallTimeout, ShotAdjuster adjuster) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake, shooter, hood);
     double distance = drive.getDistanceToTarget();
+    shooterRPM = shooterRPM + adjuster.getRPMAdjustment();
+    hoodPosition = hoodPosition + adjuster.getHoodAdjustment();
     addCommands(
       new ParallelCommandGroup(
           new SpinShooter(shooter, shooterRPM, distance),

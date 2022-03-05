@@ -25,9 +25,6 @@ public class Navx {
   }
 
   public double currentAngle() {
-    //   System.out.println("CHANGED OG ANGLE: " + Math.toDegrees(originalAngle));
-    //   System.out.println("NAVX: " + Math.toDegrees(imu.getAngle() - originalAngle));
-        // System.out.println("NAVX NO OFFSET: " + Math.toDegrees(imu.getAngle()));
         return -(imu.getAngle() - originalAngle);
   }
 
@@ -56,7 +53,6 @@ public class Navx {
   }
 
   public double currentYaw() {
-    // System.out.println("&&&&&&&&&&&&&&&&&" + -(imu.getYaw() - originalYaw));
       return -((imu.getYaw()) - originalYaw);
   }
 
@@ -93,19 +89,12 @@ public class Navx {
   }
 
   public void softResetAngle() {
-    //   System.out.println("````````````````````````````````````````````");
       originalAngle = imu.getAngle();
   }
 
   public void setNavxAngle(double angle) {
-    //   System.out.println(">>>>>>>>>>>>>>>>>>>> ORIGINAL ANGLE: " + originalYaw);
-    //   System.out.println("ANGLE BEING SET: " + angle);
       originalYaw = originalYaw + angle;
   }
-
-//   public void setNavxAngle(double angle) {
-//     originalAngle = originalAngle - angle;
-//     }
 
   public void softResetYaw() {
       originalYaw = imu.getYaw();

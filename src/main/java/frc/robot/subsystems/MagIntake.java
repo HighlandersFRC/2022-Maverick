@@ -6,10 +6,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.defaults.MagIntakeDefault;
@@ -41,6 +41,35 @@ public class MagIntake extends SubsystemBase {
   public void init() {
     setDefaultCommand(new MagIntakeDefault(this));
     backMagazine.setNeutralMode(NeutralMode.Brake);
+    intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
+    intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
+    intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
+    intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+    intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
+    intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 1000);
+    intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000);
+    intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 1000);
+    intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 1000);
+
+    frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
+    frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
+    frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
+    frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+    frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
+    frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 1000);
+    frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000);
+    frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 1000);
+    frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 1000);
+  
+    backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
+    backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
+    backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
+    backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+    backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
+    // backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 1000);
+    // backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000);
+    // backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 1000);
+    // backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 1000);
   }
 
   public double rotateBackMag(double degrees) {
@@ -91,19 +120,16 @@ public class MagIntake extends SubsystemBase {
   }
 
   public void moveMagazine() {  
-    //System.out.println("BOTTOM: " + getLowerBackBeamBreak() + " UPPER: " + getUpperBeamBreak());
       if(!getUpperBeamBreak()){
         backMagazine.set(ControlMode.PercentOutput, 0.0);
         frontMagazine.set(ControlMode.PercentOutput, 0.0);
       } else {
         if(!getLowerBackBeamBreak()){
           backMagazine.set(ControlMode.PercentOutput, 0.3);
-          // frontMagazine.set(ControlMode.PercentOutput, 0.5);
         } else{
           backMagazine.set(ControlMode.PercentOutput, 0.0);
         }
       }
-         
   }
 
   public void setMagazinePercents(double backPercent, double frontPercent) {

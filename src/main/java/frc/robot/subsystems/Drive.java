@@ -29,10 +29,11 @@ public class Drive extends SubsystemBase {
     private final OI OI = new OI();
 
     // interpolation range
-    private double turnTimePercent = 0.7;
+    private double turnTimePercent = 0.3;
 
     private final double interpolationCorrection = 0;
 
+    // cycle period of robot code
     private final double cyclePeriod = 1.0/50.0;
 
     private final double[] velocityArray = new double[3];
@@ -47,12 +48,14 @@ public class Drive extends SubsystemBase {
     private final WPI_TalonFX rightBackMotor = new WPI_TalonFX(7);
     private final WPI_TalonFX rightBackAngleMotor = new WPI_TalonFX(8);
 
+    // creating peripherals object to access sensors
     private Peripherals peripherals;
     private MqttPublish publish;
 
     private double adjustedX = 0.0;
     private double adjustedY = 0.0;
 
+    // xy position of module based on robot width and distance from edge of robot
     private final double moduleXY = ((Constants.ROBOT_WIDTH)/2) - Constants.MODULE_OFFSET;
 
     // creating all the external encoders
@@ -73,6 +76,7 @@ public class Drive extends SubsystemBase {
     Translation2d m_backLeftLocation = new Translation2d(-moduleXY, moduleXY);
     Translation2d m_backRightLocation = new Translation2d(-moduleXY, -moduleXY);
 
+    // values for odometry for autonomous pathing
     private double currentX = 0;
     private double currentY = 0;
     private double currentTheta = 0;
@@ -102,17 +106,19 @@ public class Drive extends SubsystemBase {
     private double currentYVelocity = 0;
     private double currentThetaVelocity = 0;
 
+    // location of the target in the center of the field
     private double targetCenterX = 8.2296;
     private double targetCenterY = 4.1148;
 
+    // array for fused odometry
     private double[] currentFusedOdometry = new double[3];
-
 
     // Creating my kinematics object using the module locations
     SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
     m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
     );
 
+    // odometry
     SwerveDriveOdometry m_odometry; 
     Pose2d m_pose;
 
@@ -128,8 +134,10 @@ public class Drive extends SubsystemBase {
         m_odometry = new SwerveDriveOdometry(m_kinematics, new Rotation2d(Math.toRadians(peripherals.getNavxAngle())));
     }
 
+    // creates a new RobotCoordinateCalculator
     private RobotCoordinateCalculator coordinateCalculator = new RobotCoordinateCalculator(peripherals);
 
+    // method to zeroNavx mid match and reset odometry with zeroed angle
     public void zeroNavxMidMatch() {
         peripherals.zeroNavx();
         m_odometry.resetPosition(new Pose2d(new Translation2d(getFusedOdometryX(), getFusedOdometryY()), new Rotation2d(getFusedOdometryTheta())), new Rotation2d(getFusedOdometryTheta()));
@@ -175,6 +183,7 @@ public class Drive extends SubsystemBase {
         setDefaultCommand(new DriveDefault(this));
     }
 
+    // method run during start of autonomous
     public void autoInit(JSONArray pathPoints) {
         double firstPointAngle = pathPoints.getJSONObject(0).getDouble("angle");
         // System.out.println("FIRST POINT ANGLE: " + firstPointAngle);
@@ -207,6 +216,7 @@ public class Drive extends SubsystemBase {
         updateOdometryFusedArray();
     }
 
+    // generates a autonomous path using current odometry and predicted angle to target at the current point
     public JSONArray getJSONTurnPath() {
         double fusedOdometryX = getFusedOdometryX();
         double fusedOdometryY = getFusedOdometryY();
@@ -234,6 +244,37 @@ public class Drive extends SubsystemBase {
         return turnPath;
     }
 
+    // testing a method to create an autonomous path to turn as much as the camera says
+    public JSONArray testGetCameraTurn() {
+        double fusedOdometryX = getFusedOdometryX();
+        double fusedOdometryY = getFusedOdometryY();
+
+        double cameraAngle = peripherals.getVisionArray()[1];
+
+        JSONObject point1 = new JSONObject();
+        point1.put("x", fusedOdometryX);
+        point1.put("y", fusedOdometryY);
+        point1.put("angle", getFusedOdometryTheta());
+        point1.put("time", 0.0);
+
+        double wantedAngleToTarget = getFusedOdometryTheta() + cameraAngle;
+
+        JSONObject point2 = new JSONObject();
+        point2.put("x", fusedOdometryX);
+        point2.put("y", fusedOdometryY);
+        point2.put("angle", wantedAngleToTarget);
+        point2.put("time", 1);
+
+        JSONArray turnPath = new JSONArray();
+        turnPath.put(point1);
+        turnPath.put(point2);
+
+        System.out.println("TurnPath (Drive): " + turnPath);
+
+        return turnPath;
+    }
+
+    // method to update odometry by fusing prediction, encoder tics, and camera values
     public void updateOdometryFusedArray() {
         double navxOffset = Math.toRadians(peripherals.getNavxAngle());
 
@@ -382,18 +423,22 @@ public class Drive extends SubsystemBase {
         // m_odometry.resetPosition(new Pose2d(new Translation2d(averagedX, averagedY),  new Rotation2d(navxOffset)), new Rotation2d(navxOffset));
     }
 
+    // getFusedOdometryX
     public double getFusedOdometryX() {
         return currentFusedOdometry[0];
     }
 
+    // getFusedOdometryY
     public double getFusedOdometryY() {
         return currentFusedOdometry[1];
     }
 
+    // getFusedOdometryTheta
     public double getFusedOdometryTheta() {
         return currentFusedOdometry[2];
     }
 
+    // getDistance to the target based on odometry
     public double getDistanceToTarget() {
         double xDist = targetCenterX - getFusedOdometryX();
         double yDist = targetCenterY - getFusedOdometryY();
@@ -403,6 +448,7 @@ public class Drive extends SubsystemBase {
         return distToTarget;
     }
 
+    // get odometry values
     public double getOdometryX() {
         // return currentFusedOdometry[0];
         return m_odometry.getPoseMeters().getX();
@@ -418,10 +464,7 @@ public class Drive extends SubsystemBase {
         return m_odometry.getPoseMeters().getRotation().getRadians();
     }
 
-    public double getPeripheralsAngle() {
-        return -(peripherals.getNavxAngle());
-    }
-
+    // update swerve odometry based on encoder tics
     public void updateOdometry(double navxOffset) {
         m_pose = m_odometry.update(new Rotation2d(Math.toRadians(-navxOffset)), leftFront.getState(Math.toRadians(-navxOffset)), rightFront.getState(Math.toRadians(-navxOffset)), leftBack.getState(Math.toRadians(-navxOffset)), rightBack.getState(Math.toRadians(-navxOffset)));
     }
@@ -430,6 +473,7 @@ public class Drive extends SubsystemBase {
         return m_pose;
     }
 
+    // method to optimize which way to turn for autonomous when spinning
     public double getShortestAngle(double point1Angle, double point2Angle) {
         double op1 = 0;
         double op2 = 0;
@@ -450,6 +494,7 @@ public class Drive extends SubsystemBase {
         }
     }
 
+    // NOT WORKING method to accepts controller input of which way to drive but stay aligned to the target
     public void driveAutoAligned(double turnRadiansPerSec) {
         updateOdometryFusedArray();
 
@@ -478,7 +523,7 @@ public class Drive extends SubsystemBase {
         rightBack.velocityDrive(controllerVector, turnRadiansPerSec, navxOffset);
     }
 
-    // method to actually run swerve code
+    // method run in teleop that accepts controller values to move swerve drive
     public void teleopDrive() {
         updateOdometryFusedArray();
 
@@ -533,6 +578,7 @@ public class Drive extends SubsystemBase {
 
     }
 
+    // method run in autonomous that accepts a velocity vector of xy velocities, as well as how much to spin per second
     public void autoDrive(Vector velocityVector, double turnRadiansPerSec) {
         updateOdometryFusedArray();
         double navxOffset = Math.toRadians(peripherals.getNavxAngle());
@@ -560,6 +606,7 @@ public class Drive extends SubsystemBase {
         rightBack.velocityDrive(velocityVector, turnRadiansPerSec, navxOffset);
     }
 
+    // safely divide
     public double safeDivision(double numerator, double denominator) {
         if(Math.abs(denominator) < 0.00001) {
             return 0.0;
@@ -568,6 +615,7 @@ public class Drive extends SubsystemBase {
         return dividend;
     }
 
+    // Autonomous algorithm
     public double[] constantAccelerationInterpolation(double currentX, double currentY, double currentTheta, double currentXVelocity, double currentYVelocity, double currentThetaVelocity, double time, double timeSinceLastCycle, JSONArray pathPointsJSON) {
         // create the 3 variables for 3 points of interest
         JSONObject currentPoint;
@@ -606,9 +654,7 @@ public class Drive extends SubsystemBase {
             returnArray[0] = velocityX;
             returnArray[1] = velocityY;
             returnArray[2] = thetaChange;
-
-            // Vector velocityVector = new Vector(velocityX, velocityY);
-            // autoDrive(velocityVector, thetaChange);    
+   
             return returnArray;        
         }
 
@@ -626,8 +672,6 @@ public class Drive extends SubsystemBase {
             }
         }
 
-        // System.out.println("DIFFERENCE: " + angleDifference);
-
         double currentPointTime = currentPoint.getDouble("time");
 
         double velocityX = 0;
@@ -640,25 +684,20 @@ public class Drive extends SubsystemBase {
             // check if within one cycle of endpoint and set velocities
             // only occurs when interpolation range is 1
             if(Math.abs((currentPointTime - time)) < cyclePeriod) {
-                // System.out.println("Less than cycle");
                 velocityX = currentXVelocity;
                 velocityY = currentYVelocity;
                 thetaChange = currentThetaVelocity;
-                // System.out.println("INSIDE CYCLE PERIOD BLOCK")
             }
             // otherwise set velocity by checking difference between wanted position and current position divided by time
             else {
                 velocityX = (currentPoint.getDouble("x") - currentX)/(currentPointTime - time);
                 velocityY = (currentPoint.getDouble("y") - currentY)/(currentPointTime - time);
                 thetaChange = (angleDifference)/(currentPointTime - time);
-                // System.out.println("POINT THETA: " + currentPoint.getDouble("angle") + " ACTUAL ANGLE: " + currentTheta + " POINT TIME: " + currentPointTime + " TIME: " + time);
             }
             velocityArray[0] = velocityX;
             velocityArray[1] = velocityY;
             velocityArray[2] = thetaChange;
             return velocityArray;
-
-            // System.out.println("Time: " + time + " VelocityX: " + velocityVector.getI() + " VelocityY: " + velocityVector.getJ() + " ThetaChange: " + thetaChange + " CurentX: " + currentX + " CurrentY: " + currentY);
         }
         // if the current point is the first point in the path, continue at same velocity towards point
         else if(currentPointIndex - 1 < 0) {
@@ -677,14 +716,11 @@ public class Drive extends SubsystemBase {
                 velocityX = (nextPoint.getDouble("x") - currentX)/(nextPointTime - time);
                 velocityY = (nextPoint.getDouble("y") - currentY)/(nextPointTime - time);
                 thetaChange = (angleDifference)/(nextPointTime - time);
-                // System.out.println("FIRST P IN PATH" + " POINT THETA: " + currentPoint.getDouble("angle") + " ACTUAL ANGLE: " + currentTheta + " POINT TIME: " + currentPointTime + " TIME: " + time);
             }
             velocityArray[0] = velocityX;
             velocityArray[1] = velocityY;
             velocityArray[2] = thetaChange;
-            return velocityArray;
-            
-            // System.out.println("Time: " + time +  " VelocityX: " + velocityVector.getI() + " VelocityY: " + velocityVector.getJ() + " ThetaChange: " + thetaChange + " CurentX: " + currentX + " CurrentY: " + currentY);
+            return velocityArray;            
         }
 
         try{
@@ -698,8 +734,6 @@ public class Drive extends SubsystemBase {
         nextPoint = pathPointsJSON.getJSONObject(currentPointIndex + 1);
         previousPoint = pathPointsJSON.getJSONObject(currentPointIndex - 1);
 
-        System.out.println(nextPoint.toString());
-
         double nextPointTime = nextPoint.getDouble("time");
         double previousPointTime = previousPoint.getDouble("time");
 
@@ -712,8 +746,6 @@ public class Drive extends SubsystemBase {
 
         // t1 is the point at which the robot will start a curved trajectory towards the next line segment (based on interpolation range)
         double t1 = currentPointTime - (minTimeDiff * turnTimePercent);
-
-        // System.out.println("T1: " + )
 
         // t2 is the point at which the robot will end its curved trajectory towards the next line segment (based on interpolation range)
         double t2 = currentPointTime + (minTimeDiff * (turnTimePercent));
@@ -729,7 +761,6 @@ public class Drive extends SubsystemBase {
             }
             // otherwise set velocity by checking difference between current point and current position divided by time
             else {
-                // System.out.println("NOT WITHIN CYCLE PERIOD");
                 velocityX = (currentPoint.getDouble("x") - currentX)/(currentPointTime - time);
                 velocityY = (currentPoint.getDouble("y") - currentY)/(currentPointTime - time);
                 thetaChange = (angleDifference)/(currentPointTime - time);
@@ -737,21 +768,16 @@ public class Drive extends SubsystemBase {
         }
         // if in the interpolation range and curving towards next line segment between current point and next point
         else if(time >= t1 && time < t2) {
-            // System.out.println("||||||||||||||||||||||||||");
-            // VELOCITIES
+            // |||||||||||||||||||| VELOCITIES ||||||||||||||||||||||||||
             // determine velocities when on line segment going towards t1
             double t1X = (currentPoint.getDouble("x") - previousPoint.getDouble("x"))/timeDiffT1;
             double t1Y = (currentPoint.getDouble("y") - previousPoint.getDouble("y"))/timeDiffT1;
             double t1Theta = (currentPoint.getDouble("angle") - previousPoint.getDouble("angle"))/timeDiffT1;
 
-            // double t1Angle = previousPoint.getDouble("angle") + ((currentPoint.getDouble("angle") - previousPoint.getDouble("angle")) * turnTimePercent);
             double t1Angle = (getShortestAngle(previousPoint.getDouble("angle"), currentPoint.getDouble("angle")) * turnTimePercent) + previousPoint.getDouble("angle");
-            // double t2Angle = currentPoint.getDouble("angle") + ((nextPoint.getDouble("angle") - currentPoint.getDouble("angle")) * (1 - turnTimePercent));
             double t2Angle = (getShortestAngle(currentPoint.getDouble("angle"), nextPoint.getDouble("angle")) * turnTimePercent) + currentPoint.getDouble("angle");
 
-            // System.out.println("T1: " + t1Angle + " T2: " + t2Angle);
-
-            // VELOCITIES
+            // |||||||||||||||||||| VELOCITIES ||||||||||||||||||||||||||
             // determine velocities when on line segment after t2 and heading towards next point
             double t2X = (nextPoint.getDouble("x") - currentPoint.getDouble("x"))/timeDiffT2;
             double t2Y = (nextPoint.getDouble("y") - currentPoint.getDouble("y"))/timeDiffT2;
@@ -808,11 +834,6 @@ public class Drive extends SubsystemBase {
         velocityArray[1] = velocityY;
         velocityArray[2] = thetaChange;
         return velocityArray;         
-        // return true;
-    }
-
-    private Command DriveDefault() {
-        return null;
     }
  
     @Override

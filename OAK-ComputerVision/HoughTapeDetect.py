@@ -161,7 +161,7 @@ pipeline = depthai.Pipeline()
 cam_rgb = pipeline.create(depthai.node.ColorCamera)
 cam_rgb.setPreviewSize(1280, 720)
 cam_rgb.setResolution(depthai.ColorCameraProperties.SensorResolution.THE_1080_P)
-cam_rgb.setIspScale(2, 3)
+# cam_rgb.setIspScale(2, 3)
 # cam_rgb.setPreviewSize(cameraResolutionWidth, cameraResolutionHeight)
 cam_rgb.setPreviewKeepAspectRatio(True)
 
@@ -210,9 +210,9 @@ xoutSpatialData.setStreamName("spatialData")
 xinSpatialCalcConfig.setStreamName("spatialCalcConfig")
 
 # MonoCamera
-monoLeft.setResolution(depthai.MonoCameraProperties.SensorResolution.THE_400_P)
+monoLeft.setResolution(depthai.MonoCameraProperties.SensorResolution.THE_720_P)
 monoLeft.setBoardSocket(depthai.CameraBoardSocket.LEFT)
-monoRight.setResolution(depthai.MonoCameraProperties.SensorResolution.THE_400_P)
+monoRight.setResolution(depthai.MonoCameraProperties.SensorResolution.THE_720_P)
 monoRight.setBoardSocket(depthai.CameraBoardSocket.RIGHT)
 
 outputDepth = True
@@ -275,7 +275,7 @@ device.startPipeline()
 
 # Output queue will be used to get the depth frames from the outputs defined above
 depthQueue = device.getOutputQueue(name="depth", maxSize=10, blocking=False)
-spatialCalcQueue = device.getOutputQueue(name="spatialData", maxSize=10, blocking=False)
+spatialCalcQueue = device.getOutputQueue(name="spatialData", maxSize=1, blocking=False)
 spatialCalcConfigInQueue = device.getInputQueue("spatialCalcConfig")
 
 color = (255, 255, 255)
@@ -362,13 +362,15 @@ while True:
             rotatedRect = cv2.minAreaRect(contour)
             box = cv2.boxPoints(rotatedRect)
             boxArray = np.int0(box)
+
+            cntArea = cv2.contourArea(contour)
             topLeftX = float(boxArray[0][0])
             topLeftY = float(boxArray[0][1])
             bottomRightX = float(boxArray[1][0])
             bottomRightY = float(boxArray[1][1])
             boxColor = (0,0,255)
 
-            if(peri > 35 and cv2.contourArea(contour) > 100 and cv2.contourArea(contour) < 1500):
+            if(peri > 35 and cntArea > 100):
                 # cv2.drawContours(frame,[boxArray],0,boxColor,2)
 
                 topLeft = depthai.Point2f(-0.01 + (topLeftX/cameraResolutionWidth), -0.01 + (topLeftY/cameraResolutionHeight))
@@ -388,6 +390,8 @@ while True:
 
                 roiList.append(configData)
 
+        
+
         # if(len(roiList) == 0):
         #     centerConfigData = depthai.SpatialLocationCalculatorConfigData()
         #     centerConfigData.roi = depthai.Rect(depthai.Point2f(0.49, 0.49), depthai.Point2f(0.51, 0.51))
@@ -397,9 +401,16 @@ while True:
             cfg.setROIs(roiList)
             # print(cfg)
             spatialCalcConfigInQueue.send(cfg)
+        else:
+            jsonString = '{"Distance":' + '-10' + ', "Angle":' + '-100000' + ', "Confidence":' + '0' + ', "Timestamp":' + str(time.time()) +'}'
+            print("jsonString")
+            publish(client, jsonString)
+            continue
 
         inDepthAvg = spatialCalcQueue.get() # blocking call, will wait until a new data has arrived
         spatialData = inDepthAvg.getSpatialLocations()
+
+        # print("SPDATA: " + str(len(spatialData)))
 
         zList = []
         xList = []
@@ -411,7 +422,7 @@ while True:
         pixelAdditionCounter = 0
 
         # spatialCalcQueue.get
-        print("====================================")
+        # print("====================================")
         for depthData in spatialData:
             roi = depthData.config.roi
             roi = roi.denormalize(width=depthFrameColor.shape[1], height=depthFrameColor.shape[0])
@@ -473,18 +484,19 @@ while True:
             angle = math.atan(targetCenterY/targetCenterX)
             distance = math.sqrt((targetCenterX ** 2) + (targetCenterY ** 2))
 
-            jsonString = '{"Distance":' + str(distance) + ', "Angle":' + str(angle) + ', "Confidence":' + str(len(xList)) + '}'
+            jsonString = '{"Distance":' + str(distance) + ', "Angle":' + str(angle) + ', "Confidence":' + str(len(xList)) + ', "Timestamp":' + str(time.time()) +'}'
 
             publish(client, jsonString)
 
             endTime = time.time()
 
-            print("START: " + str(endTime -  startTime))
+            # print("START: " + str(endTime -  startTime))
 
-            # print("TargetX: " + str(targetCenterX) + " TargetY: " + str(targetCenterY) + " Distance: " + str(distance) + " Angle: " + str(180 * (angle)/pi) + " Confidence: " + str(len(xList)))
+            print("TargetX: " + str(targetCenterX) + " TargetY: " + str(targetCenterY) + " Distance: " + str(distance) + " Angle: " + str(180 * (angle)/pi) + " Confidence: " + str(len(xList)))
 
             # print(xList)
-        
+        # else:
+            
         # publish(client, "Hello")
 
             # if(abs(targetRadiusCheck - 576) > 100):

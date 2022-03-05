@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.CAN;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -22,11 +23,6 @@ public class SwerveModule extends SubsystemBase {
 
 	private final TalonFX angleMotor;
     private final TalonFX driveMotor;
-    
-    private double turnVectorX = 0;
-    private double turnVectorY = 0;
-
-    private double turnPower = 0.75;
 
     private Vector turnVector = new Vector(0, 0);
 
@@ -129,15 +125,12 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.set(ControlMode.PercentOutput, percent);
     }
 
-    public void postDriveMotorTics() {
-        // System.out.println("Tics: " + driveMotor.getSelectedSensorPosition());
-    }
-
+    // returns state of swerve modules - Used for Odometry
     public SwerveModuleState getState(double navxOffset) {
         return new SwerveModuleState((ticsPer100MSToSpeed(driveMotor.getSelectedSensorVelocity())), new Rotation2d(Math.toRadians(getAbsolutePosition() - navxOffset)));
     }
 
-    // method run when robot boots up, sets up Current Limits, as well as tells internal encoder where it actually is
+    // method run when robot boots up, sets up Current Limits, and Frame Periods to limit CAN usage, as well as tells internal encoder where it actually is
     public void init() {
         angleMotor.setSelectedSensorPosition(radiansToTics(degreesToRadians(absoluteEncoder.getAbsolutePosition())));
         angleMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 25, 0 ,0));
@@ -157,6 +150,17 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.setNeutralMode(NeutralMode.Brake);
         driveMotor.setNeutralMode(NeutralMode.Brake);
 
+        driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
+        driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
+        driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
+        driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+        driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
+
+        angleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
+        angleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
+        angleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
+        angleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+        angleMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
     }
 
     // returns angle motor position in ticks
@@ -181,6 +185,7 @@ public class SwerveModule extends SubsystemBase {
         return tics;
     }
 
+    // change speed to motor velocity units
     public double speedToTicsPer100MS(double speed) {
         double ticsPerSecond = speedToTicsPerSecond(speed);
         double ticsPer100MS = ticsPerSecond/10;
@@ -192,6 +197,7 @@ public class SwerveModule extends SubsystemBase {
         return speed;
     }
 
+    // motor velocity units to speed
     public double ticsPer100MSToSpeed(double tics) {
         double speedPer100MS = ticsPerSecondToSpeed(tics);
         double speed = speedPer100MS * 10;
@@ -280,22 +286,5 @@ public class SwerveModule extends SubsystemBase {
         }
 
         
-    }  
-
-    public void testDrive() {
-        // if(OI.driverController.getAButton()) {
-        //     setAnglePID((Math.PI)/2, 10000);
-        // }
-        // if(OI.driverController.getBButton()) {
-        //     setAnglePID((Math.PI), 10000);
-        // }
-        // if(OI.driverController.getYButton()) {
-        //     setAnglePID((3 * Math.PI)/2, 10000);
-        // }
-
-        driveMotor.set(ControlMode.PercentOutput, 1);
-
-        // driveMotor.set(ControlMode.Ve)
     }
-
 }
