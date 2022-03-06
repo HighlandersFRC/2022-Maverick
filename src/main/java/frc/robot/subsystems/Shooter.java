@@ -31,9 +31,9 @@ public class Shooter extends SubsystemBase {
 
     rightShooter.configStatorCurrentLimit(new StatorCurrentLimitConfiguration());
     rightShooter.config_kF(0, 0.02);
-    rightShooter.config_kP(0, 0.2);
+    rightShooter.config_kP(0, 0.18);
     rightShooter.config_kI(0, 0.0001);
-    rightShooter.config_kD(0, 0.02);
+    rightShooter.config_kD(0, 0.025);
     leftShooter.set(ControlMode.Follower, 9);
     setDefaultCommand(new ShooterDefault(this));
   }

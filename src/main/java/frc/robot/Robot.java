@@ -40,6 +40,7 @@ import frc.robot.subsystems.Peripherals;
 import frc.robot.subsystems.Shooter;
 import frc.robot.tools.PneumaticsControl;
 import frc.robot.tools.ShotAdjuster;
+import frc.robot.tools.WebSocket;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -94,6 +95,8 @@ public class Robot extends TimedRobot {
 
   private TestFiveBallAuto fiveBallP2 = new TestFiveBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
+  private WebSocket socket = new WebSocket();
+
   private UsbCamera camera;
   private VideoSink server;
 
@@ -117,6 +120,8 @@ public class Robot extends TimedRobot {
     hood.init();
     lights.init();
     climber.init();
+
+    peripherals.turnLightRingOn();
 
     // publish.publish(pubCameraTopic);
     subscribe.subscribe(subCameraTopic);
@@ -191,12 +196,15 @@ public class Robot extends TimedRobot {
 
     System.out.println(pathJSON);
     drive.init();
+    // socket.startListening();
   }
 
   @Override
   public void robotPeriodic() {
     lights.periodic();
     CommandScheduler.getInstance().run();
+
+    peripherals.getVisionArray();
 
     SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
     SmartDashboard.putNumber("RPM ADJUSTMENT", shotAdjuster.getRPMAdjustment());
@@ -222,7 +230,7 @@ public class Robot extends TimedRobot {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    // peripherals.turnLightRingOff();
+    peripherals.turnLightRingOff();
     
   }
 
@@ -283,8 +291,8 @@ public class Robot extends TimedRobot {
     OI.driverRT.whileHeld(new IntakeBalls(magIntake, lights));
     OI.driverLT.whileHeld(new Outtake(magIntake));
 
-    OI.driverA.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 0, 1500, 0.5, 0.5, shotAdjuster));
-    OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 21, 2000, 0.75, 0.75, shotAdjuster));
+    OI.driverA.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 0, 1650, 0.5, 0.5, shotAdjuster));
+    OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 25, 1800, 0.75, 0.75, shotAdjuster));
     OI.driverY.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 25, 2200, 0.5, 0.5, shotAdjuster));
     // OI.driverX.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 3200, 0.5, 0.5));
 

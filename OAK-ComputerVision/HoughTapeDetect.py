@@ -143,8 +143,8 @@ def convertCoordinates(x, y, z):
 
 stepSize = 0.05
 
-cameraResolutionWidth = 1280.0
-cameraResolutionHeight = 720.0
+cameraResolutionWidth = 640
+cameraResolutionHeight = 480
 
 HFOV = 69
 
@@ -159,7 +159,7 @@ targetHeightDifference = 83
 pipeline = depthai.Pipeline()
 
 cam_rgb = pipeline.create(depthai.node.ColorCamera)
-cam_rgb.setPreviewSize(1280, 720)
+cam_rgb.setPreviewSize(cameraResolutionWidth, cameraResolutionHeight)
 cam_rgb.setResolution(depthai.ColorCameraProperties.SensorResolution.THE_1080_P)
 # cam_rgb.setIspScale(2, 3)
 # cam_rgb.setPreviewSize(cameraResolutionWidth, cameraResolutionHeight)
@@ -227,7 +227,7 @@ stereo.setOutputRectified(outputRectified)
 stereo.setConfidenceThreshold(255)
 stereo.setDepthAlign(depthai.CameraBoardSocket.RGB)
 # setRectifyEdgeFillColor(-1)
-stereo.setOutputSize(1280, 720)
+stereo.setOutputSize(cameraResolutionWidth, cameraResolutionHeight)
 
 stereo.setLeftRightCheck(lrcheck)
 stereo.setSubpixel(subpixel)
@@ -274,7 +274,7 @@ device.startPipeline()
 # imuQueue = device.getOutputQueue(name="imu", maxSize=50, blocking = False)
 
 # Output queue will be used to get the depth frames from the outputs defined above
-depthQueue = device.getOutputQueue(name="depth", maxSize=10, blocking=False)
+depthQueue = device.getOutputQueue(name="depth", maxSize=1, blocking=False)
 spatialCalcQueue = device.getOutputQueue(name="spatialData", maxSize=1, blocking=False)
 spatialCalcConfigInQueue = device.getInputQueue("spatialCalcConfig")
 
@@ -308,6 +308,8 @@ ctrl.setAutoFocusMode(depthai.RawCameraControl.AutoFocusMode.OFF)
 ctrl.setManualFocus(0)
 controlQueue.send(ctrl)
 
+sleep(5)
+
 
 # configQueue.send(manipConfig)
 
@@ -315,8 +317,11 @@ cfg = depthai.SpatialLocationCalculatorConfig()
 
 avgDistance = 0
 avgAngle = 0
+startTime = time.time()
 
+count = 0
 while True:
+    count += 1
     # print(device.getInputQueueNames())
     # lowerH = cv2.getTrackbarPos('Lower H', "HSV Tuner")
     # upperH = cv2.getTrackbarPos('Higher H', "HSV Tuner")
@@ -327,18 +332,23 @@ while True:
     # lowerV = cv2.getTrackbarPos('Lower V', "HSV Tuner")
     # upperV = cv2.getTrackbarPos('Higher V', "HSV Tuner")
     # getImuAngle()
-
-    inDepth = depthQueue.get() # blocking call, will wait until a new data has arrived
     
+    print(time.time() - startTime)
+    startTime = time.time()
+    inDepth = depthQueue.get() # blocking call, will wait until a new data has arrived
+    # print(time.time()-startTime)
+    beforeRGBTime = time.time()
     depthFrame = inDepth.getFrame()
+    # print("RGB TIME DIFF: " + str(time.time() - beforeRGBTime))
     depthFrameColor = cv2.normalize(depthFrame, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1)
     depthFrameColor = cv2.equalizeHist(depthFrameColor)
     depthFrameColor = cv2.applyColorMap(depthFrameColor, cv2.COLORMAP_OCEAN)
 
+    # print("BEFORE RGB: " + beforeRGBTime)
     in_rgb = q_rgb.tryGet()
     if in_rgb is not None:
         frame = in_rgb.getCvFrame()
-        startTime = time.time()
+        
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         lowerThreshold = np.array([lowerH, lowerS, lowerV])
         upperThreshold = np.array([upperH, upperS, upperV])
@@ -371,7 +381,7 @@ while True:
             boxColor = (0,0,255)
 
             if(peri > 35 and cntArea > 100):
-                # cv2.drawContours(frame,[boxArray],0,boxColor,2)
+                cv2.drawContours(frame,[boxArray],0,boxColor,2)
 
                 topLeft = depthai.Point2f(-0.01 + (topLeftX/cameraResolutionWidth), -0.01 + (topLeftY/cameraResolutionHeight))
                 bottomRight = depthai.Point2f(0.01 + (bottomRightX/cameraResolutionWidth), 0.01 + (bottomRightY/cameraResolutionHeight))
@@ -403,9 +413,15 @@ while True:
             spatialCalcConfigInQueue.send(cfg)
         else:
             jsonString = '{"Distance":' + '-10' + ', "Angle":' + '-100000' + ', "Confidence":' + '0' + ', "Timestamp":' + str(time.time()) +'}'
-            print("jsonString")
+            # print("NOT RECEIVING")
             publish(client, jsonString)
+            sleep(0.09)
             continue
+
+        # jsonString = '{"LENGTH:":' + str(len(roiList)) + '}'
+        # publish(client, jsonString)
+
+        # print(time.time() - startTime)
 
         inDepthAvg = spatialCalcQueue.get() # blocking call, will wait until a new data has arrived
         spatialData = inDepthAvg.getSpatialLocations()
@@ -421,8 +437,6 @@ while True:
 
         pixelAdditionCounter = 0
 
-        # spatialCalcQueue.get
-        # print("====================================")
         for depthData in spatialData:
             roi = depthData.config.roi
             roi = roi.denormalize(width=depthFrameColor.shape[1], height=depthFrameColor.shape[0])
@@ -484,35 +498,21 @@ while True:
             angle = math.atan(targetCenterY/targetCenterX)
             distance = math.sqrt((targetCenterX ** 2) + (targetCenterY ** 2))
 
-            jsonString = '{"Distance":' + str(distance) + ', "Angle":' + str(angle) + ', "Confidence":' + str(len(xList)) + ', "Timestamp":' + str(time.time()) +'}'
+            jsonString = '{"Distance":' + str(distance) + ', "Angle":' + str(angle) + ', "Confidence":' + str(len(xList)) + ', "Timestamp":' + str(time.time()) + ', Iteration:' + str(count) + '}'
 
             publish(client, jsonString)
 
-            endTime = time.time()
+            # print(jsonString)
 
             # print("START: " + str(endTime -  startTime))
 
-            print("TargetX: " + str(targetCenterX) + " TargetY: " + str(targetCenterY) + " Distance: " + str(distance) + " Angle: " + str(180 * (angle)/pi) + " Confidence: " + str(len(xList)))
-
-            # print(xList)
-        # else:
-            
-        # publish(client, "Hello")
-
-            # if(abs(targetRadiusCheck - 576) > 100):
-            #     print("Didn't get correct target")
-            # else:
-            # print("CenterX: " + str(targetCenterX) + "CenterY: " + str(targetCenterY))
-
-        # print(xList)
-
+            # print("TargetX: " + str(targetCenterX) + " TargetY: " + str(targetCenterY) + " Distance: " + str(distance) + " Angle: " + str(180 * (angle)/pi) + " Confidence: " + str(len(xList)))
 
         # cv2.imshow("depth", depthFrameColor)
         # cv2.imshow("frame", frame)
         # cv2.imshow("mask", result)
         # cv2.imshow("blur", blur)
 
-    # newConfig = False
     key = cv2.waitKey(1)
     if key == ord('q'):
         break

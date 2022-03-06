@@ -12,10 +12,14 @@ public class SpinShooter extends CommandBase {
   private Shooter shooter;
   private double rpm;
   private double distance;
+
+  private double reachedRPM = 0;
   public SpinShooter(Shooter shooter, double rpm, double distance) {
     this.shooter = shooter;
     this.rpm = rpm;
     this.distance = distance;
+
+
     addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -23,6 +27,7 @@ public class SpinShooter extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    reachedRPM = 0;
     // rpm = (5.9021 * distance) + 1779.2;
     
     // if(rpm > 4500) {
@@ -33,6 +38,9 @@ public class SpinShooter extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(Math.abs(shooter.getShooterRPM() - rpm) < 50) {
+      reachedRPM++;
+    }
     shooter.setShooterRPM(rpm);
   }
 
@@ -45,7 +53,7 @@ public class SpinShooter extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Math.abs(shooter.getShooterRPM() - rpm) < 50) {
+    if(reachedRPM >= 5) {
       // System.out.println("00000000000000000000000000000000000");
       return true;
     }
