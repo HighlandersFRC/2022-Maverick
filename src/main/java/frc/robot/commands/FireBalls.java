@@ -25,12 +25,13 @@ public class FireBalls extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake, shooter, hood);
     double distance = drive.getDistanceToTarget();
-    shooterRPM = shooterRPM + adjuster.getRPMAdjustment();
-    hoodPosition = hoodPosition + adjuster.getHoodAdjustment();
+    // System.out.println("")
+    // shooterRPM = shooterRPM + adjuster.getRPMAdjustment();
+    // hoodPosition = hoodPosition + adjuster.getHoodAdjustment();
     addCommands(
       new ParallelCommandGroup(
           new SpinShooter(shooter, shooterRPM, distance),
-          new FaceTarget(drive),
+          // new FaceTarget(drive, peripherals),
           new SetHoodPosition(hood, hoodPosition, distance)
       ),
       new TurnBackMag(magIntake, 360),

@@ -19,7 +19,7 @@ public class RaiseClimber extends CommandBase {
   public RaiseClimber(Climber climber, double percent) {
     this.climber = climber;
     this.percent = percent;
-    addRequirements(climber);
+    addRequirements(this.climber);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -33,9 +33,8 @@ public class RaiseClimber extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Timer.getFPGATimestamp() - initTime > 0.1) {
-      climber.setClimberPercents(percent);
-    }
+    // System.out.println("INSIDE CLIMBING");
+    climber.setClimberPercents(percent, percent);
   }
 
   // Called once the command ends or is interrupted.

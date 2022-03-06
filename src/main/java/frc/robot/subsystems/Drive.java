@@ -248,16 +248,21 @@ public class Drive extends SubsystemBase {
     public JSONArray testGetCameraTurn() {
         double fusedOdometryX = getFusedOdometryX();
         double fusedOdometryY = getFusedOdometryY();
+        double fusedOdometryTheta = getFusedOdometryTheta();
 
         double cameraAngle = peripherals.getVisionArray()[1];
 
         JSONObject point1 = new JSONObject();
         point1.put("x", fusedOdometryX);
         point1.put("y", fusedOdometryY);
-        point1.put("angle", getFusedOdometryTheta());
+        point1.put("angle", fusedOdometryTheta);
         point1.put("time", 0.0);
 
-        double wantedAngleToTarget = getFusedOdometryTheta() + cameraAngle;
+        // System.out.println("________________________________________________________");
+
+        // System.out.println("********************** ANGLE: " + cameraAngle);
+
+        double wantedAngleToTarget = fusedOdometryTheta + cameraAngle;
 
         JSONObject point2 = new JSONObject();
         point2.put("x", fusedOdometryX);

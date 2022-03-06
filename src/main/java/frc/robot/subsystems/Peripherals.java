@@ -40,11 +40,11 @@ public class Peripherals extends SubsystemBase {
   }
 
   public void turnLightRingOn() {
-    m_pdh.setSwitchableChannel(false);
+    m_pdh.setSwitchableChannel(true);
   }
 
   public void turnLightRingOff() {
-    m_pdh.setSwitchableChannel(true);
+    m_pdh.setSwitchableChannel(false);
   }
 
   public double getNavxAngle() {

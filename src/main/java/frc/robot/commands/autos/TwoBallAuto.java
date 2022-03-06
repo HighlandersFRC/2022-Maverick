@@ -50,7 +50,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake);
-    addCommands(new IntakeDown(magIntake), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 14, 2300, 0.5, 0.01, adjuster), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON), new IntakeBalls(magIntake, lights)), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 22, 2500, 0.5, 1, adjuster));
+    addCommands(new IntakeDown(magIntake), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 10, 1400, 0.5, 0.01, adjuster), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON), new IntakeBalls(magIntake, lights)), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 18, 1600, 0.5, 1, adjuster));
   }
 }
 

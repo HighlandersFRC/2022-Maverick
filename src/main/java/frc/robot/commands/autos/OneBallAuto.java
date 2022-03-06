@@ -49,7 +49,7 @@ public class OneBallAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake);
-    addCommands(new IntakeDown(magIntake), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 14, 2300, 0.5, 0.01, adjuster), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON), new IntakeBalls(magIntake, lights)));
+    addCommands(new IntakeDown(magIntake), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 10, 1400, 0.5, 0.01, adjuster), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON), new IntakeBalls(magIntake, lights)));
   }
 }
 

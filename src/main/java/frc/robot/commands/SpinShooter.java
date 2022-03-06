@@ -33,9 +33,6 @@ public class SpinShooter extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // System.out.println("SHOOTING");
-    // shooter.setShooterPercent(0.45);
-    // System.out.println("RPM: " + shooter.getShooterRPM());
     shooter.setShooterRPM(rpm);
   }
 
@@ -48,7 +45,7 @@ public class SpinShooter extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Math.abs(shooter.getShooterRPM() - rpm) < 100) {
+    if(Math.abs(shooter.getShooterRPM() - rpm) < 50) {
       // System.out.println("00000000000000000000000000000000000");
       return true;
     }

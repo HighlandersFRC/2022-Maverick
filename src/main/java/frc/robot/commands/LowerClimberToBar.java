@@ -4,45 +4,65 @@
 
 package frc.robot.commands;
 
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
-import edu.wpi.first.wpilibj.Timer;
 
-public class ClimbRobot extends CommandBase {
-  /** Creates a new ClimbRobot. */
+public class LowerClimberToBar extends CommandBase {
+  /** Creates a new LowerClimberToBar. */
   private Climber climber;
-  private double percent;
 
-  private double initTime = 0;
-  public ClimbRobot(Climber climber, double percent) {
+  private boolean rightDone = false;
+  private boolean leftDone = false;
+
+  public LowerClimberToBar(Climber climber) {
     this.climber = climber;
-    this.percent = percent;
-    addRequirements(this.climber);
+    addRequirements(climber);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    leftDone = false;
+    rightDone = false;
     climber.unlockExtendingClimber();
-    // initTime = Timer.getFPGATimestamp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      climber.setClimberPercents(percent, percent);
+    if(climber.getLeftClimberCurrent() > 60) {
+        leftDone = true;
+    }
+    if(climber.getRightClimberCurrent() > 60) {
+        rightDone = true;
+    }
+    if(rightDone) {
+        climber.setClimberPercents(0.3, 0);
+    }
+    else if(leftDone) {
+        climber.setClimberPercents(0, 0.3);
+    }
+    else {
+        climber.setClimberPercents(0.3, 0.3);
+    }
+    // SmartDashboard.putNumber("Output current", climber.getLeftClimberCurrent());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      climber.lockExtendingClimber();
+    // climber.setClimber(0, 0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(rightDone && leftDone) {
+      return true;
+    }
     return false;
   }
 }

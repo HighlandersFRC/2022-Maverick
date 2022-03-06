@@ -12,7 +12,7 @@ public class ClimberDefault extends CommandBase {
   private Climber climber;
   public ClimberDefault(Climber climber) {
     this.climber = climber;
-    addRequirements(climber);
+    addRequirements(this.climber);
   }
 
   @Override
@@ -22,7 +22,7 @@ public class ClimberDefault extends CommandBase {
 
   @Override
   public void execute() {
-    climber.setClimberPercents(0);
+    climber.setClimberPercents(0, 0);
     climber.lockExtendingClimber();
     climber.setRotatingClimberPercent(0);
   }

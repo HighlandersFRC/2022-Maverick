@@ -24,7 +24,12 @@ public class OI {
     public static JoystickButton operatorX = new JoystickButton(operatorController, 3);
     public static JoystickButton operatorB = new JoystickButton(operatorController, 2);
 
+    public static JoystickButton operatorY = new JoystickButton(operatorController, 4);
+    public static JoystickButton operatorA = new JoystickButton(operatorController, 1);
+
     public static JoystickButton driverViewButton = new JoystickButton(driverController, 7);
+
+    public static JoystickButton operatorViewButton = new JoystickButton(operatorController, 7);
 
     public static Joystick autoChooser = new Joystick(2);
 

@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Peripherals;
 
 public class FaceTarget extends SequentialCommandGroup {
 
@@ -12,15 +13,20 @@ public class FaceTarget extends SequentialCommandGroup {
   private double turnAngle;
   private JSONArray turnPath;
 
-  public FaceTarget(Drive drive) {
+  private Peripherals peripherals;
+
+  public FaceTarget(Drive drive, Peripherals peripherals) {
 
     this.turnPath = drive.testGetCameraTurn();
+    System.out.println("????????????????????????????");
+    System.out.println("TURN PATH: " + this.turnPath);
+    System.out.println("????????????????????????????");
     this.drive = drive;
+    this.peripherals = peripherals;
     // this.turnAngle = turnAngle;
-    addRequirements(this.drive);
-
-    //this.turnPath = this.drive.getJSONTurnPath(this.turnAngle);
+    addRequirements(this.drive, this.peripherals);
+    // this.turnPath = drive.getJSONTurnPath();
     
-    addCommands(new ContinuousAccelerationInterpolation(drive, turnPath));
+    addCommands(new TurnOnLightRing(peripherals), new ContinuousAccelerationInterpolation(drive, this.turnPath));
   }
 }

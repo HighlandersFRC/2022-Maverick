@@ -27,6 +27,9 @@ public class MqttSubscribe implements MqttCallback  {
 	private double crashTime;
 	private double startTime;
 
+	private double timeSinceLastMessage = 0;
+	private double timeOfLastMessage = 0;
+
     private String latestMessage = "";
 
 	private MqttClient sampleClient;
@@ -41,7 +44,12 @@ public class MqttSubscribe implements MqttCallback  {
 
     public String getLatestMessage() {
 		// System.out.println(latestMessage);
-        return latestMessage;
+		if(timeSinceLastMessage < 5) {
+			return latestMessage;
+		}
+		else {
+			return "{}";
+		}
     }
 
 	public void subscribe(String topic) {
@@ -59,6 +67,7 @@ public class MqttSubscribe implements MqttCallback  {
         () -> {
 
 			while(true){
+				// System.out.println("TIME SINCE LAST MESSAGE: " + timeSinceLastMessage + "TIME OF LAST MESSAGE: " + timeOfLastMessage);
 				try
 				{
                     if(connection == false) {
@@ -106,7 +115,9 @@ public class MqttSubscribe implements MqttCallback  {
 	}
 
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
-        latestMessage = message.toString();
+        timeSinceLastMessage = Timer.getFPGATimestamp() - timeOfLastMessage;
+		timeOfLastMessage = Timer.getFPGATimestamp();
+		latestMessage = message.toString();
 		SmartDashboard.putBoolean("HAS CAMERA", true);
 		// System.out.println("| Topic:" + topic);
 		// System.out.println("| Message: " +message.toString());

@@ -8,10 +8,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.defaults.ClimberDefault;
-// import frc.robot.commands.defaults.ClimberDefault;
 import frc.robot.tools.PneumaticsControl;
 
 public class Climber extends SubsystemBase {
@@ -87,9 +85,17 @@ public class Climber extends SubsystemBase {
     rotatingMotor.set(ControlMode.PercentOutput, percent);
   }
 
-  public void setClimberPercents(double percent) {
-    leftClimber.set(ControlMode.PercentOutput, percent);
-    rightClimber.set(ControlMode.PercentOutput, percent);
+  public void setClimberPercents(double leftPercent, double rightPercent) {
+    leftClimber.set(ControlMode.PercentOutput, leftPercent);
+    rightClimber.set(ControlMode.PercentOutput, rightPercent);
+  }
+
+  public double getLeftClimberCurrent() {
+    return leftClimber.getStatorCurrent();
+  }
+
+  public double getRightClimberCurrent() {
+    return rightClimber.getStatorCurrent();
   }
 
   public void setClimberPosition(double position) {

@@ -49,7 +49,7 @@ public class SetHoodPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Math.abs(hood.getHoodPosition() - position) < 0.5 || Timer.getFPGATimestamp() - startTime > 1){
+    if(Math.abs(hood.getHoodPosition() - position) < 0.5){
       // System.out.println("`````````````````````````");
       return true;
     }
