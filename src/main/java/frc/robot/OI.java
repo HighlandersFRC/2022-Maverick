@@ -49,6 +49,10 @@ public class OI {
         return driverController.getRightY();
     }
 
+    public static boolean getDriverA() {
+        return driverController.getAButton();
+    }
+
     public static Boolean is1BallAuto() {
         return autoChooser.getRawButton(1);
     }
@@ -67,6 +71,10 @@ public class OI {
 
     public static Boolean is5BallPt2() {
         return autoChooser.getRawButton(2);
+    }
+
+    public static int getPOV() {
+        return operatorController.getPOV();
     }
 
 }

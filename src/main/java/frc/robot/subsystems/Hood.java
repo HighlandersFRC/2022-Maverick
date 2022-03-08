@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,11 +36,14 @@ public class Hood extends SubsystemBase {
     hoodMotor.config_kD(0, 1);
     hoodMotor.config_IntegralZone(0, 0.01);
 
-    hoodMotor.configPeakOutputForward(1);
-    hoodMotor.configPeakOutputReverse(-1);
+    hoodMotor.configPeakOutputForward(0.3);
+    hoodMotor.configPeakOutputReverse(-0.3);
     hoodMotor.configVoltageCompSaturation(11.7);
     hoodMotor.setSelectedSensorPosition(0);
     hoodMotor.config_IntegralZone(0, 0.01);
+
+    hoodMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 0, 0));
+    hoodMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 0, 0));
 
     hoodMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 

@@ -214,6 +214,7 @@ public class Drive extends SubsystemBase {
         initTime = Timer.getFPGATimestamp();
 
         updateOdometryFusedArray();
+        System.out.println("X: " + getFusedOdometryX() + " Y: " + getFusedOdometryY() + " THETA: "+ getFusedOdometryTheta());
     }
 
     // generates a autonomous path using current odometry and predicted angle to target at the current point

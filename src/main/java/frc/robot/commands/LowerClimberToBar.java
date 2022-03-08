@@ -33,10 +33,10 @@ public class LowerClimberToBar extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(climber.getLeftClimberCurrent() > 60) {
+    if(climber.getLeftClimberCurrent() > 80) {
         leftDone = true;
     }
-    if(climber.getRightClimberCurrent() > 60) {
+    if(climber.getRightClimberCurrent() > 80) {
         rightDone = true;
     }
     if(rightDone) {

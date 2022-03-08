@@ -22,7 +22,7 @@ public class VisionCamera {
         try {
             JSONObject jsonString = new JSONObject(message);
 
-            System.out.println(message);
+            // System.out.println(message);
 
             visionArray[0] = (jsonString.getDouble("Distance"))/39.37;
             visionArray[1] = jsonString.getDouble("Angle");
@@ -31,13 +31,13 @@ public class VisionCamera {
 
             if(visionArray[2] == 0) {
                 SmartDashboard.putBoolean("HAS LOCK-ON", false);
-                // System.out.println("-----------------------------------------------");
+                System.out.println("-----------------------------------------------");
                 visionArray[0] = -1;
                 visionArray[1] = 0;
             }
             else {
                 SmartDashboard.putBoolean("HAS LOCK-ON", true);
-                // System.out.println("||||||||||||||||||||||||||||||||||||||||||||||||");
+                System.out.println("||||||||||||||||||||||||||||||||||||||||||||||||");
             }
             return visionArray;
         }

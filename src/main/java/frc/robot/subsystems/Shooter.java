@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -29,13 +30,31 @@ public class Shooter extends SubsystemBase {
      rightShooter.setNeutralMode(NeutralMode.Coast);
      rightShooter.setInverted(InvertType.InvertMotorOutput);
 
-    rightShooter.configStatorCurrentLimit(new StatorCurrentLimitConfiguration());
-    rightShooter.config_kF(0, 0.02);
+    rightShooter.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 0, 0));
+    rightShooter.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 0, 0));
+    leftShooter.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 0, 0));
+    leftShooter.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 0, 0));
+
+    rightShooter.config_kF(0, 0.06);
+    // rightShooter.config_kP(0, 0.45);
+    // rightShooter.config_kI(0, 0.001);
+    // rightShooter.config_kD(0, 0.02);
     rightShooter.config_kP(0, 0.2);
-    rightShooter.config_kI(0, 0.0001);
-    rightShooter.config_kD(0, 0.02);
+    rightShooter.config_kI(0, 0);
+    rightShooter.config_kD(0, 0);
+    // rightShooter.config_IntegralZone(0, 100);
     leftShooter.set(ControlMode.Follower, 9);
     setDefaultCommand(new ShooterDefault(this));
+  }
+
+  public double getNumRPMValues(double[] rpmArray) {
+    int count = 0;
+    for (int i = 0; i < rpmArray.length; i ++) {
+      if (!(rpmArray[i] == 0.0)) {
+        count ++;
+      }
+    }
+    return count;
   }
 
   // zeroes shooter encoder

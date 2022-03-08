@@ -4,18 +4,28 @@
 
 package frc.robot.commands;
 
+import org.ejml.dense.row.linsol.AdjustableLinearSolver_DDRM;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooter;
+import frc.robot.tools.ShotAdjuster;
 
 public class SpinShooter extends CommandBase {
   /** Creates a new SpinShooter. */
   private Shooter shooter;
+  private double initialRPM;
   private double rpm;
   private double distance;
-  public SpinShooter(Shooter shooter, double rpm, double distance) {
+  private int hasConsistentRPM = 0;
+  private double[] rpmArray = new double[5];
+  private ShotAdjuster adjuster;
+
+  public SpinShooter(Shooter shooter, double rpm, double distance, ShotAdjuster adjuster) {
     this.shooter = shooter;
-    this.rpm = rpm;
+    this.initialRPM = rpm;
     this.distance = distance;
+    this.adjuster = adjuster;
     addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -23,17 +33,29 @@ public class SpinShooter extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+      hasConsistentRPM = 0;
     // rpm = (5.9021 * distance) + 1779.2;
     
     // if(rpm > 4500) {
     //   rpm = 4500;
     // }
+    // rpm = rpm + adjuster.getRPMAdjustment();
+    rpm = initialRPM + adjuster.getRPMAdjustment();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //System.out.println("RPM: " + shooter.getShooterRPM());
     shooter.setShooterRPM(rpm);
+    if(Math.abs(shooter.getShooterRPM() - rpm) < 50) {
+      hasConsistentRPM++;
+    }
+    else {
+      hasConsistentRPM = 0;
+    }
+    SmartDashboard.putNumber("Shooter RPM", rpm);
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -45,7 +67,7 @@ public class SpinShooter extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Math.abs(shooter.getShooterRPM() - rpm) < 50) {
+    if(hasConsistentRPM > 5) {
       // System.out.println("00000000000000000000000000000000000");
       return true;
     }

@@ -18,13 +18,11 @@ import frc.robot.tools.ShotAdjuster;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class FireBalls extends SequentialCommandGroup {
-  /** Creates a new FireBalls. */
-  private ShotAdjuster adjuster;
-  public FireBalls(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights, double hoodPosition, double shooterRPM, double firstBallTimeout, double secondBallTimeout, ShotAdjuster shotAdjuster) {
+public class FireBallsNoVision extends SequentialCommandGroup {
+  /** Creates a new FireBallsNoVision. */
+  public FireBallsNoVision(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights, double hoodPosition, double shooterRPM, double firstBallTimeout, double secondBallTimeout, ShotAdjuster adjuster) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    this.adjuster = shotAdjuster;
     addRequirements(drive, magIntake, shooter, hood);
     double distance = drive.getDistanceToTarget();
     // System.out.println("")
@@ -33,8 +31,8 @@ public class FireBalls extends SequentialCommandGroup {
     addCommands(
       new ParallelCommandGroup(
           new SpinShooter(shooter, shooterRPM, distance, adjuster),
-          new FaceTarget(drive, peripherals),
-          // new VisionAlignment(drive, peripherals),
+        //   new FaceTarget(drive, peripherals),
+        //   new VisionAlignment(drive, peripherals),
           new SetHoodPosition(hood, hoodPosition, distance, adjuster)
       ),
       new TurnBackMag(magIntake, 360),

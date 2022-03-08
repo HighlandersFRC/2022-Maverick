@@ -17,12 +17,14 @@ import frc.robot.commands.ContinuousAccelerationInterpolation;
 import frc.robot.commands.DriveAlignedToTarget;
 import frc.robot.commands.EjectBalls;
 import frc.robot.commands.FireBalls;
+import frc.robot.commands.FireBallsNoVision;
 import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.LowerClimberToBar;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.RaiseClimber;
 import frc.robot.commands.SetHoodPosition;
 import frc.robot.commands.SpinShooter;
+import frc.robot.commands.VisionAlignment;
 import frc.robot.commands.ZeroNavxMidMatch;
 import frc.robot.commands.autos.FiveBallAuto;
 import frc.robot.commands.autos.OneBallAuto;
@@ -38,6 +40,7 @@ import frc.robot.subsystems.MqttPublish;
 import frc.robot.subsystems.MqttSubscribe;
 import frc.robot.subsystems.Peripherals;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Lights.LEDMode;
 import frc.robot.tools.PneumaticsControl;
 import frc.robot.tools.ShotAdjuster;
 
@@ -196,9 +199,16 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     lights.periodic();
+
+    if(!magIntake.getUpperBeamBreak()) {
+      lights.setMode(LEDMode.RAINBOW);
+    }
+    //System.out.println(peripherals.getVisionArray());
     CommandScheduler.getInstance().run();
 
+    SmartDashboard.putBoolean("LIMIT SWITCH", hood.getLowerLimitSwitch());
     SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
+    SmartDashboard.putNumber("HOOD", hood.getHoodPosition());
     SmartDashboard.putNumber("RPM ADJUSTMENT", shotAdjuster.getRPMAdjustment());
     SmartDashboard.putNumber("HOOD ADJUSTMENT", shotAdjuster.getHoodAdjustment());
 
@@ -283,10 +293,12 @@ public class Robot extends TimedRobot {
     OI.driverRT.whileHeld(new IntakeBalls(magIntake, lights));
     OI.driverLT.whileHeld(new Outtake(magIntake));
 
-    OI.driverA.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 0, 1500, 0.5, 0.5, shotAdjuster));
-    OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 21, 2000, 0.75, 0.75, shotAdjuster));
-    OI.driverY.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 25, 2200, 0.5, 0.5, shotAdjuster));
-    // OI.driverX.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 3200, 0.5, 0.5));
+    OI.driverA.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 0.75, 1470, 0.5, 0.5, shotAdjuster));
+    OI.driverB.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 24.75, 1520, 0.75, 0.75, shotAdjuster));
+    OI.driverY.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 27, 1900, 0.5, 0.5, shotAdjuster));
+    OI.driverX.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 25, 900, 0.5, 0.5, shotAdjuster));
+
+    // OI.driverX.whenPressed(new VisionAlignment(drive, peripherals));
 
     //OI.driverY.whenPressed(new FaceTarget(drive));
 
@@ -296,8 +308,8 @@ public class Robot extends TimedRobot {
 
     // OI.driveStartButton.whileHeld(new DriveAlignedToTarget(drive, peripherals));
 
-    OI.operatorY.whileHeld(new RaiseClimber(climber, -0.25));
-    OI.operatorA.whileHeld(new ClimbRobot(climber, 0.5));
+    OI.operatorY.whileHeld(new RaiseClimber(climber, -1));
+    OI.operatorA.whileHeld(new ClimbRobot(climber, 1));
 
     OI.operatorX.whenPressed(new LowerClimberToBar(climber));
 
@@ -311,42 +323,29 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Controller X", OI.getDriverLeftX());
     SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
 
-    // if (OI.operatorB.get()) {
-    //   //new RaiseClimber(climber, 0.2);
-    //   //climber.unlockExtendingClimber();
-    //   //climber.setClimberPercents(0.6);
-    //   climber.setRotatingClimberPercent(0.6);
-    // } else if (OI.operatorX.get()) {
-    //   //new RaiseClimber(climber, -0.2);
-    //   //climber.unlockExtendingClimber();
-    //   //climber.setClimberPercents(-0.6);
-    //   climber.setRotatingClimberPercent(-0.6);
-    // } else {
-    //   //new RaiseClimber(climber, 0.0);
-    //   //climber.lockExtendingClimber();
-    //   //climber.setClimberPercents(0.0);
-    //   climber.setRotatingClimberPercent(0.0);
+    // if (OI.getDriverA()) {
+    //   System.out.println("+");
     // }
 
-    // if(OI.operatorController.getPOV(0) != -1) {
-    //   shotAdjuster.increaseRPM();
-    // }
-    // else if(OI.operatorController.getPOV(180) != -1) {
-    //   shotAdjuster.decreaseRPM();
-    // }
-    // else {
+    if(OI.getPOV() == 0) {
+      shotAdjuster.increaseRPM();
+    }
+    else if(OI.getPOV() == 180) {
+      shotAdjuster.decreaseRPM();
+    }
+    else {
 
-    // }
+    }
 
-    // if(OI.operatorController.getPOV(270) != -1) {
-    //   shotAdjuster.increaseHood();
-    // }
-    // else if(OI.operatorController.getPOV(90) != -1) {
-    //   shotAdjuster.decreaseHood();
-    // }
-    // else {
+    if(OI.getPOV() == 270) {
+      shotAdjuster.increaseHood();
+    }
+    else if(OI.getPOV() == 90) {
+      shotAdjuster.decreaseHood();
+    }
+    else {
 
-    // }
+    }
 
     //System.out.println("RIGHT --> " + climber.getRightClimberPosition());
     //System.out.println("LEFT --> " + climber.getLeftClimberPosition());

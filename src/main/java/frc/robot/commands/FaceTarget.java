@@ -17,16 +17,19 @@ public class FaceTarget extends SequentialCommandGroup {
 
   public FaceTarget(Drive drive, Peripherals peripherals) {
 
-    this.turnPath = drive.testGetCameraTurn();
-    System.out.println("????????????????????????????");
-    System.out.println("TURN PATH: " + this.turnPath);
-    System.out.println("????????????????????????????");
+    // this.turnPath = drive.testGetCameraTurn();
+    // System.out.println("????????????????????????????");
+    // System.out.println("TURN PATH: " + this.turnPath);
+    // System.out.println("????????????????????????????");
     this.drive = drive;
     this.peripherals = peripherals;
     // this.turnAngle = turnAngle;
     addRequirements(this.drive, this.peripherals);
-    // this.turnPath = drive.getJSONTurnPath();
+    this.turnPath = drive.getJSONTurnPath();
+
+    System.out.println("!!!!!!!!!!!!!!!!!!!!");
+    System.out.println(turnPath);
     
-    addCommands(new TurnOnLightRing(peripherals), new ContinuousAccelerationInterpolation(drive, this.turnPath));
+    addCommands(new TurnOnLightRing(peripherals), new ContinuousAccelerationInterpolation(drive, this.turnPath, true));
   }
 }

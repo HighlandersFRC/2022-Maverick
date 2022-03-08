@@ -32,6 +32,7 @@ public class Peripherals extends SubsystemBase {
   public void init() {
     System.out.print("INSIDE PERIPHERALS INIT");
     zeroNavx();
+    turnLightRingOn();
     setDefaultCommand(new PeripheralsDefault(this));
   }
 
