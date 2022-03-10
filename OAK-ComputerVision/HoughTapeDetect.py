@@ -143,8 +143,8 @@ def convertCoordinates(x, y, z):
 
 stepSize = 0.05
 
-cameraResolutionWidth = 1280.0
-cameraResolutionHeight = 720.0
+cameraResolutionWidth = 640.0
+cameraResolutionHeight = 480.0
 
 HFOV = 69
 
@@ -159,7 +159,7 @@ targetHeightDifference = 83
 pipeline = depthai.Pipeline()
 
 cam_rgb = pipeline.create(depthai.node.ColorCamera)
-cam_rgb.setPreviewSize(1280, 720)
+cam_rgb.setPreviewSize(640, 480)
 cam_rgb.setResolution(depthai.ColorCameraProperties.SensorResolution.THE_1080_P)
 # cam_rgb.setIspScale(2, 3)
 # cam_rgb.setPreviewSize(cameraResolutionWidth, cameraResolutionHeight)
@@ -183,13 +183,13 @@ controlIn = pipeline.create(depthai.node.XLinkIn)
 controlIn.setStreamName('control')
 controlIn.out.link(cam_rgb.inputControl)
 
-lowerH = 0
-upperH = 94
+lowerH = 43
+upperH = 166
 
-lowerS = 142
+lowerS = 221
 upperS = 255
 
-lowerV = 54
+lowerV = 132
 upperV = 255
 
 expTime = 1000
@@ -227,7 +227,7 @@ stereo.setOutputRectified(outputRectified)
 stereo.setConfidenceThreshold(255)
 stereo.setDepthAlign(depthai.CameraBoardSocket.RGB)
 # setRectifyEdgeFillColor(-1)
-stereo.setOutputSize(1280, 720)
+stereo.setOutputSize(640, 480)
 
 stereo.setLeftRightCheck(lrcheck)
 stereo.setSubpixel(subpixel)
@@ -274,7 +274,7 @@ device.startPipeline()
 # imuQueue = device.getOutputQueue(name="imu", maxSize=50, blocking = False)
 
 # Output queue will be used to get the depth frames from the outputs defined above
-depthQueue = device.getOutputQueue(name="depth", maxSize=10, blocking=False)
+depthQueue = device.getOutputQueue(name="depth", maxSize=1, blocking=False)
 spatialCalcQueue = device.getOutputQueue(name="spatialData", maxSize=1, blocking=False)
 spatialCalcConfigInQueue = device.getInputQueue("spatialCalcConfig")
 
@@ -328,12 +328,12 @@ while True:
     # upperV = cv2.getTrackbarPos('Higher V', "HSV Tuner")
     # getImuAngle()
 
-    inDepth = depthQueue.get() # blocking call, will wait until a new data has arrived
+    # inDepth = depthQueue.get() # blocking call, will wait until a new data has arrived
     
-    depthFrame = inDepth.getFrame()
-    depthFrameColor = cv2.normalize(depthFrame, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1)
-    depthFrameColor = cv2.equalizeHist(depthFrameColor)
-    depthFrameColor = cv2.applyColorMap(depthFrameColor, cv2.COLORMAP_OCEAN)
+    # depthFrame = inDepth.getFrame()
+    # depthFrameColor = cv2.normalize(depthFrame, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1)
+    # depthFrameColor = cv2.equalizeHist(depthFrameColor)
+    # depthFrameColor = cv2.applyColorMap(depthFrameColor, cv2.COLORMAP_OCEAN)
 
     in_rgb = q_rgb.tryGet()
     if in_rgb is not None:
@@ -403,8 +403,10 @@ while True:
             spatialCalcConfigInQueue.send(cfg)
         else:
             jsonString = '{"Distance":' + '-10' + ', "Angle":' + '-100000' + ', "Confidence":' + '0' + ', "Timestamp":' + str(time.time()) +'}'
-            print("jsonString")
+            # print("jsonString")
             publish(client, jsonString)
+            # cv2.imshow("frame", frame)
+            # cv2.imshow("mask", result)
             continue
 
         inDepthAvg = spatialCalcQueue.get() # blocking call, will wait until a new data has arrived
@@ -425,7 +427,8 @@ while True:
         # print("====================================")
         for depthData in spatialData:
             roi = depthData.config.roi
-            roi = roi.denormalize(width=depthFrameColor.shape[1], height=depthFrameColor.shape[0])
+            # roi = roi.denormalize(width=depthFrameColor.shape[1], height=depthFrameColor.shape[0])
+            roi = roi.denormalize(width=640, height=480)
             xmin = int(roi.topLeft().x)
             ymin = int(roi.topLeft().y)
             xmax = int(roi.bottomRight().x)

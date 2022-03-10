@@ -22,6 +22,7 @@ import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.LowerClimberToBar;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.RaiseClimber;
+import frc.robot.commands.RunClimberMaxHeight;
 import frc.robot.commands.SetHoodPosition;
 import frc.robot.commands.SpinShooter;
 import frc.robot.commands.VisionAlignment;
@@ -97,7 +98,8 @@ public class Robot extends TimedRobot {
 
   private TestFiveBallAuto fiveBallP2 = new TestFiveBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
-  private UsbCamera camera;
+  private UsbCamera cameraBack;
+  private UsbCamera cameraFront;
   private VideoSink server;
 
   private ShotAdjuster shotAdjuster = new ShotAdjuster();
@@ -107,12 +109,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    camera = CameraServer.startAutomaticCapture("Vision Stream", "/dev/video0");
-    camera.setResolution(320, 240);
-    camera.setFPS(15);
+    cameraBack = CameraServer.startAutomaticCapture("Back Cam", "/dev/video0");
+    cameraBack.setResolution(320, 240);
+    cameraBack.setFPS(15);
 
-    server = CameraServer.getServer();  
-    server.setSource(camera);
+    cameraFront = CameraServer.startAutomaticCapture("Front Cam", "/dev/video1");
+    cameraFront.setResolution(320, 240);
+    cameraFront.setFPS(15);
+
+    server = CameraServer.addSwitchedCamera("driverVisionCameras");  
+    server.setSource(cameraFront);
     // System.out.println("###########");
     peripherals.init();
     magIntake.init();
@@ -206,6 +212,8 @@ public class Robot extends TimedRobot {
     //System.out.println(peripherals.getVisionArray());
     CommandScheduler.getInstance().run();
 
+    SmartDashboard.putNumber("Climber ENCODER", climber.getLeftClimberPosition());
+
     SmartDashboard.putBoolean("LIMIT SWITCH", hood.getLowerLimitSwitch());
     SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
     SmartDashboard.putNumber("HOOD", hood.getHoodPosition());
@@ -293,10 +301,12 @@ public class Robot extends TimedRobot {
     OI.driverRT.whileHeld(new IntakeBalls(magIntake, lights));
     OI.driverLT.whileHeld(new Outtake(magIntake));
 
-    OI.driverA.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 0.75, 1470, 0.5, 0.5, shotAdjuster));
-    OI.driverB.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 24.75, 1520, 0.75, 0.75, shotAdjuster));
-    OI.driverY.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 27, 1900, 0.5, 0.5, shotAdjuster));
-    OI.driverX.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 25, 900, 0.5, 0.5, shotAdjuster));
+    OI.driverA.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 6.25, 1400, 0.5, 0.5, shotAdjuster));
+    OI.driverB.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 24.0, 1470, 0.75, 0.75, shotAdjuster));
+    OI.driverY.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 9.25, 1400, 0.5, 0.5, shotAdjuster));
+    OI.driverX.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 27, 1900, 0.5, 0.5, shotAdjuster));
+    OI.driverMenuButton.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 25, 900, 0.5, 0.5, shotAdjuster));
+
 
     // OI.driverX.whenPressed(new VisionAlignment(drive, peripherals));
 
@@ -310,6 +320,7 @@ public class Robot extends TimedRobot {
 
     OI.operatorY.whileHeld(new RaiseClimber(climber, -1));
     OI.operatorA.whileHeld(new ClimbRobot(climber, 1));
+    OI.operatorB.whenPressed(new RunClimberMaxHeight(climber));
 
     OI.operatorX.whenPressed(new LowerClimberToBar(climber));
 

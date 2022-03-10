@@ -30,6 +30,7 @@ public class OI {
     public static JoystickButton driverViewButton = new JoystickButton(driverController, 7);
 
     public static JoystickButton operatorViewButton = new JoystickButton(operatorController, 7);
+    public static JoystickButton driverMenuButton = new JoystickButton(driverController, 8);
 
     public static Joystick autoChooser = new Joystick(2);
 
