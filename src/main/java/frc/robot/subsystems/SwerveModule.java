@@ -135,7 +135,7 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.setSelectedSensorPosition(radiansToTics(degreesToRadians(absoluteEncoder.getAbsolutePosition())));
         angleMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 25, 0 ,0));
 
-        angleMotor.config_kP(0, 0.4);
+        angleMotor.config_kP(0, 0.3);
         angleMotor.config_kI(0, 0.0);
         angleMotor.config_kD(0, 0);
         
@@ -143,7 +143,7 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.setSelectedSensorPosition(0);
         driveMotor.setInverted(true);;
 
-        driveMotor.config_kP(0, 0.2);
+        driveMotor.config_kP(0, 0.12);
         driveMotor.config_kI(0, 0);
         driveMotor.config_kD(0, 0.015);
 
