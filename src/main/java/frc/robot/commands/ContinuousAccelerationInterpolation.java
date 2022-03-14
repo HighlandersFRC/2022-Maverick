@@ -1,9 +1,14 @@
 package frc.robot.commands;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -60,6 +65,12 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
     private boolean generateTurnPath;
     private double turnAngle;
 
+    private FileWriter writer;
+    private BufferedWriter out;
+    String loc;
+
+    public List<String> pointsList = new ArrayList<String>();
+
     // private Peripherals peripherals = new Peripherals();
 
     private double cyclePeriod = 1.0/50.0;
@@ -70,12 +81,26 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
       this.generateTurnPath = generateTurnPath;
       this.turnAngle = turnAngle;
       addRequirements(this.drive);
+      loc = "/home/lvuser/deploy/odometryList.csv";
+      try {
+        writer = new FileWriter(loc, true);
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
         // Use addRequirements() here to declare subsystem dependencies.
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+      
+      try{
+        out = new BufferedWriter(writer);
+      }
+        catch(Exception e) {
+
+    }
       if(generateTurnPath) {
         pathPointsJSON = drive.getJSONTurnPath(0);
       }
@@ -105,20 +130,6 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
     currentYVelocity = (currentY - previousY)/timeDiff;
     currentThetaVelocity = (currentTheta - previousTheta)/timeDiff;
 
-    // // determine estimated position by integrating current velocity by time and adding previous estimated position
-    // estimatedX = previousEstimateX + (cyclePeriod * currentXVelocity);
-    // estimatedY = previousEstimateY + (cyclePeriod * currentYVelocity);
-    // estimatedTheta = previousEstimateTheta + (cyclePeriod * currentThetaVelocity);
-
-    // // average the odometry position with estimated position
-    // averagedX = (estimatedX + currentX)/2;
-    // averagedY = (estimatedY + currentY)/2;
-    // averagedTheta = (estimatedTheta + currentTheta)/2;
-
-    // System.out.println("Time: " + currentTime + " Angle: " + Math.toDegrees(currentTheta) + " OdometryX: " + currentX + " OdometryY: " + currentY);
-    // System.out.println()
-    // System.out.println("Time: " + currentTime + " " + drive.getDriveOdometry());
-
     // call ConstantAccelerationInterpolation function
     desiredVelocityArray = drive.constantAccelerationInterpolation(odometryFusedX, odometryFusedY, odometryFusedTheta, currentXVelocity, currentYVelocity, currentThetaVelocity, currentTime, timeDiff, pathPointsJSON);
     
@@ -127,6 +138,17 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
     desiredThetaChange = desiredVelocityArray[2];
 
     // System.out.println("@@@@@@@@@@@ " + Math.toDegrees(peripherals.getNavxAngle());
+
+    String strOdomList = (odometryFusedX + "," + odometryFusedY + ","+ odometryFusedTheta + "," + currentTime + "\n");
+
+        try {
+          pointsList.add(strOdomList);
+          // out.write(strOdomList);
+          // out.close();
+        }
+        catch(Exception e) {
+ 
+        }
 
     // call autoDrive function to move the robot
     drive.autoDrive(velocityVector, desiredThetaChange);
@@ -146,7 +168,17 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drive.publishEndedPath();
+    try {
+      for(int i = 0; i < pointsList.size(); i++) {
+        out.write(pointsList.get(i));
+      }
+      // out.write(pointsList);
+      writer.close();
+      // out.close();
+  } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+  }
   }
 
   // Returns true when the command should end.

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -111,6 +112,8 @@ public class Drive extends SubsystemBase {
     private double targetCenterX = 8.2296;
     private double targetCenterY = 4.1148;
 
+    private FileWriter writer;
+
     // array for fused odometry
     private double[] currentFusedOdometry = new double[3];
 
@@ -182,6 +185,8 @@ public class Drive extends SubsystemBase {
         // peripherals.zeroNavx();
 
         setDefaultCommand(new DriveDefault(this));
+        
+        
     }
 
     // method run during start of autonomous
@@ -224,6 +229,7 @@ public class Drive extends SubsystemBase {
         MqttMessage pathEndMessage = new MqttMessage("Ending Path".getBytes());
         publish.publish("/pathTool", pathEndMessage);
     }
+
 
     // generates a autonomous path using current odometry and predicted angle to target at the current point
     public JSONArray getJSONTurnPath(double offset) {
@@ -604,16 +610,7 @@ public class Drive extends SubsystemBase {
         odometryList[1] = getFusedOdometryY();
         odometryList[2] = getFusedOdometryTheta();
 
-        String strOdomList = (odometryList[0] + "," + odometryList[1] + ","+ odometryList[2]);
-
-        // try {
-        //     FileWriter writer = new FileWriter("odometryList.txt");
-        //     writer.write(strOdomList);
-        //     writer.close();
-        // }
-        // else {
-
-        // }
+        
         // System.out.println("STRING ODOM LIST:" + strOdomList);
 
         // MqttMessage message = new MqttMessage(strOdomList.getBytes());
