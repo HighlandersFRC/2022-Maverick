@@ -77,7 +77,7 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
     @Override
     public void initialize() {
       if(generateTurnPath) {
-        pathPointsJSON = drive.getJSONTurnPath();
+        pathPointsJSON = drive.getJSONTurnPath(0);
       }
       initTime = Timer.getFPGATimestamp();
       // System.out.println("Time: " + currentTime + " Angle: " + drive.getOdometryAngle() + " OdometryX: " + currentX + " PredictedX: " + estimatedX + " OdometryY: " + currentY + " PredictedY: " + estimatedY);
@@ -146,6 +146,7 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    drive.publishEndedPath();
   }
 
   // Returns true when the command should end.

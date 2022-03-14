@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
 import frc.robot.commands.FaceTarget;
 import frc.robot.commands.FireBalls;
+import frc.robot.commands.FireBallsNoVision;
 import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.defaults.DriveDefault;
@@ -50,7 +51,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake);
-    addCommands(new IntakeDown(magIntake), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 22, 1400, 0.5, 0.01, adjuster), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON, false), new IntakeBalls(magIntake, lights)), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 18, 1600, 0.5, 1, adjuster));
+    addCommands(new IntakeDown(magIntake), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON, false), new IntakeBalls(magIntake, lights)), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1470, 0.5, 1, adjuster, 0));
   }
 }
 

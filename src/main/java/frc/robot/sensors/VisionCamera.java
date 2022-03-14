@@ -31,13 +31,13 @@ public class VisionCamera {
 
             if(visionArray[2] == 0) {
                 SmartDashboard.putBoolean("HAS LOCK-ON", false);
-                System.out.println("-----------------------------------------------");
+                // System.out.println("-----------------------------------------------");
                 visionArray[0] = -1;
                 visionArray[1] = 0;
             }
             else {
                 SmartDashboard.putBoolean("HAS LOCK-ON", true);
-                System.out.println("||||||||||||||||||||||||||||||||||||||||||||||||");
+                // System.out.println("||||||||||||||||||||||||||||||||||||||||||||||||");
             }
             return visionArray;
         }

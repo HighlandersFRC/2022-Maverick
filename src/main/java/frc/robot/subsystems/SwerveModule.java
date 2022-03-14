@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.CAN;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -133,19 +134,21 @@ public class SwerveModule extends SubsystemBase {
     // method run when robot boots up, sets up Current Limits, and Frame Periods to limit CAN usage, as well as tells internal encoder where it actually is
     public void init() {
         angleMotor.setSelectedSensorPosition(radiansToTics(degreesToRadians(absoluteEncoder.getAbsolutePosition())));
-        angleMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 25, 0 ,0));
+        angleMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35 , 0.5));
+        angleMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 60, 60, 0.5));
 
-        angleMotor.config_kP(0, 0.3);
+        angleMotor.config_kP(0, 0.5);
         angleMotor.config_kI(0, 0.0);
-        angleMotor.config_kD(0, 0);
+        angleMotor.config_kD(0, 0.1);
         
-        driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0 , 0));
+        driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 30, 0.5));
+        driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0.5));
         driveMotor.setSelectedSensorPosition(0);
         driveMotor.setInverted(true);;
 
-        driveMotor.config_kP(0, 0.12);
+        driveMotor.config_kP(0, 0.18);
         driveMotor.config_kI(0, 0);
-        driveMotor.config_kD(0, 0.015);
+        driveMotor.config_kD(0, 0.018);
 
         angleMotor.setNeutralMode(NeutralMode.Brake);
         driveMotor.setNeutralMode(NeutralMode.Brake);

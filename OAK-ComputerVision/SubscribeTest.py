@@ -2,7 +2,7 @@ from paho.mqtt import client as mqtt_client
 
 broker = '10.44.99.11'
 port = 1883
-topic = "/sensors/camera"
+topic = "/pathTool"
 client_id = "99H44"
 
 def connect_mqtt():

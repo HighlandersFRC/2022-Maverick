@@ -21,7 +21,7 @@ import frc.robot.tools.ShotAdjuster;
 public class FireBalls extends SequentialCommandGroup {
   /** Creates a new FireBalls. */
   private ShotAdjuster adjuster;
-  public FireBalls(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights, double hoodPosition, double shooterRPM, double firstBallTimeout, double secondBallTimeout, ShotAdjuster shotAdjuster) {
+  public FireBalls(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights, double hoodPosition, double shooterRPM, double firstBallTimeout, double secondBallTimeout, ShotAdjuster shotAdjuster, double offset) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     this.adjuster = shotAdjuster;
@@ -33,7 +33,7 @@ public class FireBalls extends SequentialCommandGroup {
     addCommands(
       new ParallelCommandGroup(
           new SpinShooter(shooter, shooterRPM, distance, adjuster),
-          new FaceTarget(drive, peripherals),
+          new FaceTarget(drive, peripherals, offset),
           // new VisionAlignment(drive, peripherals),
           new SetHoodPosition(hood, hoodPosition, distance, adjuster)
       ),
@@ -41,12 +41,12 @@ public class FireBalls extends SequentialCommandGroup {
       //new EjectBalls(magIntake, lights, 0.55, 0.85, firstBallTimeout),
       //new EjectBalls(magIntake, 0.0, 0, 0.001),
       new WaitCommand(0.25),
-      new TurnBackMag(magIntake, 720),
+      new TurnBackMag(magIntake, 810),
       new WaitCommand(0.25),
       //new EjectBalls(magIntake, lights, 0.35, 0.45, secondBallTimeout)
       //new EjectBalls(magIntake, 0.0, 0, 0.1)
       //new TurnBackMag(magIntake)
-      new TurnBackMag(magIntake, 400)
+      new TurnBackMag(magIntake, 550)
       // new WaitCommand(0.5),
       // new TurnBackMag(magIntake, 270)
     );

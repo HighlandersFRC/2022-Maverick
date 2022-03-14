@@ -15,7 +15,7 @@ public class FaceTarget extends SequentialCommandGroup {
 
   private Peripherals peripherals;
 
-  public FaceTarget(Drive drive, Peripherals peripherals) {
+  public FaceTarget(Drive drive, Peripherals peripherals, double offset) {
 
     // this.turnPath = drive.testGetCameraTurn();
     // System.out.println("????????????????????????????");
@@ -25,7 +25,7 @@ public class FaceTarget extends SequentialCommandGroup {
     this.peripherals = peripherals;
     // this.turnAngle = turnAngle;
     addRequirements(this.drive, this.peripherals);
-    this.turnPath = drive.getJSONTurnPath();
+    this.turnPath = drive.getJSONTurnPath(offset);
 
     System.out.println("!!!!!!!!!!!!!!!!!!!!");
     System.out.println(turnPath);

@@ -29,7 +29,7 @@ import frc.robot.commands.VisionAlignment;
 import frc.robot.commands.ZeroNavxMidMatch;
 import frc.robot.commands.autos.FiveBallAuto;
 import frc.robot.commands.autos.OneBallAuto;
-import frc.robot.commands.autos.TestFiveBallAuto;
+import frc.robot.commands.autos.TestAuto;
 import frc.robot.commands.autos.ThreeBallAuto;
 import frc.robot.commands.autos.TwoBallAuto;
 import frc.robot.subsystems.Climber;
@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
 
   private FiveBallAuto fiveBallAuto = new FiveBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
-  private TestFiveBallAuto fiveBallP2 = new TestFiveBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
+  private TestAuto testAuto = new TestAuto(drive);
 
   private UsbCamera cameraBack;
   private UsbCamera cameraFront;
@@ -136,7 +136,7 @@ public class Robot extends TimedRobot {
         pathingFile = new File("/home/lvuser/deploy/1BallAuto.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
-        System.out.println(pathJSON);
+        // System.out.println(pathJSON);
       }
       catch(Exception e) {
         // System.out.println("ERROR WITH PATH FILE " + e);
@@ -147,7 +147,7 @@ public class Robot extends TimedRobot {
         pathingFile = new File("/home/lvuser/deploy/2BallAuto.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
-        System.out.println(pathJSON);
+        // System.out.println(pathJSON);
       }
       catch(Exception e) {
         // System.out.println("ERROR WITH PATH FILE " + e);
@@ -158,7 +158,7 @@ public class Robot extends TimedRobot {
         pathingFile = new File("/home/lvuser/deploy/Adj3Ball.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
-        System.out.println(pathJSON);
+        // System.out.println(pathJSON);
       }
       catch(Exception e) {
         // System.out.println("ERROR WITH PATH FILE " + e);
@@ -169,18 +169,18 @@ public class Robot extends TimedRobot {
         pathingFile = new File("/home/lvuser/deploy/Adj3Ball.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
-        System.out.println(pathJSON);
+        // System.out.println(pathJSON);
       }
       catch(Exception e) {
         // System.out.println("ERROR WITH PATH FILE " + e);
       }
     }
-    else if(OI.is5BallPt2()) {
+    else if(OI.isTestAuto()) {
       try {
-        pathingFile = new File("/home/lvuser/deploy/5BallPart2.json");
+        pathingFile = new File("/home/lvuser/deploy/TestNoTurn.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
-        System.out.println(pathJSON);
+        // System.out.println(pathJSON);
       }
       catch(Exception e) {
         // System.out.println("ERROR WITH PATH FILE " + e);
@@ -191,14 +191,14 @@ public class Robot extends TimedRobot {
         pathingFile = new File("/home/lvuser/deploy/1BallAuto.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
-        System.out.println(pathJSON);
+        // System.out.println(pathJSON);
       }
       catch(Exception e) {
         // System.out.println("ERROR WITH PATH FILE " + e);
       }
     }
 
-    System.out.println(pathJSON);
+    // System.out.println(pathJSON);
     drive.init();
   }
 
@@ -250,7 +250,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     climber.zeroRotatingEncoder();
-    System.out.println(pathJSON);
+    // System.out.println(pathJSON);
     drive.autoInit(pathJSON);
     // peripherals.init();
     // testPath = new ContinuousAccelerationInterpolation(drive, pathJSON);
@@ -267,8 +267,11 @@ public class Robot extends TimedRobot {
     else if(OI.is5BallAuto()) {
       fiveBallAuto.schedule();
     }
-    else if(OI.is5BallPt2()) {
-      fiveBallP2.schedule();
+    else if(OI.isTestAuto()) {
+      testAuto.schedule();
+    }
+    else {
+      testAuto.schedule();
     }
   }
 
@@ -302,7 +305,7 @@ public class Robot extends TimedRobot {
     OI.driverLT.whileHeld(new Outtake(magIntake));
 
     OI.driverA.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 6.25, 1400, 0.5, 0.5, shotAdjuster));
-    OI.driverB.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 24.0, 1470, 0.75, 0.75, shotAdjuster));
+    OI.driverB.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 23.0, 1490, 0.75, 0.75, shotAdjuster));
     OI.driverY.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 9.25, 1400, 0.5, 0.5, shotAdjuster));
     OI.driverX.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 27, 1900, 0.5, 0.5, shotAdjuster));
     OI.driverMenuButton.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 25, 900, 0.5, 0.5, shotAdjuster));
@@ -320,9 +323,9 @@ public class Robot extends TimedRobot {
 
     OI.operatorY.whileHeld(new RaiseClimber(climber, -1));
     OI.operatorA.whileHeld(new ClimbRobot(climber, 1));
-    OI.operatorB.whenPressed(new RunClimberMaxHeight(climber));
+    OI.operatorX.whenPressed(new RunClimberMaxHeight(climber));
 
-    OI.operatorX.whenPressed(new LowerClimberToBar(climber));
+    OI.operatorB.whenPressed(new LowerClimberToBar(climber));
 
     OI.operatorViewButton.whenPressed(new CancelClimber(climber));
   }

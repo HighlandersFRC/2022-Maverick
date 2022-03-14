@@ -70,7 +70,7 @@ public class OI {
         return autoChooser.getRawButton(8);
     }
 
-    public static Boolean is5BallPt2() {
+    public static Boolean isTestAuto() {
         return autoChooser.getRawButton(2);
     }
 

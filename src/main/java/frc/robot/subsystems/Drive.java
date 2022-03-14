@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.io.FileWriter;
 import java.nio.file.Path;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -214,11 +215,18 @@ public class Drive extends SubsystemBase {
         initTime = Timer.getFPGATimestamp();
 
         updateOdometryFusedArray();
-        System.out.println("X: " + getFusedOdometryX() + " Y: " + getFusedOdometryY() + " THETA: "+ getFusedOdometryTheta());
+        // System.out.println("X: " + getFusedOdometryX() + " Y: " + getFusedOdometryY() + " THETA: "+ getFusedOdometryTheta());
+        MqttMessage pathStartMessage = new MqttMessage("Starting Path".getBytes());
+        publish.publish("/pathTool", pathStartMessage);
+    }
+
+    public void publishEndedPath() {
+        MqttMessage pathEndMessage = new MqttMessage("Ending Path".getBytes());
+        publish.publish("/pathTool", pathEndMessage);
     }
 
     // generates a autonomous path using current odometry and predicted angle to target at the current point
-    public JSONArray getJSONTurnPath() {
+    public JSONArray getJSONTurnPath(double offset) {
         double fusedOdometryX = getFusedOdometryX();
         double fusedOdometryY = getFusedOdometryY();
 
@@ -228,7 +236,7 @@ public class Drive extends SubsystemBase {
         point1.put("angle", getFusedOdometryTheta());
         point1.put("time", 0.0);
 
-        double wantedAngleToTarget = Math.atan2((targetCenterY - fusedOdometryY), (targetCenterX - fusedOdometryX));
+        double wantedAngleToTarget = offset + Math.atan2((targetCenterY - fusedOdometryY), (targetCenterX - fusedOdometryX));
 
         JSONObject point2 = new JSONObject();
         point2.put("x", fusedOdometryX);
@@ -275,7 +283,7 @@ public class Drive extends SubsystemBase {
         turnPath.put(point1);
         turnPath.put(point2);
 
-        System.out.println("TurnPath (Drive): " + turnPath);
+        // System.out.println("TurnPath (Drive): " + turnPath);
 
         return turnPath;
     }
@@ -548,6 +556,7 @@ public class Drive extends SubsystemBase {
         }
 
         double turn = -OI.getDriverRightX() * (Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS);
+        // turn = 0;
         double navxOffset = Math.toRadians(peripherals.getNavxAngle());
         double xPower = getAdjustedX(originalX, originalY);
         double yPower = getAdjustedY(originalX, originalY);
@@ -563,14 +572,14 @@ public class Drive extends SubsystemBase {
         odometryList[1] = getFusedOdometryY();
         odometryList[2] = getFusedOdometryTheta();
 
-        // String strOdomList = (odometryList).toString();
-        // System.out.println(strOdomList);
+        // String strOdomList = (odometryList[0] + "," + odometryList[1] + ","+ odometryList[2]); 
+        // // System.out.println("STRING ODOM LIST:" + strOdomList);
 
         // MqttMessage message = new MqttMessage(strOdomList.getBytes());
 
         // publish.publish("/pathTool", message);
 
-        // System.out.println("X: " + getOdometryX() + " Y: " + getOdometryY() + " Theta: " + getOdometryAngle());
+        // System.out.println("X: " + getFusedOdometryX() + " Y: " + getFusedOdometryY() + " Theta: " + getFusedOdometryTheta());
 
         leftFront.velocityDrive(controllerVector, turn, navxOffset);
         rightFront.velocityDrive(controllerVector, turn, navxOffset);
@@ -595,7 +604,17 @@ public class Drive extends SubsystemBase {
         odometryList[1] = getFusedOdometryY();
         odometryList[2] = getFusedOdometryTheta();
 
-        // String strOdomList = (odometryList).toString();
+        String strOdomList = (odometryList[0] + "," + odometryList[1] + ","+ odometryList[2]);
+
+        // try {
+        //     FileWriter writer = new FileWriter("odometryList.txt");
+        //     writer.write(strOdomList);
+        //     writer.close();
+        // }
+        // else {
+
+        // }
+        // System.out.println("STRING ODOM LIST:" + strOdomList);
 
         // MqttMessage message = new MqttMessage(strOdomList.getBytes());
 
@@ -708,7 +727,7 @@ public class Drive extends SubsystemBase {
         // if the current point is the first point in the path, continue at same velocity towards point
         else if(currentPointIndex - 1 < 0) {
             nextPoint = pathPointsJSON.getJSONObject(currentPointIndex + 1);
-            System.out.println(nextPoint.toString());
+            // System.out.println(nextPoint.toString());
             double nextPointTime = nextPoint.getDouble("time");
             // check if within one cycle of endpoint and set velocities
             // only occurs when interpolation range is 1

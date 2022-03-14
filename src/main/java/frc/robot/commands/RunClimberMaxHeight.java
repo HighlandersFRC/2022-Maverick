@@ -26,9 +26,8 @@ public class RunClimberMaxHeight extends CommandBase {
   @Override
   public void execute() {
     if(climber.getLeftClimberPosition() > -265000) {
-      climber.setClimberPercents(-0.75, -0.75);
-    }
-    else {
+      climber.setClimberPercents(-0.5, -0.5);
+    } else {
       climber.setClimberPercents(0, 0);
     }
   }
