@@ -1,17 +1,11 @@
 package frc.robot.commands.defaults;
 
-import com.kauailabs.navx.frc.AHRS;
-
-import frc.robot.OI;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Peripherals;
 import frc.robot.subsystems.Shooter;
 
 public class ShooterDefault extends CommandBase {
   /** Creates a new ShooterDefault. */
-  private static Shooter shooter;  
+  private Shooter shooter;  
 
   public ShooterDefault(Shooter shooter) {
     // Use addRequirements() here to declare subsystem dependencies.

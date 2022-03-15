@@ -25,9 +25,7 @@ public class VisionAlignment extends CommandBase {
 
   private double maxTurnSpeedRadians = Constants.TOP_SPEED/Constants.ROBOT_RADIUS;
 
-  private int lostCameraConfidence = 0;
 
-  private double pidResult = 0;
   public VisionAlignment(Drive drive, Peripherals peripherals) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
@@ -41,7 +39,6 @@ public class VisionAlignment extends CommandBase {
     pid.setSetPoint(0);
     pid.setMaxOutput(maxTurnSpeedRadians);
     pid.setMinOutput(-maxTurnSpeedRadians);
-    lostCameraConfidence = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.

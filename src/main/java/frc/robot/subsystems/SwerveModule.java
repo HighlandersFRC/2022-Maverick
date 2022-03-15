@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.CAN;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
@@ -14,12 +12,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.OI;
 import frc.robot.tools.math.Vector;
 
 public class SwerveModule extends SubsystemBase {
-    private final double mZeroOffset;
-    
+ 
     private double moduleNum = 0;
 
 	private final TalonFX angleMotor;
@@ -34,7 +30,6 @@ public class SwerveModule extends SubsystemBase {
         angleMotor = mAngleMotor;
         driveMotor = mDriveMotor;
 
-        mZeroOffset = zeroOffset;
         moduleNum = moduleNumber;
 
         // defines absolute encoder

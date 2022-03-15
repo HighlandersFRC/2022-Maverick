@@ -6,13 +6,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
-import edu.wpi.first.wpilibj.Timer;
 
 public class RaiseClimber extends CommandBase {
   /** Creates a new RaiseClimber. */
   private Climber climber;
-
-  private double initTime = 0;
 
   private double percent;
 
@@ -27,7 +24,6 @@ public class RaiseClimber extends CommandBase {
   @Override
   public void initialize() {
     climber.unlockExtendingClimber();
-    initTime = Timer.getFPGATimestamp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

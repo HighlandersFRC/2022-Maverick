@@ -1,21 +1,13 @@
 package frc.robot.tools;
 
-import frc.robot.sensors.VisionCamera;
-import frc.robot.subsystems.MqttSubscribe;
 import frc.robot.subsystems.Peripherals;
 
 public class RobotCoordinateCalculator {
 
-    private Peripherals peripherals;
-
     private double fieldXCenter = 8.2296; // m
     private double fieldYCenter = 4.1148; // m
-
-    private VisionCamera camera = new VisionCamera();
-    private MqttSubscribe subscribe;
     
     public RobotCoordinateCalculator(Peripherals peripherals) {
-        this.peripherals = peripherals;
         // this.subscribe = subscribe;
     }
 

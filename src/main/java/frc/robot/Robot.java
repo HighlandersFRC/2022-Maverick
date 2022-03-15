@@ -1,31 +1,22 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
-import edu.wpi.first.cscore.VideoSource;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.FaceTarget;
 import frc.robot.commands.CancelClimber;
 import frc.robot.commands.ClimbRobot;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
-import frc.robot.commands.DriveAlignedToTarget;
-import frc.robot.commands.EjectBalls;
-import frc.robot.commands.FireBalls;
 import frc.robot.commands.FireBallsNoVision;
 import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.LowerClimberToBar;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.RaiseClimber;
 import frc.robot.commands.RunClimberMaxHeight;
-import frc.robot.commands.SetHoodPosition;
-import frc.robot.commands.SpinShooter;
-import frc.robot.commands.VisionAlignment;
 import frc.robot.commands.ZeroNavxMidMatch;
 import frc.robot.commands.autos.FiveBallAuto;
 import frc.robot.commands.autos.OneBallAuto;
@@ -71,7 +62,6 @@ public class Robot extends TimedRobot {
   private final PneumaticsControl pneumatics = new PneumaticsControl();
  
   private final String subCameraTopic = "/sensors/camera";
-  private final String pubCameraTopic = "/robot/camera";
 
   private MqttPublish publish = new MqttPublish();
   private MqttSubscribe subscribe = new MqttSubscribe();

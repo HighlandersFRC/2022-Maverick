@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import org.ejml.dense.row.linsol.AdjustableLinearSolver_DDRM;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooter;
@@ -16,15 +14,12 @@ public class SpinShooter extends CommandBase {
   private Shooter shooter;
   private double initialRPM;
   private double rpm;
-  private double distance;
   private int hasConsistentRPM = 0;
-  private double[] rpmArray = new double[5];
   private ShotAdjuster adjuster;
 
   public SpinShooter(Shooter shooter, double rpm, double distance, ShotAdjuster adjuster) {
     this.shooter = shooter;
     this.initialRPM = rpm;
-    this.distance = distance;
     this.adjuster = adjuster;
     addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.

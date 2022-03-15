@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hood;
@@ -15,14 +14,11 @@ public class SetHoodPosition extends CommandBase {
   private Hood hood;
   private double initialPosition;
   private double position;
-  private double distance;
-  private double startTime = Timer.getFPGATimestamp();
   private ShotAdjuster adjuster;
 
   public SetHoodPosition(Hood hood, double wantedPosition, double distance, ShotAdjuster adjuster) {
     this.hood = hood;
     this.initialPosition = wantedPosition;
-    this.distance = distance;
     this.adjuster = adjuster;
     addRequirements(hood);
     // Use addRequirements() here to declare subsystem dependencies.

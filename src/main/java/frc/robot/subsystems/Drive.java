@@ -1,10 +1,5 @@
 package frc.robot.subsystems;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -18,8 +13,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.OI;
@@ -38,7 +31,7 @@ public class Drive extends SubsystemBase {
     // cycle period of robot code
     private final double cyclePeriod = 1.0/50.0;
 
-    private final double[] velocityArray = new double[3];
+    private double[] velocityArray = new double[3];
 
     // creating all the falcons
     private final WPI_TalonFX leftForwardMotor = new WPI_TalonFX(3);
@@ -53,9 +46,6 @@ public class Drive extends SubsystemBase {
     // creating peripherals object to access sensors
     private Peripherals peripherals;
     private MqttPublish publish;
-
-    private double adjustedX = 0.0;
-    private double adjustedY = 0.0;
 
     // xy position of module based on robot width and distance from edge of robot
     private final double moduleXY = ((Constants.ROBOT_WIDTH)/2) - Constants.MODULE_OFFSET;
@@ -111,8 +101,6 @@ public class Drive extends SubsystemBase {
     // location of the target in the center of the field
     private double targetCenterX = 8.2296;
     private double targetCenterY = 4.1148;
-
-    private FileWriter writer;
 
     // array for fused odometry
     private double[] currentFusedOdometry = new double[3];
@@ -549,7 +537,6 @@ public class Drive extends SubsystemBase {
 
         // System.out.println("FUSED X: " + getFusedOdometryX() + " FUSED Y: " + getFusedOdometryY() + " Theta: " + getFusedOdometryTheta());
 
-        double turnLimit = 1;
         // this is correct, X is forward in field, so originalX should be the y on the joystick
         double originalX = -OI.getDriverLeftY();
         double originalY = -OI.getDriverLeftX();
@@ -682,12 +669,10 @@ public class Drive extends SubsystemBase {
 
         currentPoint = pathPointsJSON.getJSONObject(currentPointIndex);
 
-        double sign = 1;
         double angleDifference = 0;
 
         for(int i = 0; i < pathPointsJSON.length() - 1; i++) {
             if((pathPointsJSON.getJSONObject(i).getDouble("time") <= time) && (pathPointsJSON.getJSONObject(i + 1).getDouble("time") > time)) {
-                double point1Angle = pathPointsJSON.getJSONObject(i).getDouble("angle");
                 double point2Angle = pathPointsJSON.getJSONObject(i + 1).getDouble("angle");
 
                 angleDifference = getShortestAngle(currentTheta, point2Angle);
@@ -803,7 +788,7 @@ public class Drive extends SubsystemBase {
             // determine velocities when on line segment after t2 and heading towards next point
             double t2X = (nextPoint.getDouble("x") - currentPoint.getDouble("x"))/timeDiffT2;
             double t2Y = (nextPoint.getDouble("y") - currentPoint.getDouble("y"))/timeDiffT2;
-            double t2Theta = (nextPoint.getDouble("angle") - currentPoint.getDouble("angle"))/timeDiffT2;
+
 
             angleDifference = getShortestAngle(t1Angle, t2Angle);
 

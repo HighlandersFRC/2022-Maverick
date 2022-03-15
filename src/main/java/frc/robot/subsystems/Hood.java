@@ -10,7 +10,6 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.defaults.HoodDefaultCommand;
 
@@ -18,14 +17,6 @@ public class Hood extends SubsystemBase {
   /** Creates a new Hood. */
 
   private TalonFX hoodMotor = new TalonFX(13);
-
-  private DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(2);
-
-  private double absoluteEncoderOffset = 0.54;
-
-  private double originalAbsolutePosition = 0;
-
-  private double ticksOffset = 0;
 
   public Hood() {}
 

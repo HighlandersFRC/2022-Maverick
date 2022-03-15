@@ -1,16 +1,11 @@
 package frc.robot.commands.defaults;
 
-import com.kauailabs.navx.frc.AHRS;
-
-import frc.robot.OI;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Peripherals;
 
 public class DriveDefault extends CommandBase {
   /** Creates a new DriveDefault. */
-  private static Drive drive;  
+  private Drive drive;  
 
   public DriveDefault(Drive drive) {
     // Use addRequirements() here to declare subsystem dependencies.

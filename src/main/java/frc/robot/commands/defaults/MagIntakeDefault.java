@@ -1,16 +1,11 @@
 package frc.robot.commands.defaults;
 
-import com.kauailabs.navx.frc.AHRS;
-
-import frc.robot.OI;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.MagIntake;
 
 public class MagIntakeDefault extends CommandBase {
   /** Creates a new MagIntakeDefault. */
-  private static MagIntake magIntake;  
+  private MagIntake magIntake;  
 
   public MagIntakeDefault(MagIntake magIntake) {
     // Use addRequirements() here to declare subsystem dependencies.

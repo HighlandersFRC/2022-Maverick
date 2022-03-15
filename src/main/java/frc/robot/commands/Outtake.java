@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.MagIntake;
 
 public class Outtake extends CommandBase {
-  private static MagIntake magIntake;  
+  private MagIntake magIntake;  
 
   public Outtake(MagIntake magIntake) {
     // Use addRequirements() here to declare subsystem dependencies.

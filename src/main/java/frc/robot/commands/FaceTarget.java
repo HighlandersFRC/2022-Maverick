@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import org.json.JSONArray;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Peripherals;
@@ -10,7 +9,6 @@ import frc.robot.subsystems.Peripherals;
 public class FaceTarget extends SequentialCommandGroup {
 
   private Drive drive;
-  private double turnAngle;
   private JSONArray turnPath;
 
   private Peripherals peripherals;

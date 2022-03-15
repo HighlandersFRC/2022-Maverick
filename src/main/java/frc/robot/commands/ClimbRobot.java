@@ -6,14 +6,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
-import edu.wpi.first.wpilibj.Timer;
 
 public class ClimbRobot extends CommandBase {
   /** Creates a new ClimbRobot. */
   private Climber climber;
   private double percent;
 
-  private double initTime = 0;
   public ClimbRobot(Climber climber, double percent) {
     this.climber = climber;
     this.percent = percent;

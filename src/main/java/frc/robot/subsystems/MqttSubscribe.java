@@ -23,10 +23,6 @@ public class MqttSubscribe implements MqttCallback  {
 	private static final String topic = "/sensors/camera";
 
 	private boolean connection = false;
-
-	private double crashTime;
-	private double startTime;
-
 	private double timeSinceLastMessage = 0;
 	private double timeOfLastMessage = 0;
 
@@ -81,7 +77,6 @@ public class MqttSubscribe implements MqttCallback  {
 					
 					// System.out.println("Subscribed");
 					// System.out.println("Listening");
-					startTime = Timer.getFPGATimestamp();
 					// System.out.println("Start Time: " + startTime);
 
 				} catch (MqttException me) {
@@ -104,7 +99,6 @@ public class MqttSubscribe implements MqttCallback  {
 		// System.out.println("CONNECTION LOST");
 		SmartDashboard.putBoolean("HAS CAMERA", false);
 		connection = false;
-		crashTime = Timer.getFPGATimestamp();
 		// System.out.println("Crash Time: "+ crashTime);
 		
 	}
