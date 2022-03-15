@@ -10,6 +10,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.tools.math.Vector;
@@ -128,6 +129,9 @@ public class SwerveModule extends SubsystemBase {
 
     // method run when robot boots up, sets up Current Limits, and Frame Periods to limit CAN usage, as well as tells internal encoder where it actually is
     public void init() {
+        angleMotor.configFactoryDefault();
+        driveMotor.configFactoryDefault();
+
         angleMotor.setSelectedSensorPosition(radiansToTics(degreesToRadians(absoluteEncoder.getAbsolutePosition())));
         angleMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35 , 0.5));
         angleMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 60, 60, 0.5));
@@ -193,6 +197,21 @@ public class SwerveModule extends SubsystemBase {
     public double ticsPerSecondToSpeed(double tics) {
         double speed = (tics * Constants.WHEEL_CIRCUMFRENCE)/(Constants.GEAR_RATIO * Constants.FALCON_TICS_PER_ROTATION);
         return speed;
+    }
+
+    public void postDriveMotorSpeed() {
+        if(moduleNum == 1) {
+            SmartDashboard.putNumber("MODULE 1", ticsPer100MSToSpeed(driveMotor.getSelectedSensorVelocity()));
+        }
+        if(moduleNum == 2) {
+            SmartDashboard.putNumber("MODULE 2", ticsPer100MSToSpeed(driveMotor.getSelectedSensorVelocity()));
+        }
+        if(moduleNum == 3) {
+            SmartDashboard.putNumber("MODULE 3", ticsPer100MSToSpeed(driveMotor.getSelectedSensorVelocity()));
+        }
+        if(moduleNum == 4) {
+            SmartDashboard.putNumber("MODULE 4", ticsPer100MSToSpeed(driveMotor.getSelectedSensorVelocity()));
+        }
     }
 
     // motor velocity units to speed
@@ -283,6 +302,7 @@ public class SwerveModule extends SubsystemBase {
             }
         }
 
+        postDriveMotorSpeed();
         
     }
 }

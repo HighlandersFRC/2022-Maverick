@@ -424,6 +424,10 @@ public class Drive extends SubsystemBase {
             averagedTheta = currentTheta + estimatedTheta;
         }
 
+        // averagedX = estimatedX;
+        // averagedY = estimatedY;
+        // averagedTheta = estimatedTheta;
+
         currentFusedOdometry[0] = averagedX;
         currentFusedOdometry[1] = averagedY;
         currentFusedOdometry[2] = averagedTheta;
@@ -697,9 +701,9 @@ public class Drive extends SubsystemBase {
             }
             // otherwise set velocity by checking difference between wanted position and current position divided by time
             else {
-                velocityX = (currentPoint.getDouble("x") - currentX)/(currentPointTime - time);
-                velocityY = (currentPoint.getDouble("y") - currentY)/(currentPointTime - time);
-                thetaChange = (angleDifference)/(currentPointTime - time);
+                velocityX = (currentPoint.getDouble("x") - currentX)/((currentPointTime - (time + (2 * cyclePeriod))));
+                velocityY = (currentPoint.getDouble("y") - currentY)/((currentPointTime - (time + (2 * cyclePeriod))));
+                thetaChange = (angleDifference)/((currentPointTime - (time + (2 * cyclePeriod))));
             }
             velocityArray[0] = velocityX;
             velocityArray[1] = velocityY;
@@ -720,9 +724,9 @@ public class Drive extends SubsystemBase {
             }
             // otherwise set velocity by checking difference between next point and current position divided by time
             else {
-                velocityX = (nextPoint.getDouble("x") - currentX)/(nextPointTime - time);
-                velocityY = (nextPoint.getDouble("y") - currentY)/(nextPointTime - time);
-                thetaChange = (angleDifference)/(nextPointTime - time);
+                velocityX = (nextPoint.getDouble("x") - currentX)/((nextPointTime - (time + (2 * cyclePeriod))));
+                velocityY = (nextPoint.getDouble("y") - currentY)/((nextPointTime - (time + (2 * cyclePeriod))));
+                thetaChange = (angleDifference)/(nextPointTime - (time + (2 * cyclePeriod)));
             }
             velocityArray[0] = velocityX;
             velocityArray[1] = velocityY;
@@ -768,9 +772,9 @@ public class Drive extends SubsystemBase {
             }
             // otherwise set velocity by checking difference between current point and current position divided by time
             else {
-                velocityX = (currentPoint.getDouble("x") - currentX)/(currentPointTime - time);
-                velocityY = (currentPoint.getDouble("y") - currentY)/(currentPointTime - time);
-                thetaChange = (angleDifference)/(currentPointTime - time);
+                velocityX = (currentPoint.getDouble("x") - currentX)/((currentPointTime - (time + (2 * cyclePeriod))));
+                velocityY = (currentPoint.getDouble("y") - currentY)/((currentPointTime - (time + (2 * cyclePeriod))));
+                thetaChange = (angleDifference)/(currentPointTime - (time + (2 * cyclePeriod)));
             }
         }
         // if in the interpolation range and curving towards next line segment between current point and next point
@@ -832,9 +836,9 @@ public class Drive extends SubsystemBase {
             }
             // otherwise set velocity by checking difference between next point and current position divided by time
             else {
-                velocityX = (nextPoint.getDouble("x") - currentX)/(nextPointTime - time);
-                velocityY = (nextPoint.getDouble("y") - currentY)/(nextPointTime - time);
-                thetaChange = (angleDifference)/(nextPointTime - time);
+                velocityX = (nextPoint.getDouble("x") - currentX)/(nextPointTime - (time + (2 * cyclePeriod)));
+                velocityY = (nextPoint.getDouble("y") - currentY)/(nextPointTime - (time + (2 * cyclePeriod)));
+                thetaChange = (angleDifference)/(nextPointTime - (time + cyclePeriod));
             }
         }
         velocityArray[0] = velocityX;

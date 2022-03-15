@@ -27,6 +27,14 @@ public class MagIntake extends SubsystemBase {
   public MagIntake(PneumaticsControl pneumatics) {
     this.pneumatics = pneumatics;
 
+    
+  }
+
+  public void init() {
+    backMagazine.configFactoryDefault();
+    frontMagazine.configFactoryDefault();
+    intakeMotor.configFactoryDefault();
+
     backMagazine.config_kP(0, 0.75);
     backMagazine.config_kI(0, 0);
     backMagazine.config_kD(0, 0);
@@ -36,9 +44,7 @@ public class MagIntake extends SubsystemBase {
     frontMagazine.config_kI(0, 0.0);
     frontMagazine.config_kD(0, 0.0);
     frontMagazine.config_IntegralZone(0, 0);
-  }
 
-  public void init() {
     setDefaultCommand(new MagIntakeDefault(this));
     backMagazine.setNeutralMode(NeutralMode.Brake);
     intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);

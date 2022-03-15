@@ -111,7 +111,7 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
 
     // System.out.println("@@@@@@@@@@@ " + Math.toDegrees(peripherals.getNavxAngle());
 
-    String strOdomList = (odometryFusedX + "," + odometryFusedY + ","+ odometryFusedTheta + "," + currentTime + "," + currentXVelocity + "," + currentYVelocity + "," + currentThetaVelocity + "\n");
+    String strOdomList = (odometryFusedX + "," + odometryFusedY + ","+ odometryFusedTheta + "," + currentTime + "," + desiredVelocityArray[0] + "," + desiredVelocityArray[1] + "," + desiredVelocityArray[2] + "\n");
 
         try {
           pointsList.add(strOdomList);

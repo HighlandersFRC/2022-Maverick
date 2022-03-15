@@ -295,7 +295,7 @@ public class Robot extends TimedRobot {
     OI.driverLT.whileHeld(new Outtake(magIntake));
 
     OI.driverA.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 6.25, 1400, 0.5, 0.5, shotAdjuster));
-    OI.driverB.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 23.0, 1490, 0.75, 0.75, shotAdjuster));
+    OI.driverB.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 22.0, 1490, 0.75, 0.75, shotAdjuster));
     OI.driverY.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 9.25, 1400, 0.5, 0.5, shotAdjuster));
     OI.driverX.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 27, 1900, 0.5, 0.5, shotAdjuster));
     OI.driverMenuButton.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 25, 900, 0.5, 0.5, shotAdjuster));

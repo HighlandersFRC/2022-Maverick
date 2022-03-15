@@ -26,9 +26,12 @@ public class Shooter extends SubsystemBase {
 
   // method run to set PID values and sets motors to Coast
   public void init() {
-     leftShooter.setNeutralMode(NeutralMode.Coast);
-     rightShooter.setNeutralMode(NeutralMode.Coast);
-     rightShooter.setInverted(InvertType.InvertMotorOutput);
+    leftShooter.configFactoryDefault();
+    rightShooter.configFactoryDefault();
+
+    leftShooter.setNeutralMode(NeutralMode.Coast);
+    rightShooter.setNeutralMode(NeutralMode.Coast);
+    rightShooter.setInverted(InvertType.InvertMotorOutput);
 
     rightShooter.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 0, 0));
     rightShooter.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 0, 0));
