@@ -37,6 +37,7 @@ public class FireBalls extends SequentialCommandGroup {
           // new VisionAlignment(drive, peripherals),
           new SetHoodPosition(hood, hoodPosition, distance, adjuster)
       ),
+      // new FaceTarget(drive, peripherals, offset),
       new TurnBackMag(magIntake, 360),
       //new EjectBalls(magIntake, lights, 0.55, 0.85, firstBallTimeout),
       //new EjectBalls(magIntake, 0.0, 0, 0.001),

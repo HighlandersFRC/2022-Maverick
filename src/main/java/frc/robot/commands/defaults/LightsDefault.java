@@ -8,7 +8,7 @@ public class LightsDefault extends CommandBase {
   private Lights lights;
   public LightsDefault(Lights lights) {
     this.lights = lights;
-    addRequirements(this.lights);
+    // addRequirements(this.lights);
   }
 
   // Called when the command is initially scheduled.

@@ -19,14 +19,17 @@ public class Peripherals extends SubsystemBase {
 
   private final Navx navx = new Navx(ahrs);
 
+  private Lights lights;
+
   private final VisionCamera visionCamera = new VisionCamera();
 
   private MqttSubscribe mqttSubscribe;
 
   private final PowerDistribution m_pdh = new PowerDistribution(1, ModuleType.kRev);
   /** Creates a new Peripherals. */
-  public Peripherals(MqttSubscribe mqttSubscribe) {
+  public Peripherals(MqttSubscribe mqttSubscribe, Lights lights) {
    this.mqttSubscribe = mqttSubscribe;
+   this.lights = lights;
   }
 
   public void init() {
@@ -34,6 +37,10 @@ public class Peripherals extends SubsystemBase {
     zeroNavx();
     turnLightRingOn();
     setDefaultCommand(new PeripheralsDefault(this));
+  }
+
+  public boolean hasLock() {
+    return visionCamera.hasLock();
   }
 
   public double[] getVisionArray() {

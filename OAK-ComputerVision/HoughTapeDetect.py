@@ -129,22 +129,8 @@ def convertCoordinates(x, y, z):
     # print(mapped_point)
     return mapped_point
 
-# def getEstimatedTapes(numTapes):
-#     xArray = []
-#     yArray = []
-#     match numTapes:
-#         case 1:
-#             xArray[0] = 
-#             yArray[0] = 
-#             xArray[1] = 
-#             yArray[1] = 
-#         case 2:
-#             averageX = 
-
-stepSize = 0.05
-
 cameraResolutionWidth = 640.0
-cameraResolutionHeight = 480.0
+cameraResolutionHeight = 400.0
 
 HFOV = 69
 
@@ -152,30 +138,18 @@ HFOV = 69
 
 # Camera elevation from horizontal, remember to change
 cameraElevation = 40 * pi/180.0
-# real diff is 61
-targetHeightDifference = 83
+
+targetHeightDifference = 80
 
 # Start defining a pipeline
 pipeline = depthai.Pipeline()
 
 cam_rgb = pipeline.create(depthai.node.ColorCamera)
-cam_rgb.setPreviewSize(640, 480)
 cam_rgb.setResolution(depthai.ColorCameraProperties.SensorResolution.THE_1080_P)
+cam_rgb.setPreviewSize(640, 400)
 # cam_rgb.setIspScale(2, 3)
-# cam_rgb.setPreviewSize(cameraResolutionWidth, cameraResolutionHeight)
-cam_rgb.setPreviewKeepAspectRatio(True)
-
-# manipConfig = depthai.ImageManipConfig()
-# manipConfig.setCropRect(0.2, 0.2, 0, 0)
-
-# configQueue.send(manipConfig)
-# manip = pipeline.create(depthai.node.ImageManip)
-
-# manip.setResizeThumbnail(200,200, 200, 200, 200)
 
 xout_rgb = pipeline.create(depthai.node.XLinkOut)
-configIn = pipeline.create(depthai.node.XLinkIn)
-configIn.setStreamName('config')
 xout_rgb.setStreamName("rgb")
 cam_rgb.preview.link(xout_rgb.input)
 
@@ -183,13 +157,13 @@ controlIn = pipeline.create(depthai.node.XLinkIn)
 controlIn.setStreamName('control')
 controlIn.out.link(cam_rgb.inputControl)
 
-lowerH = 43
-upperH = 166
+lowerH = 32
+upperH = 91
 
-lowerS = 221
+lowerS = 75
 upperS = 255
 
-lowerV = 132
+lowerV = 109
 upperV = 255
 
 expTime = 1000
@@ -210,9 +184,9 @@ xoutSpatialData.setStreamName("spatialData")
 xinSpatialCalcConfig.setStreamName("spatialCalcConfig")
 
 # MonoCamera
-monoLeft.setResolution(depthai.MonoCameraProperties.SensorResolution.THE_720_P)
+monoLeft.setResolution(depthai.MonoCameraProperties.SensorResolution.THE_400_P)
 monoLeft.setBoardSocket(depthai.CameraBoardSocket.LEFT)
-monoRight.setResolution(depthai.MonoCameraProperties.SensorResolution.THE_720_P)
+monoRight.setResolution(depthai.MonoCameraProperties.SensorResolution.THE_400_P)
 monoRight.setBoardSocket(depthai.CameraBoardSocket.RIGHT)
 
 outputDepth = True
@@ -226,12 +200,10 @@ stereo.setOutputDepth(outputDepth)
 stereo.setOutputRectified(outputRectified)
 stereo.setConfidenceThreshold(255)
 stereo.setDepthAlign(depthai.CameraBoardSocket.RGB)
-# setRectifyEdgeFillColor(-1)
-stereo.setOutputSize(640, 480)
+stereo.setOutputSize(640, 400)
 
 stereo.setLeftRightCheck(lrcheck)
 stereo.setSubpixel(subpixel)
-# stereo.setExtendedDisparity(extended)
 
 monoLeft.out.link(stereo.left)
 monoRight.out.link(stereo.right)
@@ -251,27 +223,8 @@ spatialLocationCalculator.initialConfig.addROI(config)
 spatialLocationCalculator.out.link(xoutSpatialData.input)
 xinSpatialCalcConfig.out.link(spatialLocationCalculator.inputConfig)
 
-# imu = pipeline.create(depthai.node.IMU)
-# xlinkOut = pipeline.create(depthai.node.XLinkOut)
-
-# xlinkOut.setStreamName("imu")
-
-# # imu.enableIMUSensor(depthai.IMUSensor.ROTATION_VECTOR, 400)
-# imu.enableIMUSensor(depthai.IMUSensor.GAME_ROTATION_VECTOR, 400)
-
-# imu.setBatchReportThreshold(1)
-
-# imu.setMaxBatchReports(10)
-
-# imu.out.link(xlinkOut.input)
-
-# Pipeline defined, now the device is assigned and pipeline is started
 device = depthai.Device(pipeline)
 device.startPipeline()
-
-# configQueue = device.getInputQueue('config')
-
-# imuQueue = device.getOutputQueue(name="imu", maxSize=50, blocking = False)
 
 # Output queue will be used to get the depth frames from the outputs defined above
 depthQueue = device.getOutputQueue(name="depth", maxSize=1, blocking=False)
@@ -308,16 +261,12 @@ ctrl.setAutoFocusMode(depthai.RawCameraControl.AutoFocusMode.OFF)
 ctrl.setManualFocus(0)
 controlQueue.send(ctrl)
 
-
-# configQueue.send(manipConfig)
-
 cfg = depthai.SpatialLocationCalculatorConfig()
 
 avgDistance = 0
 avgAngle = 0
 
 while True:
-    # print(device.getInputQueueNames())
     # lowerH = cv2.getTrackbarPos('Lower H', "HSV Tuner")
     # upperH = cv2.getTrackbarPos('Higher H', "HSV Tuner")
 
@@ -326,19 +275,11 @@ while True:
 
     # lowerV = cv2.getTrackbarPos('Lower V', "HSV Tuner")
     # upperV = cv2.getTrackbarPos('Higher V', "HSV Tuner")
-    # getImuAngle()
-
-    # inDepth = depthQueue.get() # blocking call, will wait until a new data has arrived
-    
-    # depthFrame = inDepth.getFrame()
-    # depthFrameColor = cv2.normalize(depthFrame, None, 255, 0, cv2.NORM_INF, cv2.CV_8UC1)
-    # depthFrameColor = cv2.equalizeHist(depthFrameColor)
-    # depthFrameColor = cv2.applyColorMap(depthFrameColor, cv2.COLORMAP_OCEAN)
 
     in_rgb = q_rgb.tryGet()
     if in_rgb is not None:
-        frame = in_rgb.getCvFrame()
         startTime = time.time()
+        frame = in_rgb.getCvFrame()
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         lowerThreshold = np.array([lowerH, lowerS, lowerV])
         upperThreshold = np.array([upperH, upperS, upperV])
@@ -370,32 +311,20 @@ while True:
             bottomRightY = float(boxArray[1][1])
             boxColor = (0,0,255)
 
-            if(peri > 35 and cntArea > 100):
-                # cv2.drawContours(frame,[boxArray],0,boxColor,2)
+            if(peri > 35 and cntArea > 50):
+                cv2.drawContours(frame,[boxArray],0,boxColor,2)
 
-                topLeft = depthai.Point2f(-0.01 + (topLeftX/cameraResolutionWidth), -0.01 + (topLeftY/cameraResolutionHeight))
-                bottomRight = depthai.Point2f(0.01 + (bottomRightX/cameraResolutionWidth), 0.01 + (bottomRightY/cameraResolutionHeight))
+                topLeft = depthai.Point2f(-0.005 + (topLeftX/cameraResolutionWidth), -0.005 + (topLeftY/cameraResolutionHeight))
+                bottomRight = depthai.Point2f(0.005 + (bottomRightX/cameraResolutionWidth), 0.005 + (bottomRightY/cameraResolutionHeight))
 
                 configData = depthai.SpatialLocationCalculatorConfigData()
 
                 configData.calculationAlgorithm = depthai.SpatialLocationCalculatorAlgorithm.MIN
 
-                # print(configData.calculationAlgorithm)
-
                 configData.roi = depthai.Rect(topLeft, bottomRight)
-
-                # print("TL: " + str(topLeft.x) + " BR: " + str(bottomRight.x))
-
-                # print("TOP LEFT: " + str(topLeftX) + " BOTTOM RIGHT: " + str(bottomRightX))
 
                 roiList.append(configData)
 
-        
-
-        # if(len(roiList) == 0):
-        #     centerConfigData = depthai.SpatialLocationCalculatorConfigData()
-        #     centerConfigData.roi = depthai.Rect(depthai.Point2f(0.49, 0.49), depthai.Point2f(0.51, 0.51))
-        #     roiList.append(centerConfigData)
 
         if(len(roiList) > 0):
             cfg.setROIs(roiList)
@@ -403,7 +332,7 @@ while True:
             spatialCalcConfigInQueue.send(cfg)
         else:
             jsonString = '{"Distance":' + '-10' + ', "Angle":' + '-100000' + ', "Confidence":' + '0' + ', "Timestamp":' + str(time.time()) +'}'
-            # print("jsonString")
+            print("jsonString")
             publish(client, jsonString)
             # cv2.imshow("frame", frame)
             # cv2.imshow("mask", result)
@@ -411,8 +340,6 @@ while True:
 
         inDepthAvg = spatialCalcQueue.get() # blocking call, will wait until a new data has arrived
         spatialData = inDepthAvg.getSpatialLocations()
-
-        # print("SPDATA: " + str(len(spatialData)))
 
         zList = []
         xList = []
@@ -423,58 +350,26 @@ while True:
 
         pixelAdditionCounter = 0
 
-        # spatialCalcQueue.get
-        # print("====================================")
         for depthData in spatialData:
             roi = depthData.config.roi
-            # roi = roi.denormalize(width=depthFrameColor.shape[1], height=depthFrameColor.shape[0])
-            roi = roi.denormalize(width=640, height=480)
+            roi = roi.denormalize(width=640, height=400)
             xmin = int(roi.topLeft().x)
             ymin = int(roi.topLeft().y)
             xmax = int(roi.bottomRight().x)
             ymax = int(roi.bottomRight().y)
 
-            # xCenterPixels = ((xMin + xMax) * cameraResolutionHeight)/2
-            # yCenterPixels = ((yMin + yMax) * cameraResolutionWidth)/2
-
-            # pixelAdditionCounter = pixelAdditionCounter + 1
-
             zCoordinateCamera = (depthData.spatialCoordinates.z)/25.4
             yCoordinateCamera = (depthData.spatialCoordinates.y)/25.4
             xCoordinateCamera = (depthData.spatialCoordinates.x)/25.4
 
-            # print(depthData.depthAveragePixelCount)
+            # print("BEFORE: " + str(yCoordinateCamera))
 
             convertedCoordinates = convertCoordinates(xCoordinateCamera, yCoordinateCamera, zCoordinateCamera)
-
-            # print("XRAW: " + str(xCoordinateCamera) + " Y: " + str(yCoordinateCamera) + " Z: " + str(zCoordinateCamera))
-
-            # print("X: " + str(convertedCoordinates[0]) + " Y: " + str(convertedCoordinates[1]) + " Z: " + str(convertedCoordinates[2]))
 
             if(convertedCoordinates[0] != 0):
                 zList.append(convertedCoordinates[2])
                 xList.append(convertedCoordinates[0])
                 yList.append(convertedCoordinates[1])
-
-            # fontType = cv2.FONT_HERSHEY_TRIPLEX
-            # cv2.rectangle(depthFrameColor, (xmin, ymin), (xmax, ymax), color, cv2.FONT_HERSHEY_SCRIPT_SIMPLEX)
-            # cv2.putText(frame, f"X: {int(depthData.spatialCoordinates.x)} mm", (xmin + 10, ymin + 20), fontType, 0.5, color)
-            # cv2.putText(frame, f"Y: {int(depthData.spatialCoordinates.y)} mm", (xmin + 10, ymin + 35), fontType, 0.5, color)
-            # cv2.putText(frame, f"Z: {int(depthData.spatialCoordinates.z)} mm", (xmin + 10, ymin + 50), fontType, 0.5, color)
-
-        # zMedian = np.median(zList)
-
-        # for i in range(0, len(zList) - 1):
-        #     if(abs(zList[i] - zMedian) >= 20):
-        #         zList.remove(zList[i])
-        #         xList.remove(xList[i])
-        #         yList.remove(yList[i])
-
-        # for i in range(0, len(zList)):
-        #     factor = targetHeightDifference/zList[i]
-        #     zList[i] = zList[i] * factor
-        #     # xList[i] = xList[i] * factor
-        #     # yList[i] = yList[i] * factor
 
         if(len(xList) != 0):
             xAverage = np.average(np.array(xList))
@@ -485,34 +380,26 @@ while True:
             targetCenterY = targetResult.x[1]
 
             angle = math.atan(targetCenterY/targetCenterX)
-            distance = math.sqrt((targetCenterX ** 2) + (targetCenterY ** 2))
+            distanceToTargetHypotenuse = math.sqrt((targetCenterX ** 2) + (targetCenterY ** 2))
 
-            jsonString = '{"Distance":' + str(distance) + ', "Angle":' + str(angle) + ', "Confidence":' + str(len(xList)) + ', "Timestamp":' + str(time.time()) +'}'
+            targetHeight = 96
 
-            publish(client, jsonString)
+            distance = math.sqrt((distanceToTargetHypotenuse ** 2) - (targetHeight ** 2))
+
+            jsonString = '{"Distance":' + str(distance) + ', "Angle":' + str(angle) + ', "Confidence":' + str(len(roiList)) + ', "Timestamp":' + str(time.time()) +'}'
 
             endTime = time.time()
 
-            # print("START: " + str(endTime -  startTime))
+            # print(startTime - endTime)
+
+            publish(client, jsonString)
 
             print("TargetX: " + str(targetCenterX) + " TargetY: " + str(targetCenterY) + " Distance: " + str(distance) + " Angle: " + str(180 * (angle)/pi) + " Confidence: " + str(len(xList)))
 
-            # print(xList)
-        # else:
-            
-        # publish(client, "Hello")
-
-            # if(abs(targetRadiusCheck - 576) > 100):
-            #     print("Didn't get correct target")
-            # else:
-            # print("CenterX: " + str(targetCenterX) + "CenterY: " + str(targetCenterY))
-
-        # print(xList)
-
 
         # cv2.imshow("depth", depthFrameColor)
-        # cv2.imshow("frame", frame)
-        # cv2.imshow("mask", result)
+        cv2.imshow("frame", frame)
+        cv2.imshow("mask", result)
         # cv2.imshow("blur", blur)
 
     # newConfig = False

@@ -12,6 +12,7 @@ import org.json.JSONTokener;
 
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
 import frc.robot.commands.FireBalls;
 import frc.robot.commands.FireBallsNoVision;
@@ -48,9 +49,10 @@ public class ThreeBallAuto extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake);
     addCommands(new IntakeDown(magIntake), 
-    new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 22, 1400, 0.75, 0.75, adjuster), 
+    new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 22, 1400, 0.75, 0.75, adjuster, 0), 
     new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON, false), new IntakeBalls(magIntake, lights)),
-    new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 22, 1650, 0.75, 0.75, adjuster));
+    new WaitCommand(0.25),
+    new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 22, 1650, 0.75, 0.75, adjuster, 0));
   }
 }
 

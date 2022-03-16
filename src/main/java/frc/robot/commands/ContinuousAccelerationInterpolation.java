@@ -74,7 +74,7 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
 
     }
       if(generateTurnPath) {
-        pathPointsJSON = drive.getJSONTurnPath(0);
+        pathPointsJSON = drive.testGetCameraTurn();
       }
       initTime = Timer.getFPGATimestamp();
       // System.out.println("Time: " + currentTime + " Angle: " + drive.getOdometryAngle() + " OdometryX: " + currentX + " PredictedX: " + estimatedX + " OdometryY: " + currentY + " PredictedY: " + estimatedY);

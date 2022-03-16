@@ -11,12 +11,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.CancelClimber;
 import frc.robot.commands.ClimbRobot;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
+import frc.robot.commands.FaceTarget;
+import frc.robot.commands.FireBalls;
 import frc.robot.commands.FireBallsNoVision;
 import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.LowerClimberToBar;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.RaiseClimber;
 import frc.robot.commands.RunClimberMaxHeight;
+import frc.robot.commands.TurnDriveTrain;
 import frc.robot.commands.ZeroNavxMidMatch;
 import frc.robot.commands.autos.FiveBallAuto;
 import frc.robot.commands.autos.OneBallAuto;
@@ -41,6 +44,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.System.Logger.Level;
 
 import org.json.JSONArray;
 import org.json.JSONTokener;
@@ -66,15 +70,15 @@ public class Robot extends TimedRobot {
   private MqttPublish publish = new MqttPublish();
   private MqttSubscribe subscribe = new MqttSubscribe();
 
-  private final Peripherals peripherals = new Peripherals(subscribe);
-
-  private final Drive drive = new Drive(peripherals, publish);
   private final Shooter shooter = new Shooter();
   private final Hood hood  = new Hood();
 
   private final Climber climber = new Climber(pneumatics);
 
   private Lights lights = new Lights();
+
+  private final Peripherals peripherals = new Peripherals(subscribe, lights);
+  private final Drive drive = new Drive(peripherals, publish);
 
   private MagIntake magIntake = new MagIntake(pneumatics);
 
@@ -199,6 +203,12 @@ public class Robot extends TimedRobot {
     if(!magIntake.getUpperBeamBreak()) {
       lights.setMode(LEDMode.RAINBOW);
     }
+    if(peripherals.hasLock()) {
+      lights.setMode(LEDMode.GREEN);
+    }
+    else if(!peripherals.hasLock()) {
+      lights.setMode(LEDMode.REDFLASH);
+    }
     //System.out.println(peripherals.getVisionArray());
     CommandScheduler.getInstance().run();
 
@@ -295,9 +305,9 @@ public class Robot extends TimedRobot {
     OI.driverLT.whileHeld(new Outtake(magIntake));
 
     OI.driverA.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 6.25, 1400, 0.5, 0.5, shotAdjuster));
-    OI.driverB.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 22.0, 1490, 0.75, 0.75, shotAdjuster));
+    OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 22.0, 1490, 0.75, 0.75, shotAdjuster, 0));
     OI.driverY.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 9.25, 1400, 0.5, 0.5, shotAdjuster));
-    OI.driverX.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 27, 1900, 0.5, 0.5, shotAdjuster));
+    OI.driverX.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 19, 1425, 0.75, 0.75, shotAdjuster, 0));
     OI.driverMenuButton.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 25, 900, 0.5, 0.5, shotAdjuster));
 
 

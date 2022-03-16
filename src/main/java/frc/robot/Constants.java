@@ -20,7 +20,9 @@ public final class Constants {
 
     public static final double WHEEL_CIRCUMFRENCE = Math.PI * WHEEL_DIAMETER; // m
 
-    public static final double TOP_SPEED = feetToMeters(16.3); // m/sec
+    // public static final double TOP_SPEED = feetToMeters(16.3); // m/sec
+
+    public static final double TOP_SPEED = 4; // m/sec
 
     // used to be 6.75 for SDS mk4, 6.37 for Morris
     public static final double GEAR_RATIO = 6.75;

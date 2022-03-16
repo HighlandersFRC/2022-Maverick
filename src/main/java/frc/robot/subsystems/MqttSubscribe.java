@@ -110,6 +110,7 @@ public class MqttSubscribe implements MqttCallback  {
 
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
         timeSinceLastMessage = Timer.getFPGATimestamp() - timeOfLastMessage;
+		System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< " + timeSinceLastMessage);
 		timeOfLastMessage = Timer.getFPGATimestamp();
 		latestMessage = message.toString();
 		SmartDashboard.putBoolean("HAS CAMERA", true);

@@ -33,7 +33,7 @@ public class Lights extends SubsystemBase {
   }
   
   public void init() {
-    setDefaultCommand(new LightsDefault(this));
+    // setDefaultCommand(new LightsDefault(this));
   }
 
   public void autoInit() {
