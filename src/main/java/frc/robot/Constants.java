@@ -62,35 +62,19 @@ public final class Constants {
     };
     
     public static double[] getShooterValues(double distance) {
-        SmartDashboard.putNumber("Input dist", distance);
-        double minDif = 9999999;
-        int index = 0;
-        for (int i = 0; i < SHOOTING_LOOKUP_TABLE.length; i ++) {
-            if (Math.abs(SHOOTING_LOOKUP_TABLE[i][0] - distance) < minDif) {
-                minDif = Math.abs(SHOOTING_LOOKUP_TABLE[i][0] - distance);
-                index = i;
-                SmartDashboard.putBoolean("INSIDE: " + i, true);
-            }
-            else {
-                SmartDashboard.putBoolean("INSIDE: " + i, false);
-            }
-            // SmartDashboard.putNumber("MIN DIST" + i, minDif);
-            SmartDashboard.putNumber("Index", index);
-        }
-        
-        double[] shootingValues = {SHOOTING_LOOKUP_TABLE[index][1], SHOOTING_LOOKUP_TABLE[index][2]};
-        System.out.println(SHOOTING_LOOKUP_TABLE[index][0]);
-        return shootingValues;
-        /*
-
-        //If the distance is closer than the first setpoint
+        int lastIndex = SHOOTING_LOOKUP_TABLE.length - 1;
         if (distance < SHOOTING_LOOKUP_TABLE[0][0]) {
-            return {SHOOTING_LOOKUP_TABLE[0][1], SHOOTING_LOOKUP_TABLE[0][2]};
-        } else if (distance > SHOOTING_LOOKUP_TABLE[-1][0]) {
-            return {SHOOTING_LOOKUP_TABLE[-1][1], SHOOTING_LOOKUP_TABLE[-1][2]};
+            //If the distance is closer than the first setpoint
+            double[] returnArr = {SHOOTING_LOOKUP_TABLE[0][1], SHOOTING_LOOKUP_TABLE[0][2]};
+            return returnArr;
+        } else if (distance > SHOOTING_LOOKUP_TABLE[lastIndex][0]) {
+            //If the distance is farther than the last setpoint
+            double[] returnArr = {SHOOTING_LOOKUP_TABLE[lastIndex][1], SHOOTING_LOOKUP_TABLE[lastIndex][2]};
+            return returnArr;
         } else {
             for (int i = 0; i < SHOOTING_LOOKUP_TABLE.length; i ++) {
-                if (distance > SHOOTING_LOOKUP_TABLE[i][0] && distance < SHOOTING_LOOKUP_TABLE[i + 1]) {
+                if (distance > SHOOTING_LOOKUP_TABLE[i][0] && distance < SHOOTING_LOOKUP_TABLE[i + 1][0]) {
+                    //If the distance is in the table of setpoints
                     //Calculate where distance is between setpoints
                     double leftDif = distance - SHOOTING_LOOKUP_TABLE[i][0];
                     double percent = leftDif / (SHOOTING_LOOKUP_TABLE[i + 1][0] - SHOOTING_LOOKUP_TABLE[i][0]);
@@ -104,12 +88,14 @@ public final class Constants {
                     double newHood = hood1 + (percent * (hood2 - hood1));
                     double newRPM = rpm1 + (percent * (rpm2 - rpm1));
                     
-                    return {newHood, newRPM};
+                    double[] returnArr = {newHood, newRPM};
+                    return returnArr;
                 }
             }
-        }
-
-        */
+            //Should never run
+            double[] returnArr = {0, 0};
+            return returnArr;
+        }  
     }
 
     public static double inchesToMeters(double inches) {
