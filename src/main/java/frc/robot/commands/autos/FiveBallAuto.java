@@ -61,7 +61,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake);
     addCommands(new IntakeDown(magIntake),
-        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 12, 1400, 0.5, 0.01, adjuster, 0), 
+        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 12, 1400, 0.5, 0.01, adjuster, 0, false), 
         new ParallelRaceGroup(
             new ContinuousAccelerationInterpolation(drive, pathJSON, false),
             new IntakeBalls(magIntake, lights)),
@@ -71,7 +71,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new ParallelRaceGroup(
             new ContinuousAccelerationInterpolation(drive, pathJSON2, false),
             new IntakeBalls(magIntake, lights)), 
-        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 26, 1700, 0.5, 1, adjuster, 0.1));
+        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 26, 1700, 0.5, 1, adjuster, 0.1, false));
   }
 }
 

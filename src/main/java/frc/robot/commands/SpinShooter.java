@@ -6,39 +6,45 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.subsystems.Peripherals;
 import frc.robot.subsystems.Shooter;
 import frc.robot.tools.ShotAdjuster;
 
 public class SpinShooter extends CommandBase {
   /** Creates a new SpinShooter. */
   private Shooter shooter;
+  private Peripherals peripherals;
   private double initialRPM;
   private double rpm;
   private int hasConsistentRPM = 0;
   private ShotAdjuster adjuster;
 
-  public SpinShooter(Shooter shooter, double rpm, double distance, ShotAdjuster adjuster) {
+  private Boolean useList = false;
+
+  //private double[] rpmList = {1400, 1400, 1400, 1430, 1430, 1440, 1440, 1470, 1470, 1470, 1500, 1530, 1530, 1530, 1530, 1530, 1530, 1560, 1560};
+  //private double[] distanceList = {58, 63, 67, 73, 79, 84, 88, 93, 98, 104, 109, 116, 121, 129, 136, 142, 147, 157, 167};
+
+  public SpinShooter(Shooter shooter, Peripherals peripherals, double rpm, ShotAdjuster adjuster, Boolean useList) {
     this.shooter = shooter;
     this.initialRPM = rpm;
     this.adjuster = adjuster;
+    this.useList = useList;
+    this.peripherals = peripherals;
     addRequirements(shooter);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      hasConsistentRPM = 0;
-    // rpm = (5.9021 * distance) + 1779.2;
-    
-    // if(rpm > 4500) {
-    //   rpm = 4500;
-    // }
-    // rpm = rpm + adjuster.getRPMAdjustment();
-    rpm = initialRPM + adjuster.getRPMAdjustment();
+    hasConsistentRPM = 0;
+    double distance = peripherals.getVisionArray()[0];
+    if (useList && distance != -1) {
+      rpm = Constants.getShooterValues(distance)[1] + adjuster.getRPMAdjustment();
+    } else {
+      rpm = initialRPM + adjuster.getRPMAdjustment();
+    }
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     //System.out.println("RPM: " + shooter.getShooterRPM());
@@ -53,13 +59,11 @@ public class SpinShooter extends CommandBase {
     
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     // shooter.setShooterPercent(0);
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     if(hasConsistentRPM > 5) {

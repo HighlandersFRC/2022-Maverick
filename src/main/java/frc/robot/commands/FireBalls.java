@@ -21,21 +21,20 @@ import frc.robot.tools.ShotAdjuster;
 public class FireBalls extends SequentialCommandGroup {
   /** Creates a new FireBalls. */
   private ShotAdjuster adjuster;
-  public FireBalls(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights, double hoodPosition, double shooterRPM, double firstBallTimeout, double secondBallTimeout, ShotAdjuster shotAdjuster, double offset) {
+  public FireBalls(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights, double hoodPosition, double shooterRPM, double firstBallTimeout, double secondBallTimeout, ShotAdjuster shotAdjuster, double offset, Boolean useList) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     this.adjuster = shotAdjuster;
     addRequirements(drive, magIntake, shooter, hood);
-    double distance = drive.getDistanceToTarget();
     // System.out.println("")
     // shooterRPM = shooterRPM + adjuster.getRPMAdjustment();
     // hoodPosition = hoodPosition + adjuster.getHoodAdjustment();
     addCommands(
       new ParallelCommandGroup(
-          new SpinShooter(shooter, shooterRPM, distance, adjuster),
+          new SpinShooter(shooter, peripherals, shooterRPM, adjuster, useList),
           new FaceTarget(drive, peripherals, offset),
           // new VisionAlignment(drive, peripherals),
-          new SetHoodPosition(hood, hoodPosition, distance, adjuster)
+          new SetHoodPosition(hood, peripherals, hoodPosition, adjuster, useList)
       ),
       // new FaceTarget(drive, peripherals, offset),
       new TurnBackMag(magIntake, 360),

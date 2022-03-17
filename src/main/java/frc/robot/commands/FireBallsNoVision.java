@@ -30,10 +30,10 @@ public class FireBallsNoVision extends SequentialCommandGroup {
     // hoodPosition = hoodPosition + adjuster.getHoodAdjustment();
     addCommands(
       new ParallelCommandGroup(
-          new SpinShooter(shooter, shooterRPM, distance, adjuster),
+          new SpinShooter(shooter, peripherals, shooterRPM, adjuster, false),
         //   new FaceTarget(drive, peripherals),
         //   new VisionAlignment(drive, peripherals),
-          new SetHoodPosition(hood, hoodPosition, distance, adjuster)
+          new SetHoodPosition(hood, peripherals, hoodPosition, adjuster, false)
       ),
       new TurnBackMag(magIntake, 360),
       //new EjectBalls(magIntake, lights, 0.55, 0.85, firstBallTimeout),

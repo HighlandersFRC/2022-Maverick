@@ -6,20 +6,26 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Peripherals;
 import frc.robot.tools.ShotAdjuster;
 
 public class SetHoodPosition extends CommandBase {
   /** Creates a new SetHoodPosition. */
   private Hood hood;
+  private Peripherals peripherals;
   private double initialPosition;
   private double position;
   private ShotAdjuster adjuster;
+  private Boolean useList = false;
 
-  public SetHoodPosition(Hood hood, double wantedPosition, double distance, ShotAdjuster adjuster) {
+  public SetHoodPosition(Hood hood, Peripherals peripherals, double wantedPosition, ShotAdjuster adjuster, Boolean useList) {
     this.hood = hood;
+    this.peripherals = peripherals;
     this.initialPosition = wantedPosition;
     this.adjuster = adjuster;
+    this.useList = useList;
     addRequirements(hood);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -27,18 +33,17 @@ public class SetHoodPosition extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // position = (0.0000001 * Math.pow(distance, 4)) + (-0.00008 * Math.pow(distance, 3)) + (0.0206 * Math.pow(distance, 2)) + (-2.0225 * distance) + 75;
-    // if(position > 25) {
-    //   position = 25;
-    // }
-    // position = position + adjuster.getHoodAdjustment();
-    // position = 22 + adjuster.getHoodAdjustment();
+    double distance = peripherals.getVisionArray()[0];
+    if (useList && distance != -1) {
+      position = Constants.getShooterValues(distance)[0] + adjuster.getHoodAdjustment();
+    } else {
+      position = initialPosition + adjuster.getHoodAdjustment();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    position = initialPosition + adjuster.getHoodAdjustment();
     hood.setHoodPosition(position);
     SmartDashboard.putNumber("WANTED HOOD", position);
     // hood.setHoodPercent(position);

@@ -32,7 +32,7 @@ public class VisionCamera {
 
             // System.out.println(message);
 
-            visionArray[0] = (jsonString.getDouble("Distance"))/39.37;
+            visionArray[0] = (jsonString.getDouble("Distance"));
             visionArray[1] = jsonString.getDouble("Angle");
             visionArray[2] = jsonString.getDouble("Confidence");
 
@@ -40,14 +40,15 @@ public class VisionCamera {
             if(visionArray[2] == 0) {
                 hasLock = false;
                 SmartDashboard.putBoolean("HAS LOCK-ON", false);
-                System.out.println("-----------------------------------------------");
+                // System.out.println("-----------------------------------------------");
                 visionArray[0] = -1;
                 visionArray[1] = 0;
             }
             else {
                 hasLock = true;
                 SmartDashboard.putBoolean("HAS LOCK-ON", true);
-                System.out.println("||||||||||||||||||||||||||||||||||||||||||||||||");
+                // System.out.println("||||||||||||||||||||||||||||||||||||||||||||||||");
+                SmartDashboard.putNumber("CAM DISTANCE", visionArray[0]);
             }
             return visionArray;
         }
