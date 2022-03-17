@@ -36,6 +36,10 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
 
     private JSONArray pathPointsJSON;
 
+    private double previousVelocityX = 0;
+    private double previousVelocityY = 0;
+    private double previousVelocityTheta = 0;
+
     private double[] desiredVelocityArray = new double[3];
     private double desiredThetaChange = 0;
     private boolean generateTurnPath;
@@ -102,6 +106,10 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
     currentYVelocity = (odometryFusedY - previousY)/timeDiff;
     currentThetaVelocity = (odometryFusedTheta - previousTheta)/timeDiff;
 
+    currentXVelocity = previousVelocityX;
+    currentYVelocity = previousVelocityY;
+    currentThetaVelocity = previousVelocityTheta;
+
     // call ConstantAccelerationInterpolation function
     desiredVelocityArray = drive.constantAccelerationInterpolation(odometryFusedX, odometryFusedY, odometryFusedTheta, currentXVelocity, currentYVelocity, currentThetaVelocity, currentTime, timeDiff, pathPointsJSON);
     
@@ -130,6 +138,10 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
     previousY = odometryFusedY;
     previousTheta = odometryFusedTheta;
     previousTime = currentTime;
+
+    previousVelocityX = desiredVelocityArray[0];
+    previousVelocityY = desiredVelocityArray[1];
+    previousVelocityTheta = desiredThetaChange;
     // previousEstimateX = estimatedX;
     // previousEstimateY = estimatedY;
     // previousEstimateTheta = estimatedTheta;
@@ -140,6 +152,7 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    drive.autoDrive(new Vector(0, 0), 0);
     try {
       for(int i = 0; i < pointsList.size(); i++) {
         out.write(pointsList.get(i));
