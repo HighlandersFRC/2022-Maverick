@@ -8,8 +8,8 @@ public class PneumaticsControl {
     
     //private final PneumaticsControlModule hub = new PneumaticsControlModule();
 
-    private final DoubleSolenoid intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
-    private final DoubleSolenoid climberSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+    private final DoubleSolenoid intakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 3);
+    private final DoubleSolenoid climberSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 2);
 
     public void setIntakeUp() {
         intakeSolenoid.set(Value.kForward);
