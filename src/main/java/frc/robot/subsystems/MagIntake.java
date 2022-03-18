@@ -26,10 +26,7 @@ public class MagIntake extends SubsystemBase {
 
   public MagIntake(PneumaticsControl pneumatics) {
     this.pneumatics = pneumatics;
-
-    
   }
-
   public void init() {
     backMagazine.configFactoryDefault();
     frontMagazine.configFactoryDefault();
@@ -44,6 +41,9 @@ public class MagIntake extends SubsystemBase {
     frontMagazine.config_kI(0, 0.0);
     frontMagazine.config_kD(0, 0.0);
     frontMagazine.config_IntegralZone(0, 0);
+
+    backMagazine.setNeutralMode(NeutralMode.Brake);
+    frontMagazine.setNeutralMode(NeutralMode.Brake);
 
     setDefaultCommand(new MagIntakeDefault(this));
     backMagazine.setNeutralMode(NeutralMode.Brake);
@@ -130,11 +130,12 @@ public class MagIntake extends SubsystemBase {
         backMagazine.set(ControlMode.PercentOutput, 0.0);
         frontMagazine.set(ControlMode.PercentOutput, 0.0);
       } else {
-        if(!getLowerBackBeamBreak()){
-          backMagazine.set(ControlMode.PercentOutput, 0.3);
-        } else{
-          backMagazine.set(ControlMode.PercentOutput, 0.0);
-        }
+          frontMagazine.set(ControlMode.PercentOutput, -0.5);
+          if(!getLowerBackBeamBreak()){
+            backMagazine.set(ControlMode.PercentOutput, 0.3);
+          } else{
+            backMagazine.set(ControlMode.PercentOutput, 0.0);
+          }
       }
   }
 
@@ -159,7 +160,6 @@ public void setFrontMagazine(double percent) {
   }
 
   public void setIntakePercent(double percent) {
-    frontMagazine.set(ControlMode.PercentOutput, -percent);
     intakeMotor.set(ControlMode.PercentOutput, -percent);
   }
 
