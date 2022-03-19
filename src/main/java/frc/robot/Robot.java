@@ -8,17 +8,15 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.CancelClimber;
-import frc.robot.commands.ClimbRobot;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
 import frc.robot.commands.FaceTarget;
 import frc.robot.commands.FireBalls;
 import frc.robot.commands.FireBallsNoVision;
 import frc.robot.commands.IntakeBalls;
-import frc.robot.commands.LowerClimberToBar;
+import frc.robot.commands.LockDriveWheels;
 import frc.robot.commands.Outtake;
-import frc.robot.commands.RaiseClimber;
-import frc.robot.commands.RunClimberMaxHeight;
+import frc.robot.commands.RunRotatingClimber;
+import frc.robot.commands.RunVerticalClimber;
 import frc.robot.commands.TurnDriveTrain;
 import frc.robot.commands.ZeroNavxMidMatch;
 import frc.robot.commands.autos.FiveBallAuto;
@@ -212,8 +210,6 @@ public class Robot extends TimedRobot {
     //System.out.println(peripherals.getVisionArray());
     CommandScheduler.getInstance().run();
 
-    SmartDashboard.putNumber("Climber ENCODER", climber.getLeftClimberPosition());
-
     SmartDashboard.putBoolean("LIMIT SWITCH", hood.getLowerLimitSwitch());
     SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
     SmartDashboard.putNumber("HOOD", hood.getHoodPosition());
@@ -249,7 +245,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    climber.zeroRotatingEncoder();
     // System.out.println(pathJSON);
     drive.autoInit(pathJSON);
     // peripherals.init();
@@ -311,6 +306,7 @@ public class Robot extends TimedRobot {
     OI.driverX.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 30, 1725, 0.75, 0.75, shotAdjuster));
     OI.driverMenuButton.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 25, 900, 0.5, 0.5, shotAdjuster));
 
+    OI.operatorB.whileHeld(new LockDriveWheels(drive));
 
     // OI.driverX.whenPressed(new VisionAlignment(drive, peripherals));
 
@@ -318,17 +314,13 @@ public class Robot extends TimedRobot {
 
     OI.driverViewButton.whileHeld(new ZeroNavxMidMatch(drive));
 
-    
+    // OI.operatorA.whileHeld(new RunVerticalClimber(climber, -0.3));
+    // OI.operatorY.whileHeld(new RunVerticalClimber(climber, 0.3));
+    // OI.operatorB.whileHeld(new RunRotatingClimber(climber, 0.3));
+    // OI.operatorX.whileHeld(new RunRotatingClimber(climber, -0.3));
 
     // OI.driveStartButton.whileHeld(new DriveAlignedToTarget(drive, peripherals));
 
-    OI.operatorY.whileHeld(new RaiseClimber(climber, -1));
-    OI.operatorA.whileHeld(new ClimbRobot(climber, 1));
-    OI.operatorX.whenPressed(new RunClimberMaxHeight(climber));
-
-    OI.operatorB.whenPressed(new LowerClimberToBar(climber));
-
-    OI.operatorViewButton.whenPressed(new CancelClimber(climber));
   }
 
   /** This function is called periodically during operator control. */

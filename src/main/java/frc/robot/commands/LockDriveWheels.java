@@ -5,41 +5,36 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Drive;
 
-public class RaiseClimber extends CommandBase {
-  /** Creates a new RaiseClimber. */
-  private Climber climber;
-
-  private double percent;
-
-  public RaiseClimber(Climber climber, double percent) {
-    this.climber = climber;
-    this.percent = percent;
-    addRequirements(this.climber);
+public class LockDriveWheels extends CommandBase {
+  /** Creates a new LockDriveWheels. */
+  private Drive drive;
+  public LockDriveWheels(Drive drive) {
+    this.drive = drive;
+    addRequirements(this.drive);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    climber.unlockExtendingClimber();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // System.out.println("INSIDE CLIMBING");
-    climber.setClimberPercents(percent, percent);
+    drive.lockWheels();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

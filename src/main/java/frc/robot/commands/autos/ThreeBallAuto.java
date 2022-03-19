@@ -13,7 +13,7 @@ import org.json.JSONTokener;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.CancelMagzine;
+import frc.robot.commands.CancelMagazine;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
 import frc.robot.commands.FireBalls;
 import frc.robot.commands.FireBallsNoVision;
@@ -54,7 +54,7 @@ public class ThreeBallAuto extends SequentialCommandGroup {
     new ParallelRaceGroup(
         new ContinuousAccelerationInterpolation(drive, pathJSON, false),
         new IntakeBalls(magIntake, lights)),
-    new CancelMagzine(magIntake),
+    new CancelMagazine(magIntake),
     new WaitCommand(0.5),
     new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1580, 0.5, 1, adjuster, 0, false));
   }

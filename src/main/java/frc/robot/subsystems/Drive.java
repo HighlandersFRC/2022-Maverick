@@ -117,7 +117,6 @@ public class Drive extends SubsystemBase {
     double initAngle;
     double setAngle;
     double diffAngle;
-    int pathNum = 1;
 
     public Drive(Peripherals peripherals, MqttPublish publish) {
         this.peripherals = peripherals;
@@ -150,6 +149,13 @@ public class Drive extends SubsystemBase {
 
     public double getRightBackEncoder() {
         return rightBack.getAbsolutePosition();
+    }
+
+    public void lockWheels() {
+        leftBack.setAnglePID(-Math.PI/4, 0);
+        rightBack.setAnglePID(Math.PI/4, 0);
+        rightFront.setAnglePID(-Math.PI/4, 0);
+        leftFront.setAnglePID(Math.PI/4, 0);
     }
 
     // get Joystick adjusted y-value

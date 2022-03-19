@@ -2,32 +2,26 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.defaults;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
 
-public class ClimberDefault extends CommandBase {
-  /** Creates a new ClimberDefault. */
+public class RunRotatingClimber extends CommandBase {
   private Climber climber;
-  public ClimberDefault(Climber climber) {
+  private double percent;
+  public RunRotatingClimber(Climber climber, double percent) {
     this.climber = climber;
-    addRequirements(this.climber);
+    this.percent = percent;
+    addRequirements(climber);
   }
 
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
-    if (!climber.getClimberLimitSwitch()) {
-      climber.setClimberPercents(0, 0);
-      climber.zeroClimberFalcons();
-    } else {
-      climber.setClimberPercents(0.1, 0.1);
-    }
+    climber.setRotatingMotorPercent(percent);
   }
 
   @Override
