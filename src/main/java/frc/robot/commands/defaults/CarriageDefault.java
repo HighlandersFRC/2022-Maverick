@@ -5,6 +5,7 @@
 package frc.robot.commands.defaults;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.OI;
 import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Climber;
 
@@ -29,7 +30,15 @@ public class CarriageDefault extends CommandBase {
     // } else {
     //   climber.setClimberPercents(-0.1);
     // }
-    climber.setClimberPercents(0);
+
+    if(OI.operatorViewButton.get()) {
+      if(OI.operatorController.getLeftTriggerAxis() > 0.5) {
+        climber.setClimberPercents(0.3);
+      }
+    }
+    else {
+      climber.setClimberPercents(0);
+    }
     // climber.setRotatingMotorPercent(0);
   }
 
