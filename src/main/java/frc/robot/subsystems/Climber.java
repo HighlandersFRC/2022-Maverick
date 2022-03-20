@@ -6,22 +6,23 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxLimitSwitch;
+import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.commands.defaults.ClimberDefault;
 import frc.robot.tools.PneumaticsControl;
 
 public class Climber extends SubsystemBase {
-  /** Creates a new Climber. */
-
-  private final TalonFX climberFalcon1 = new TalonFX(20);
-  private final TalonFX climberFalcon2 = new TalonFX(21);
   private final CANSparkMax rotatingMotor = new CANSparkMax(22, MotorType.kBrushless);
-  private double maxPos = 100;
+  private double maxPos = Constants.getClimberFalconTics(30);
   private PneumaticsControl pneumatics;
 
   public Climber(PneumaticsControl pneumaticsControl) {
@@ -31,106 +32,43 @@ public class Climber extends SubsystemBase {
   public void init() {
     setDefaultCommand(new ClimberDefault(this));
 
-    climberFalcon1.configFactoryDefault();
-    climberFalcon2.configFactoryDefault();
-
     rotatingMotor.getEncoder().setPosition(0);
     rotatingMotor.setSmartCurrentLimit(20, 20);
 
-    climberFalcon2.setSelectedSensorPosition(0);
-    climberFalcon1.setSelectedSensorPosition(0);
-    rotatingMotor.getEncoder().setPosition(0);
+    rotatingMotor.getPIDController().setP(0.03);
+    rotatingMotor.getPIDController().setI(0.00001);
+    rotatingMotor.getPIDController().setD(0.1);
 
-    climberFalcon1.configPeakOutputForward(1);
-    climberFalcon1.configPeakOutputReverse(-1);
-    climberFalcon2.configPeakOutputForward(1);
-    climberFalcon2.configPeakOutputReverse(-1);
-    climberFalcon1.setInverted(true);
+    // rotatingMotor.getEncoder().setPosition(0);
 
-    climberFalcon1.config_kF(0, 0);
-    climberFalcon1.config_kP(0, 0);
-    climberFalcon1.config_kI(0, 0);
-    climberFalcon1.config_kD(0, 0);
-
-    climberFalcon1.configForwardSoftLimitEnable(true);
-    climberFalcon1.configReverseSoftLimitEnable(true);
-    climberFalcon1.configForwardSoftLimitThreshold(maxPos);
-    climberFalcon1.configReverseSoftLimitThreshold(0);
-
-    climberFalcon2.configForwardSoftLimitEnable(true);
-    climberFalcon2.configReverseSoftLimitEnable(true);
-    climberFalcon2.configForwardSoftLimitThreshold(maxPos);
-    climberFalcon2.configReverseSoftLimitThreshold(0);
-    climberFalcon2.set(ControlMode.Follower, 20);
+    // climberFalcon1.s
   }
 
   public double getRotatingMotorPosition() {
-    return rotatingMotor.getEncoder().getPosition();
+    return Constants.getRotatingClimberAngle(rotatingMotor.getEncoder().getPosition());
   }
 
-  public void zeroRotatingMotor(double position) {
-    rotatingMotor.getEncoder().setPosition(position);
+  public void zeroRotatingMotor() {
+    rotatingMotor.getEncoder().setPosition(0);
   }
 
-  public void setRotatingMotorPosition(double position) {
-    rotatingMotor.getPIDController().setReference(position, ControlType.kPosition);
+  public void setRotatingMotorPosition(double degrees) {
+    double tics = Constants.getNeoTics(degrees);
+    rotatingMotor.getPIDController().setReference(tics, ControlType.kPosition);
   }
 
   public void setRotatingMotorPercent(double percent) {
     rotatingMotor.set(percent);
   }
 
-  public double getclimberFalcon2Position() {
-    return climberFalcon2.getSelectedSensorPosition();
+  public void postRotatingClimberEncoder() {
+    SmartDashboard.putNumber("ROTATING", getRotatingMotorPosition());
+    SmartDashboard.putNumber("RTICS", rotatingMotor.getEncoder().getPosition());
   }
 
-  public double getclimberFalcon1Position() {
-    return climberFalcon1.getSelectedSensorPosition();
-  }
-
-  public void setClimberFalconsPosition(double position) {
-    // if (position < 0) {
-    //   position = 0;
-    // } else if (position > maxPos) {
-    //   position = maxPos;
-    // }
-
-    climberFalcon1.set(ControlMode.Position, position);
-    climberFalcon2.set(ControlMode.Position, position);
-  }
-
-  public void lockExtendingClimber() {
-    pneumatics.engageClimberBrake();
-  }
-
-  public void unlockExtendingClimber() {
-    pneumatics.releaseClimberBrake();
-  }
-
-  public void setClimberPercents(double percentOne, double percentTwo) {
-    climberFalcon1.set(ControlMode.PercentOutput, percentOne);
-    climberFalcon2.set(ControlMode.PercentOutput, percentTwo);
-  }
-
-  public double getclimberFalcon1Current() {
-    return climberFalcon1.getStatorCurrent();
-  }
-
-  public double getclimberFalcon2Current() {
-    return climberFalcon2.getStatorCurrent();
-  }
-
-  public Boolean getClimberLimitSwitch() {
-    if(climberFalcon1.getSensorCollection().isRevLimitSwitchClosed() == 1 || climberFalcon2.getSensorCollection().isRevLimitSwitchClosed() == 1) {
-      return false;
-    }
-    return true;
-  }
-
-  public void zeroClimberFalcons() {
-    climberFalcon1.setSelectedSensorPosition(0);
-    climberFalcon2.setSelectedSensorPosition(0);
-  }
+  // public Boolean getClimberLimitSwitch() {
+  //   return rotatingMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyClosed);
+  // }
 
   @Override
   public void periodic() {}

@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.Button;
+import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
 import frc.robot.commands.FaceTarget;
 import frc.robot.commands.FireBalls;
@@ -15,6 +17,8 @@ import frc.robot.commands.FireBallsNoVision;
 import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.LockDriveWheels;
 import frc.robot.commands.Outtake;
+import frc.robot.commands.PositionRotatingClimber;
+import frc.robot.commands.PositionVerticalClimber;
 import frc.robot.commands.RunRotatingClimber;
 import frc.robot.commands.RunVerticalClimber;
 import frc.robot.commands.TurnDriveTrain;
@@ -24,6 +28,7 @@ import frc.robot.commands.autos.OneBallAuto;
 import frc.robot.commands.autos.TestAuto;
 import frc.robot.commands.autos.ThreeBallAuto;
 import frc.robot.commands.autos.TwoBallAuto;
+import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Hood;
@@ -72,6 +77,7 @@ public class Robot extends TimedRobot {
   private final Hood hood  = new Hood();
 
   private final Climber climber = new Climber(pneumatics);
+  private final Carriage carriage = new Carriage(pneumatics);
 
   private Lights lights = new Lights();
 
@@ -95,6 +101,7 @@ public class Robot extends TimedRobot {
   private VideoSink server;
 
   private ShotAdjuster shotAdjuster = new ShotAdjuster();
+  private Button whenPressed;
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -104,6 +111,7 @@ public class Robot extends TimedRobot {
     cameraBack = CameraServer.startAutomaticCapture("Back Cam", "/dev/video0");
     cameraBack.setResolution(320, 240);
     cameraBack.setFPS(15);
+    SmartDashboard.putNumber("Lights", 0);
 
     cameraFront = CameraServer.startAutomaticCapture("Front Cam", "/dev/video1");
     cameraFront.setResolution(320, 240);
@@ -192,21 +200,17 @@ public class Robot extends TimedRobot {
 
     // System.out.println(pathJSON);
     drive.init();
+    carriage.init();
   }
 
   @Override
   public void robotPeriodic() {
     lights.periodic();
-
-    if(!magIntake.getUpperBeamBreak()) {
-      lights.setMode(LEDMode.RAINBOW);
-    }
-    if(peripherals.hasLock()) {
-      lights.setMode(LEDMode.GREEN);
-    }
-    else if(!peripherals.hasLock()) {
-      lights.setMode(LEDMode.REDFLASH);
-    }
+    double lololo = SmartDashboard.getNumber("Lights", -0.75);
+    lights.lightboiiis(lololo);
+    // if(!magIntake.getUpperBeamBreak()) {
+    //   lights.setMode(LEDMode.RAINBOW);
+    // }
     //System.out.println(peripherals.getVisionArray());
     CommandScheduler.getInstance().run();
 
@@ -218,6 +222,10 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putBoolean("BOTTOM BEAM BREAK", magIntake.getLowerBackBeamBreak());
     SmartDashboard.putBoolean("UPPER BEAM BREAK", magIntake.getUpperBeamBreak());
+
+    // climber.postRotatingClimberEncoder();
+
+    // SmartDashboard.putNumber("VClimber", carriage.getclimberFalcon1Position());
     }
   
 
@@ -314,10 +322,10 @@ public class Robot extends TimedRobot {
 
     OI.driverViewButton.whileHeld(new ZeroNavxMidMatch(drive));
 
-    // OI.operatorA.whileHeld(new RunVerticalClimber(climber, -0.3));
-    // OI.operatorY.whileHeld(new RunVerticalClimber(climber, 0.3));
-    // OI.operatorB.whileHeld(new RunRotatingClimber(climber, 0.3));
-    // OI.operatorX.whileHeld(new RunRotatingClimber(climber, -0.3));
+    OI.operatorA.whileHeld(new RunVerticalClimber(carriage, -0.65));
+    OI.operatorY.whenPressed(new ClimbSequence(climber, carriage));
+    OI.operatorB.whileHeld(new RunRotatingClimber(climber, -0.15));
+    OI.operatorX.whenPressed(new PositionVerticalClimber(carriage, 30));
 
     // OI.driveStartButton.whileHeld(new DriveAlignedToTarget(drive, peripherals));
 

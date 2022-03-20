@@ -9,16 +9,16 @@ import frc.robot.subsystems.Climber;
 
 public class PositionRotatingClimber extends CommandBase {
   private Climber climber;
-  private double position;
-  public PositionRotatingClimber(Climber climber, double position) {
+  private double degrees;
+  public PositionRotatingClimber(Climber climber, double degrees) {
     this.climber = climber;
-    this.position = position;
+    this.degrees = degrees;
     addRequirements(climber);
   }
 
   @Override
   public void initialize() {
-    climber.setRotatingMotorPosition(position);
+    climber.setRotatingMotorPosition(degrees);
   }
 
   @Override
@@ -29,6 +29,6 @@ public class PositionRotatingClimber extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return (Math.abs(climber.getRotatingMotorPosition() - degrees) < 3);
   }
 }

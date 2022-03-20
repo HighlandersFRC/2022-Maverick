@@ -136,16 +136,18 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35 , 0.5));
         angleMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 60, 60, 0.5));
 
-        angleMotor.config_kP(0, 0.4);
+        angleMotor.config_kP(0, 0.25);
         angleMotor.config_kI(0, 0.0);
         angleMotor.config_kD(0, 0.1);
-        
+
+        angleMotor.configAllowableClosedloopError(0, radiansToTics(degreesToRadians(2)), 10);
+
         driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 30, 0.5));
         driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0.5));
         driveMotor.setSelectedSensorPosition(0);
         driveMotor.setInverted(true);;
 
-        driveMotor.config_kP(0, 0.23);
+        driveMotor.config_kP(0, 0.3);
         driveMotor.config_kI(0, 0);
         driveMotor.config_kD(0, 0.018);
 

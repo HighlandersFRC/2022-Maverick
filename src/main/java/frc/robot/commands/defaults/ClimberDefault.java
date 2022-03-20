@@ -22,12 +22,13 @@ public class ClimberDefault extends CommandBase {
 
   @Override
   public void execute() {
-    if (!climber.getClimberLimitSwitch()) {
-      climber.setClimberPercents(0, 0);
-      climber.zeroClimberFalcons();
-    } else {
-      climber.setClimberPercents(0.1, 0.1);
-    }
+    // if (!climber.getClimberLimitSwitch()) {
+    //   climber.setClimberPercents(0);
+    //   climber.zeroClimberFalcons();
+    // } else {
+    //   climber.setClimberPercents(-0.1);
+    // }
+    climber.setRotatingMotorPercent(-0.02);
   }
 
   @Override

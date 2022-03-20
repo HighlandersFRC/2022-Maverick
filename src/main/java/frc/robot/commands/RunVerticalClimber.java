@@ -5,14 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Climber;
 
 public class RunVerticalClimber extends CommandBase {
 
-  private Climber climber;
+  private Carriage Carriage;
   private double percent;
-  public RunVerticalClimber(Climber climber, double percent) {
-    this.climber = climber;
+  public RunVerticalClimber(Carriage climber, double percent) {
+    this.Carriage = climber;
     this.percent = percent;
     addRequirements(climber);
   }
@@ -22,7 +23,10 @@ public class RunVerticalClimber extends CommandBase {
 
   @Override
   public void execute() {
-    climber.setClimberPercents(percent, percent);
+    if(Carriage.getCarriageFalconCurrent() > 30) {
+      Carriage.setClimberPercents(0);
+    }
+    Carriage.setClimberPercents(percent);
   }
 
   @Override

@@ -2,37 +2,42 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.defaults;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Climber;
 
-public class PositionVerticalClimber extends CommandBase {
+public class CarriageDefault extends CommandBase {
+  /** Creates a new CarriageDefault. */
   private Carriage climber;
-  private double inches;
-  public PositionVerticalClimber(Carriage climber, double inches) {
-    this.climber = climber;
-    this.inches = inches;
-    addRequirements(climber);
+  public CarriageDefault(Carriage carriage) {
+    this.climber = carriage;
+    addRequirements(this.climber);
   }
 
   @Override
   public void initialize() {
-    climber.setClimberFalconsPosition(inches);
+
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+    // if (!climber.getClimberLimitSwitch()) {
+    //   climber.setClimberPercents(0);
+    //   climber.zeroClimberFalcons();
+    // } else {
+    //   climber.setClimberPercents(-0.1);
+    // }
+    climber.setClimberPercents(0);
+    // climber.setRotatingMotorPercent(0);
+  }
 
   @Override
   public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
-    if(Math.abs(climber.getclimberFalcon1Position() - inches) < 0.5) {
-      return true;
-    }
     return false;
   }
 }

@@ -32,11 +32,35 @@ public final class Constants {
     // Morris 2.0 is 12.8
     public static final double STEER_GEAR_RATIO = 12.8;
 
+    public static final double VERTICAL_CLIMBER_GEAR_RATIO = 10.0;
+
+    public static final double ROTATING_CLIMBER_GEAR_RATIO = 115.0;
+
+    public static final double CLIMBER_INCHES_PER_ROTATION = 4.0;
+
     public static final double FALCON_TICS_PER_ROTATION = 2048;
+
+    public static final double NEO_TICS_PER_ROTATION = 42;
 
     public static final double ROBOT_WIDTH = inchesToMeters(29); //m
 
     public static final double MODULE_OFFSET = inchesToMeters(3);
+
+    public static double getClimberFalconTics(double inches) {
+        return (inches / CLIMBER_INCHES_PER_ROTATION) * VERTICAL_CLIMBER_GEAR_RATIO * FALCON_TICS_PER_ROTATION;
+    }
+
+    public static double getNeoTics(double degrees) {
+        return ((degrees / 360.0)) * (ROTATING_CLIMBER_GEAR_RATIO);
+    }
+
+    public static double getVerticalClimberInches(double tics) {
+        return ((tics / FALCON_TICS_PER_ROTATION) / VERTICAL_CLIMBER_GEAR_RATIO) * CLIMBER_INCHES_PER_ROTATION;
+    }
+
+    public static double getRotatingClimberAngle(double tics) {
+        return ((tics) / ROTATING_CLIMBER_GEAR_RATIO) * 360.0;
+    }
 
     //{distance(inches), hood angle, RPM}
     public static final double[][] SHOOTING_LOOKUP_TABLE = {

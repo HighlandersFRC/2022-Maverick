@@ -19,7 +19,7 @@ public class Lights extends SubsystemBase {
   }
   
   public enum LEDMode{
-    BLUE(0.87), RED(0.61), GREEN(0.75), YELLOW(0.67), RAINBOW(-0.97), OFF(0.99), ORANGE(0.65), REDFLASH(-0.11), VIOLET(0.91);
+    BLUE(-0.29), RED(0.61), GREEN(0.75), YELLOW(0.67), RAINBOW(-0.97), OFF(0.99), ORANGE(0.65), REDFLASH(-0.11), VIOLET(0.91);
 
     public final double value;
     private LEDMode(double value){
@@ -27,9 +27,12 @@ public class Lights extends SubsystemBase {
     }
   }
 
-  
+  public void lightboiiis(double val){
+    ledPWM.setPosition(val);
+  }
+
   public void periodic() {
-    ledPWM.setPosition(currentLedMode);
+   // ledPWM.setPosition(currentLedMode);
   }
   
   public void init() {
