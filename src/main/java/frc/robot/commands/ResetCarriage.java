@@ -4,15 +4,16 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Climber;
 
-public class RunVerticalClimber extends CommandBase {
+public class ResetCarriage extends CommandBase {
 
   private Carriage Carriage;
   private double percent;
-  public RunVerticalClimber(Carriage climber, double percent) {
+  public ResetCarriage(Carriage climber) {
     this.Carriage = climber;
     this.percent = percent;
     addRequirements(climber);
@@ -26,7 +27,8 @@ public class RunVerticalClimber extends CommandBase {
     // if(Carriage.getCarriageFalconCurrent() > 30) {
     //   Carriage.setClimberPercents(0);
     // }
-    Carriage.setClimberPercents(percent);
+    Carriage.setClimberPercents(-0.2);
+    SmartDashboard.putNumber("CARRIAGE CURRENT", Carriage.getCarriageFalconCurrent());
   }
 
   @Override
@@ -34,6 +36,9 @@ public class RunVerticalClimber extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    if(Carriage.getCarriageFalconCurrent() > 20) {
+      return true;
+    }
     return false;
   }
 }

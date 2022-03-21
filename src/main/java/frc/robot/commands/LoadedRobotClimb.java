@@ -4,36 +4,37 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Climber;
 
-public class PositionRotatingClimber extends CommandBase {
-  private Climber climber;
-  private double degrees;
-  public PositionRotatingClimber(Climber climber, double degrees) {
+public class LoadedRobotClimb extends CommandBase {
+  private Carriage climber;
+  private double inches;
+  public LoadedRobotClimb(Carriage climber, double inches) {
     this.climber = climber;
-    this.degrees = degrees;
+    this.inches = inches;
     addRequirements(climber);
   }
 
   @Override
   public void initialize() {
-    climber.setRotatingMotorPosition(degrees);
   }
 
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("ROTATING", true);
+    // climber.setClimberPercents(-1);
+    climber.loadedRobotClimb(inches);
   }
 
   @Override
-  public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("ROTATING", false);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
-    return (Math.abs(climber.getRotatingMotorPosition() - degrees) < 3);
+    if(Math.abs(climber.getclimberFalcon1Position() - inches) < 1) {
+      return true;
+    }
+    return false;
   }
 }

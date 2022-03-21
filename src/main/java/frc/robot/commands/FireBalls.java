@@ -32,7 +32,7 @@ public class FireBalls extends SequentialCommandGroup {
     addCommands(
       new ParallelCommandGroup(
           new SpinShooter(shooter, peripherals, shooterRPM, adjuster, useList),
-          new FaceTarget(drive, peripherals, offset),
+          new FaceTarget(drive, peripherals, lights, offset),
           // new VisionAlignment(drive, peripherals),
           new SetHoodPosition(hood, peripherals, hoodPosition, adjuster, useList)
       ),

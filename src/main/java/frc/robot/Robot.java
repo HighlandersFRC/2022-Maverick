@@ -15,10 +15,12 @@ import frc.robot.commands.FaceTarget;
 import frc.robot.commands.FireBalls;
 import frc.robot.commands.FireBallsNoVision;
 import frc.robot.commands.IntakeBalls;
+import frc.robot.commands.LoadedRobotClimb;
 import frc.robot.commands.LockDriveWheels;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.PositionRotatingClimber;
 import frc.robot.commands.PositionVerticalClimber;
+import frc.robot.commands.ResetClimber;
 import frc.robot.commands.RunRotatingClimber;
 import frc.robot.commands.RunVerticalClimber;
 import frc.robot.commands.TurnDriveTrain;
@@ -48,6 +50,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.System.Logger.Level;
+
+import javax.swing.text.Position;
 
 import org.json.JSONArray;
 import org.json.JSONTokener;
@@ -206,8 +210,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     lights.periodic();
-    double lololo = SmartDashboard.getNumber("Lights", -0.75);
-    lights.lightboiiis(lololo);
     // if(!magIntake.getUpperBeamBreak()) {
     //   lights.setMode(LEDMode.RAINBOW);
     // }
@@ -225,7 +227,10 @@ public class Robot extends TimedRobot {
 
     // climber.postRotatingClimberEncoder();
 
-    // SmartDashboard.putNumber("VClimber", carriage.getclimberFalcon1Position());
+    SmartDashboard.putNumber("VClimber", carriage.getclimberFalcon1Position());
+    SmartDashboard.putNumber("RCLIMBER", climber.getRotatingMotorPosition());
+
+    SmartDashboard.putBoolean("CLIMB LIMIT SWITCH", climber.getLimitSwitch());
     }
   
 
@@ -322,10 +327,13 @@ public class Robot extends TimedRobot {
 
     OI.driverViewButton.whileHeld(new ZeroNavxMidMatch(drive));
 
-    OI.operatorA.whileHeld(new RunVerticalClimber(carriage, -0.65));
-    OI.operatorY.whenPressed(new ClimbSequence(climber, carriage));
+    // OI.operatorA.whenPressed(new LoadedRobotClimb(carriage, 0));
+    OI.operatorA.whenPressed(new LoadedRobotClimb(carriage, 0));
     OI.operatorB.whileHeld(new RunRotatingClimber(climber, -0.15));
-    OI.operatorX.whenPressed(new PositionVerticalClimber(carriage, 30));
+    OI.operatorY.whenPressed(new ClimbSequence(climber, carriage));
+    OI.operatorX.whenPressed(new PositionVerticalClimber(carriage, 19));
+
+    OI.operatorViewButton.whenPressed(new ResetClimber(climber, carriage));
 
     // OI.driveStartButton.whileHeld(new DriveAlignedToTarget(drive, peripherals));
 

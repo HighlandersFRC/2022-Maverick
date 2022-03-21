@@ -8,32 +8,32 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
 
-public class PositionRotatingClimber extends CommandBase {
+public class ResetRotatingClimb extends CommandBase {
   private Climber climber;
-  private double degrees;
-  public PositionRotatingClimber(Climber climber, double degrees) {
+  private double percent;
+  public ResetRotatingClimb(Climber climber) {
     this.climber = climber;
-    this.degrees = degrees;
+    this.percent = percent;
     addRequirements(climber);
   }
 
   @Override
-  public void initialize() {
-    climber.setRotatingMotorPosition(degrees);
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("ROTATING", true);
+    SmartDashboard.putNumber("Current", climber.getRotatingClimberCurrent());
+    climber.setRotatingMotorPercent(-0.15);
   }
 
   @Override
-  public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("ROTATING", false);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
-    return (Math.abs(climber.getRotatingMotorPosition() - degrees) < 3);
+    if(climber.getRotatingClimberCurrent() > 1) {
+      return true;
+    }
+    return false;
   }
 }

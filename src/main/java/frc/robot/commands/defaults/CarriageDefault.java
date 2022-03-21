@@ -24,21 +24,24 @@ public class CarriageDefault extends CommandBase {
 
   @Override
   public void execute() {
-    // if (!climber.getClimberLimitSwitch()) {
-    //   climber.setClimberPercents(0);
-    //   climber.zeroClimberFalcons();
-    // } else {
-    //   climber.setClimberPercents(-0.1);
-    // }
-
-    if(OI.operatorViewButton.get()) {
-      if(OI.operatorController.getLeftTriggerAxis() > 0.5) {
-        climber.setClimberPercents(0.3);
-      }
+    if(OI.operatorController.getPOV() == 0) {
+      climber.setClimberPercents(0.4);
     }
-    else {
+    else if (!climber.getClimberLimitSwitch()) {
       climber.setClimberPercents(0);
+      climber.zeroClimberFalcons();
+    } 
+    else {
+        if(OI.operatorController.getPOV() == 180) {
+          climber.setClimberPercents(-0.8);
+        }
+        else {
+          climber.setClimberPercents(0);
+        }
+      // climber.setClimberPercents(-0.1);
     }
+
+    
     // climber.setRotatingMotorPercent(0);
   }
 

@@ -5,7 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Climber;
 
@@ -17,11 +19,17 @@ public class ClimbSequence extends SequentialCommandGroup {
   public ClimbSequence(Climber climber, Carriage carriage) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    addRequirements(climber, carriage);
     addCommands(
+      new PositionVerticalClimber(carriage, 19),
+      new PositionRotatingClimber(climber, 30),
       new PositionVerticalClimber(carriage, 23),
-      new PositionRotatingClimber(climber, 45),
-      new ParallelCommandGroup(new PositionVerticalClimber(carriage, 30), new PositionRotatingClimber(climber, 25)),
-      new PositionVerticalClimber(carriage, 25)
+      new PositionRotatingClimber(climber, 43),
+      new PositionVerticalClimber(carriage, 30),
+      // new PositionRotatingClimber(climber, 15),
+      new ParallelCommandGroup(new PositionRotatingClimber(climber, 15), new SequentialCommandGroup(new WaitCommand(1), new PlaceCarriageOnBar(carriage)))
+      // new ParallelCommandGroup(new PositionVerticalClimber(carriage, 30), new PositionRotatingClimber(climber, 25)),
+      // new PositionVerticalClimber(carriage, 25)
     );
   }
 }

@@ -74,7 +74,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
             new ContinuousAccelerationInterpolation(drive, pathJSON2, false),
             new IntakeBalls(magIntake, lights)),
         new CancelMagazine(magIntake),
-        new WaitCommand(0.75), 
+        new WaitCommand(0.65), 
         new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 1, adjuster, 0.1, false));
   }
 }

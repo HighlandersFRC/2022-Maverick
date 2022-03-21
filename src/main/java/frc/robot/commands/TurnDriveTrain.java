@@ -7,20 +7,24 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Peripherals;
+import frc.robot.subsystems.Lights.LEDMode;
 import frc.robot.tools.math.Vector;
 
 public class TurnDriveTrain extends CommandBase {
   /** Creates a new TurnDriveTrain. */
   private Drive drive;
   private Peripherals peripherals;
+  private Lights lights;
   private double turn = 0;
 
   private double initTime = 0;
-  public TurnDriveTrain(Drive drive, Peripherals peripherals) {
+  public TurnDriveTrain(Drive drive, Peripherals peripherals, Lights lights) {
     this.peripherals = peripherals;
     this.drive = drive;
-    addRequirements(this.drive);
+    this.lights = lights;
+    addRequirements(this.drive, this.lights);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -36,6 +40,12 @@ public class TurnDriveTrain extends CommandBase {
   public void execute() {
     turn = peripherals.getVisionArray()[1];
     drive.autoDrive(new Vector(0, 0), 6 * turn);
+
+    if (peripherals.getVisionArray()[2] != 0) {
+      lights.setMode(LEDMode.GREEN);
+    } else {
+      lights.setMode(LEDMode.REDFLASH);
+    }
   }
 
   // Called once the command ends or is interrupted.

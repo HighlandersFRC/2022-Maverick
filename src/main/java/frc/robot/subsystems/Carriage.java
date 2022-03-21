@@ -12,6 +12,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import org.ejml.dense.block.decomposition.chol.InnerCholesky_DDRB;
+
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -43,10 +45,10 @@ public class Carriage extends SubsystemBase {
 
     // climberFalcon1.s
 
-    climberFalcon1.configPeakOutputForward(1);
-    climberFalcon1.configPeakOutputReverse(-1);
-    climberFalcon2.configPeakOutputForward(1);
-    climberFalcon2.configPeakOutputReverse(-1);
+    climberFalcon1.configPeakOutputForward(0.8);
+    climberFalcon1.configPeakOutputReverse(-0.8);
+    climberFalcon2.configPeakOutputForward(0.8);
+    climberFalcon2.configPeakOutputReverse(-0.8);
     climberFalcon1.setInverted(false);
 
     // rotatingMotor.set
@@ -56,13 +58,12 @@ public class Carriage extends SubsystemBase {
     climberFalcon1.config_kI(0, 0.000005);
     climberFalcon1.config_kD(0, 0.005);
 
-    climberFalcon1.configAllowableClosedloopError(0, Constants.getClimberFalconTics(0.1), 10);
-
     climberFalcon1.config_kF(1, 0);
-    climberFalcon1.config_kP(1, 0);
+    climberFalcon1.config_kP(1, 1);
     climberFalcon1.config_kI(1, 0);
     climberFalcon1.config_kD(1, 0);
 
+    // climberFalcon1.configAllowableClosedloopError(0, Constants.getClimberFalconTics(0.1), 10);
     climberFalcon1.configForwardSoftLimitEnable(false);
     climberFalcon1.configReverseSoftLimitEnable(false);
     climberFalcon1.configForwardSoftLimitThreshold(maxPos);
@@ -74,8 +75,8 @@ public class Carriage extends SubsystemBase {
     climberFalcon2.configReverseSoftLimitThreshold(0);
     climberFalcon2.set(ControlMode.Follower, 20);
 
-    climberFalcon1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 10));
-    climberFalcon1.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 30, 10));
+    climberFalcon1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 80, 500));
+    climberFalcon1.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35, 500));
   }
 
   public double getclimberFalcon1Position() {
@@ -88,6 +89,7 @@ public class Carriage extends SubsystemBase {
     // } else if (position > maxPos) {
     //   position = maxPos;
     // }
+    climberFalcon1.selectProfileSlot(0, 0);
     double ticks = Constants.getClimberFalconTics(inches);
 
     climberFalcon1.set(ControlMode.Position, ticks);
@@ -95,6 +97,13 @@ public class Carriage extends SubsystemBase {
 
   public void setClimberPercents(double percentOne) {
     climberFalcon1.set(ControlMode.PercentOutput, percentOne);
+  }
+
+  public void loadedRobotClimb(double inches) {
+    climberFalcon1.selectProfileSlot(1, 0);
+    double ticks = Constants.getClimberFalconTics(inches);
+
+    climberFalcon1.set(ControlMode.Position, ticks);
   }
 
   public double getCarriageFalconCurrent() {

@@ -35,7 +35,7 @@ public class Climber extends SubsystemBase {
     rotatingMotor.getEncoder().setPosition(0);
     rotatingMotor.setSmartCurrentLimit(20, 20);
 
-    rotatingMotor.getPIDController().setP(0.03);
+    rotatingMotor.getPIDController().setP(0.065);
     rotatingMotor.getPIDController().setI(0.00001);
     rotatingMotor.getPIDController().setD(0.1);
 
@@ -46,6 +46,10 @@ public class Climber extends SubsystemBase {
 
   public double getRotatingMotorPosition() {
     return Constants.getRotatingClimberAngle(rotatingMotor.getEncoder().getPosition());
+  }
+
+  public double getRotatingClimberCurrent() {
+    return rotatingMotor.getOutputCurrent();
   }
 
   public void zeroRotatingMotor() {
@@ -64,6 +68,10 @@ public class Climber extends SubsystemBase {
   public void postRotatingClimberEncoder() {
     SmartDashboard.putNumber("ROTATING", getRotatingMotorPosition());
     SmartDashboard.putNumber("RTICS", rotatingMotor.getEncoder().getPosition());
+  }
+
+  public Boolean getLimitSwitch() {
+    return rotatingMotor.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get();
   }
 
   // public Boolean getClimberLimitSwitch() {

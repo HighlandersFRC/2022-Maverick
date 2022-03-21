@@ -27,12 +27,8 @@ public class Lights extends SubsystemBase {
     }
   }
 
-  public void lightboiiis(double val){
-    ledPWM.setPosition(val);
-  }
-
   public void periodic() {
-   // ledPWM.setPosition(currentLedMode);
+   ledPWM.setPosition(currentLedMode);
   }
   
   public void init() {

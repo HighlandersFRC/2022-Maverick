@@ -28,9 +28,15 @@ public class ClimberDefault extends CommandBase {
     //   climber.zeroClimberFalcons();
     // } else {
     //   climber.setClimberPercents(-0.1);
+    // }  
+    // if(!climber.getLimitSwitch()) {
+    //   climber.zeroRotatingMotor();;
     // }
-    if(OI.operatorViewButton.get()) {
-      climber.setRotatingMotorPercent(OI.operatorController.getRawAxis(1));
+    if(OI.operatorController.getPOV() == 90) {
+      climber.setRotatingMotorPercent(-0.1);
+    }
+    else if(OI.operatorController.getPOV() == 270) {
+      climber.setRotatingMotorPercent(0.1);
     }
     else {
       climber.setRotatingMotorPercent(-0.02);
