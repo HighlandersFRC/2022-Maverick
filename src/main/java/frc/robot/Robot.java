@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.ClimbSequence;
+import frc.robot.commands.ClimbSequenceP2;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
 import frc.robot.commands.FaceTarget;
 import frc.robot.commands.FireBalls;
@@ -314,29 +315,27 @@ public class Robot extends TimedRobot {
 
     //OI.driverA.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 6.25, 1400, 0.5, 0.5, shotAdjuster));
     OI.driverA.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 0.0, 1400, 0.75, 0.75, shotAdjuster));
-    OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 22.0, 1490, 0.75, 0.75, shotAdjuster, 0, true));
+    // OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 22.0, 1490, 0.75, 0.75, shotAdjuster, 0, true));
+    OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 10, 1400, 0.75, 0.75, shotAdjuster, 0, true));
     OI.driverY.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 9.25, 1400, 0.5, 0.5, shotAdjuster));
     OI.driverX.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 30, 1650, 0.75, 0.75, shotAdjuster));
     OI.driverMenuButton.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 25, 900, 0.5, 0.5, shotAdjuster));
 
     OI.operatorB.whileHeld(new LockDriveWheels(drive));
 
-    // OI.driverX.whenPressed(new VisionAlignment(drive, peripherals));
-
-    //OI.driverY.whenPressed(new FaceTarget(drive));
-
     OI.driverViewButton.whileHeld(new ZeroNavxMidMatch(drive));
 
-    // OI.operatorA.whenPressed(new LoadedRobotClimb(carriage, 0));
     OI.operatorA.whenPressed(new LoadedRobotClimb(carriage, 0));
-    OI.operatorB.whileHeld(new RunRotatingClimber(climber, -0.15));
-    OI.operatorY.whenPressed(new ClimbSequence(climber, carriage));
-    OI.operatorX.whenPressed(new PositionVerticalClimber(carriage, 19));
+    OI.operatorY.whenPressed(new PositionVerticalClimber(carriage, 19));
+    OI.operatorX.whenPressed(new ClimbSequence(climber, carriage));
+    OI.operatorB.whenPressed(new ClimbSequenceP2(climber, carriage));
 
     OI.operatorViewButton.whenPressed(new ResetClimber(climber, carriage));
 
-    // OI.driveStartButton.whileHeld(new DriveAlignedToTarget(drive, peripherals));
-
+    OI.operatorRT.whileHeld(new RunVerticalClimber(carriage, 0.15));
+    OI.operatorLT.whileHeld(new RunVerticalClimber(carriage, -0.15));
+    OI.operatorRB.whileHeld(new RunRotatingClimber(climber, 0.1));
+    OI.operatorLB.whileHeld(new RunRotatingClimber(climber, -0.1));
   }
 
   /** This function is called periodically during operator control. */
