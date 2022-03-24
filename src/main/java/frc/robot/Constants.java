@@ -46,7 +46,7 @@ public final class Constants {
 
     public static final double MODULE_OFFSET = inchesToMeters(3);
 
-    public static final double lookUpTableRPMOffset = 0;
+    public static final double lookUpTableRPMOffset = 0; // changed from 0;
 
     public static double getClimberFalconTics(double inches) {
         return (inches / CLIMBER_INCHES_PER_ROTATION) * VERTICAL_CLIMBER_GEAR_RATIO * FALCON_TICS_PER_ROTATION;

@@ -12,6 +12,7 @@ import org.json.JSONTokener;
 
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.CancelMagazine;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
 import frc.robot.commands.FireBalls;
 import frc.robot.commands.IntakeBalls;
@@ -47,7 +48,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake);
-    addCommands(new IntakeDown(magIntake), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON, false), new IntakeBalls(magIntake, lights)), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 1, adjuster, 0, false));
+    addCommands(new IntakeDown(magIntake), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON, false), new IntakeBalls(magIntake, lights)), new CancelMagazine(magIntake), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 1, adjuster, 0, false));
   }
 }
 

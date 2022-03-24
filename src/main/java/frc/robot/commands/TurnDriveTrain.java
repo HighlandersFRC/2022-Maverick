@@ -39,7 +39,7 @@ public class TurnDriveTrain extends CommandBase {
   @Override
   public void execute() {
     turn = peripherals.getVisionArray()[1];
-    drive.autoDrive(new Vector(0, 0), 6 * turn);
+    drive.autoDrive(new Vector(0, 0), 6.5 * turn);
 
     if (peripherals.getVisionArray()[2] != 0) {
       lights.setMode(LEDMode.GREEN);

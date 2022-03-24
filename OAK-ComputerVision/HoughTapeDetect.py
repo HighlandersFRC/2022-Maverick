@@ -132,7 +132,7 @@ def convertCoordinates(x, y, z):
 cameraResolutionWidth = 640.0
 cameraResolutionHeight = 400.0
 
-HFOV = 69
+HFOV = 55
 VFOV = 36
 
 focalLength = cameraResolutionWidth/(2 * tan(HFOV/2))
@@ -163,10 +163,10 @@ controlIn.out.link(cam_rgb.inputControl)
 lowerH = 27
 upperH = 91
 
-lowerS = 77
+lowerS = 189
 upperS = 255
 
-lowerV = 64
+lowerV = 95
 upperV = 255
 
 expTime = 1000
@@ -241,21 +241,21 @@ frame = None
 
 client = connect_mqtt()
 
-cv2.namedWindow('HSV Tuner', cv2.WINDOW_AUTOSIZE)
+# cv2.namedWindow('HSV Tuner', cv2.WINDOW_AUTOSIZE)
 
-cv2.createTrackbar('Lower H', "HSV Tuner", 0, 255, on_change)
-cv2.createTrackbar('Higher H', "HSV Tuner", 0, 255, on_change)
-cv2.createTrackbar('Lower S', "HSV Tuner", 0, 255, on_change)
-cv2.createTrackbar('Higher S', "HSV Tuner", 0, 255, on_change)
-cv2.createTrackbar('Lower V', "HSV Tuner", 0, 255, on_change)
-cv2.createTrackbar('Higher V', "HSV Tuner", 0, 255, on_change)
+# cv2.createTrackbar('Lower H', "HSV Tuner", 0, 255, on_change)
+# cv2.createTrackbar('Higher H', "HSV Tuner", 0, 255, on_change)
+# cv2.createTrackbar('Lower S', "HSV Tuner", 0, 255, on_change)
+# cv2.createTrackbar('Higher S', "HSV Tuner", 0, 255, on_change)
+# cv2.createTrackbar('Lower V', "HSV Tuner", 0, 255, on_change)
+# cv2.createTrackbar('Higher V', "HSV Tuner", 0, 255, on_change)
 
-cv2.setTrackbarPos('Lower H', "HSV Tuner", lowerH)
-cv2.setTrackbarPos('Higher H', "HSV Tuner", upperH)
-cv2.setTrackbarPos('Lower S', "HSV Tuner", lowerS)
-cv2.setTrackbarPos('Higher S', "HSV Tuner", upperS)
-cv2.setTrackbarPos('Lower V', "HSV Tuner", lowerV)
-cv2.setTrackbarPos('Higher V', "HSV Tuner", upperV)
+# cv2.setTrackbarPos('Lower H', "HSV Tuner", lowerH)
+# cv2.setTrackbarPos('Higher H', "HSV Tuner", upperH)
+# cv2.setTrackbarPos('Lower S', "HSV Tuner", lowerS)
+# cv2.setTrackbarPos('Higher S', "HSV Tuner", upperS)
+# cv2.setTrackbarPos('Lower V', "HSV Tuner", lowerV)
+# cv2.setTrackbarPos('Higher V', "HSV Tuner", upperV)
 
 controlQueue = device.getInputQueue('control')
 ctrl = depthai.CameraControl()
@@ -270,14 +270,14 @@ avgDistance = 0
 avgAngle = 0
 
 while True:
-    lowerH = cv2.getTrackbarPos('Lower H', "HSV Tuner")
-    upperH = cv2.getTrackbarPos('Higher H', "HSV Tuner")
+    # lowerH = cv2.getTrackbarPos('Lower H', "HSV Tuner")
+    # upperH = cv2.getTrackbarPos('Higher H', "HSV Tuner")
 
-    lowerS = cv2.getTrackbarPos('Lower S', "HSV Tuner")
-    upperS = cv2.getTrackbarPos('Higher S', "HSV Tuner")
+    # lowerS = cv2.getTrackbarPos('Lower S', "HSV Tuner")
+    # upperS = cv2.getTrackbarPos('Higher S', "HSV Tuner")
 
-    lowerV = cv2.getTrackbarPos('Lower V', "HSV Tuner")
-    upperV = cv2.getTrackbarPos('Higher V', "HSV Tuner")
+    # lowerV = cv2.getTrackbarPos('Lower V', "HSV Tuner")
+    # upperV = cv2.getTrackbarPos('Higher V', "HSV Tuner")
 
     in_rgb = q_rgb.tryGet()
     if in_rgb is not None:
@@ -301,6 +301,7 @@ while True:
         roiList = []
 
         averageYPixels = 0
+        averageXPixels = 0
 
         for contour in contours:
             peri = cv2.arcLength(contour, True)
@@ -320,6 +321,7 @@ while True:
                 cv2.drawContours(frame,[boxArray],0,boxColor,2)
 
                 averageYPixels = averageYPixels + ((topLeftY + bottomRightY)/2)
+                averageXPixels = averageXPixels + ((topLeftY + bottomRightX)/2)
                 
                 topLeft = depthai.Point2f(-0.005 + (topLeftX/cameraResolutionWidth), -0.005 + (topLeftY/cameraResolutionHeight))
                 bottomRight = depthai.Point2f(0.005 + (bottomRightX/cameraResolutionWidth), 0.005 + (bottomRightY/cameraResolutionHeight))
@@ -336,6 +338,7 @@ while True:
         if(len(roiList) > 0):
             cfg.setROIs(roiList)
             averageYPixels = averageYPixels/len(roiList)
+            averageXPixels = averageXPixels/len(roiList)
             # print(cfg)
             spatialCalcConfigInQueue.send(cfg)
         else:
@@ -370,6 +373,9 @@ while True:
             yCoordinateCamera = (depthData.spatialCoordinates.y)/25.4
             xCoordinateCamera = (depthData.spatialCoordinates.x)/25.4
 
+            # print("X: " + str(xCoordinateCamera) + " Y: " + str(yCoordinateCamera) + " Z: " + str(zCoordinateCamera))
+
+
             # print("BEFORE: " + str(yCoordinateCamera))
 
             convertedCoordinates = convertCoordinates(xCoordinateCamera, yCoordinateCamera, zCoordinateCamera)
@@ -388,8 +394,12 @@ while True:
             targetCenterY = targetResult.x[1]
 
             angle = math.atan(targetCenterY/targetCenterX)
+
+            # angle = -(averageXPixels - (cameraResolutionWidth/2)) * (HFOV/cameraResolutionWidth)
+            # angle = angle * math.pi/180
             # distanceToTargetHypotenuse = math.sqrt((targetCenterX ** 2) + (targetCenterY ** 2))
             depthBasedDistance = math.sqrt((targetCenterX ** 2) + (targetCenterY ** 2))
+
 
             targetHeight = 96
 
@@ -407,6 +417,8 @@ while True:
                 distance = (depthBasedDistance * 0.15) + (pixelBasedDistance * 0.85)
             else:
                 distance = (depthBasedDistance * 0.2) + (pixelBasedDistance * 0.8)
+
+            distance = pixelBasedDistance
 
             # angleToTargetCenterPixels = math.atan((averageYPixels - (cameraResolutionHeight/2)/focalLength))
 
@@ -426,13 +438,13 @@ while True:
 
             publish(client, jsonString)
 
-            print("TargetX: " + str(targetCenterX) + " TargetY: " + str(targetCenterY) + " Distance: " + str(distance) + " Angle: " + str(180 * (angle)/pi) + " Confidence: " + str(len(xList)))
+            print("TargetX: " + str(targetCenterX) + " TargetY: " + str(targetCenterY) + " Distance: " + str(distance) + " Angle: " + str((angle)) + " Confidence: " + str(len(xList)))
 
-            # print(distance)
+            # print(depthBasedAngle)
 
         # cv2.imshow("depth", depthFrameColor)
-        cv2.imshow("frame", frame)
-        cv2.imshow("mask", result)
+        # cv2.imshow("frame", frame)
+        # cv2.imshow("mask", result)
         # cv2.imshow("blur", blur)
 
     # newConfig = False

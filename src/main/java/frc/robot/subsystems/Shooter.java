@@ -33,10 +33,10 @@ public class Shooter extends SubsystemBase {
     rightShooter.setNeutralMode(NeutralMode.Coast);
     rightShooter.setInverted(InvertType.InvertMotorOutput);
 
-    rightShooter.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 0, 0));
-    rightShooter.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 0, 0));
-    leftShooter.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 0, 0));
-    leftShooter.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 0, 0));
+    rightShooter.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 80, 0));
+    rightShooter.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35, 0));
+    leftShooter.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 80, 0));
+    leftShooter.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35, 0));
 
     rightShooter.config_kF(0, 0.06);
     // rightShooter.config_kP(0, 0.45);
