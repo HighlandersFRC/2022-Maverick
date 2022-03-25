@@ -239,23 +239,23 @@ color = (255, 255, 255)
 q_rgb = device.getOutputQueue("rgb")
 frame = None
 
-client = connect_mqtt()
+# client = connect_mqtt()
 
-# cv2.namedWindow('HSV Tuner', cv2.WINDOW_AUTOSIZE)
+cv2.namedWindow('HSV Tuner', cv2.WINDOW_AUTOSIZE)
 
-# cv2.createTrackbar('Lower H', "HSV Tuner", 0, 255, on_change)
-# cv2.createTrackbar('Higher H', "HSV Tuner", 0, 255, on_change)
-# cv2.createTrackbar('Lower S', "HSV Tuner", 0, 255, on_change)
-# cv2.createTrackbar('Higher S', "HSV Tuner", 0, 255, on_change)
-# cv2.createTrackbar('Lower V', "HSV Tuner", 0, 255, on_change)
-# cv2.createTrackbar('Higher V', "HSV Tuner", 0, 255, on_change)
+cv2.createTrackbar('Lower H', "HSV Tuner", 0, 255, on_change)
+cv2.createTrackbar('Higher H', "HSV Tuner", 0, 255, on_change)
+cv2.createTrackbar('Lower S', "HSV Tuner", 0, 255, on_change)
+cv2.createTrackbar('Higher S', "HSV Tuner", 0, 255, on_change)
+cv2.createTrackbar('Lower V', "HSV Tuner", 0, 255, on_change)
+cv2.createTrackbar('Higher V', "HSV Tuner", 0, 255, on_change)
 
-# cv2.setTrackbarPos('Lower H', "HSV Tuner", lowerH)
-# cv2.setTrackbarPos('Higher H', "HSV Tuner", upperH)
-# cv2.setTrackbarPos('Lower S', "HSV Tuner", lowerS)
-# cv2.setTrackbarPos('Higher S', "HSV Tuner", upperS)
-# cv2.setTrackbarPos('Lower V', "HSV Tuner", lowerV)
-# cv2.setTrackbarPos('Higher V', "HSV Tuner", upperV)
+cv2.setTrackbarPos('Lower H', "HSV Tuner", lowerH)
+cv2.setTrackbarPos('Higher H', "HSV Tuner", upperH)
+cv2.setTrackbarPos('Lower S', "HSV Tuner", lowerS)
+cv2.setTrackbarPos('Higher S', "HSV Tuner", upperS)
+cv2.setTrackbarPos('Lower V', "HSV Tuner", lowerV)
+cv2.setTrackbarPos('Higher V', "HSV Tuner", upperV)
 
 controlQueue = device.getInputQueue('control')
 ctrl = depthai.CameraControl()
@@ -270,14 +270,15 @@ avgDistance = 0
 avgAngle = 0
 
 while True:
-    # lowerH = cv2.getTrackbarPos('Lower H', "HSV Tuner")
-    # upperH = cv2.getTrackbarPos('Higher H', "HSV Tuner")
+    # try:
+    lowerH = cv2.getTrackbarPos('Lower H', "HSV Tuner")
+    upperH = cv2.getTrackbarPos('Higher H', "HSV Tuner")
 
-    # lowerS = cv2.getTrackbarPos('Lower S', "HSV Tuner")
-    # upperS = cv2.getTrackbarPos('Higher S', "HSV Tuner")
+    lowerS = cv2.getTrackbarPos('Lower S', "HSV Tuner")
+    upperS = cv2.getTrackbarPos('Higher S', "HSV Tuner")
 
-    # lowerV = cv2.getTrackbarPos('Lower V', "HSV Tuner")
-    # upperV = cv2.getTrackbarPos('Higher V', "HSV Tuner")
+    lowerV = cv2.getTrackbarPos('Lower V', "HSV Tuner")
+    upperV = cv2.getTrackbarPos('Higher V', "HSV Tuner")
 
     in_rgb = q_rgb.tryGet()
     if in_rgb is not None:
@@ -344,7 +345,7 @@ while True:
         else:
             jsonString = '{"Distance":' + '-10' + ', "Angle":' + '-100000' + ', "Confidence":' + '0' + ', "Timestamp":' + str(time.time()) +'}'
             # print(jsonString)
-            publish(client, jsonString)
+            # publish(client, jsonString)
             # cv2.imshow("frame", frame)
             # cv2.imshow("mask", result)
             continue
@@ -436,18 +437,24 @@ while True:
 
             # print(startTime - endTime)
 
-            publish(client, jsonString)
+            # publish(client, jsonString)
 
             print("TargetX: " + str(targetCenterX) + " TargetY: " + str(targetCenterY) + " Distance: " + str(distance) + " Angle: " + str((angle)) + " Confidence: " + str(len(xList)))
 
             # print(depthBasedAngle)
 
         # cv2.imshow("depth", depthFrameColor)
-        # cv2.imshow("frame", frame)
-        # cv2.imshow("mask", result)
+        cv2.imshow("frame", frame)
+        cv2.imshow("mask", result)
         # cv2.imshow("blur", blur)
 
     # newConfig = False
     key = cv2.waitKey(1)
     if key == ord('q'):
         break
+        
+    # except Exception as e:
+    #     jsonString = '{"Distance":' + '-10' + ', "Angle":' + '-100000' + ', "Confidence":' + '0' + ', "Timestamp":' + str(time.time()) +'}'
+    #     publish(client, jsonString)
+    #     print("SOMETHING DIED")
+    #     exit()

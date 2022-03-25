@@ -46,7 +46,10 @@ public final class Constants {
 
     public static final double MODULE_OFFSET = inchesToMeters(3);
 
-    public static final double lookUpTableRPMOffset = 0; // changed from 0;
+    public static final double lookUpTableRPMOffset = -25; // changed from 0;
+
+    public static final double lookUpTableHoodOffset = 5; // changed from 0;
+
 
     public static double getClimberFalconTics(double inches) {
         return (inches / CLIMBER_INCHES_PER_ROTATION) * VERTICAL_CLIMBER_GEAR_RATIO * FALCON_TICS_PER_ROTATION;
@@ -91,11 +94,11 @@ public final class Constants {
         int lastIndex = SHOOTING_LOOKUP_TABLE.length - 1;
         if (distance < SHOOTING_LOOKUP_TABLE[0][0]) {
             //If the distance is closer than the first setpoint
-            double[] returnArr = {SHOOTING_LOOKUP_TABLE[0][1], lookUpTableRPMOffset + SHOOTING_LOOKUP_TABLE[0][2]};
+            double[] returnArr = {SHOOTING_LOOKUP_TABLE[0][1] + lookUpTableHoodOffset, lookUpTableRPMOffset + SHOOTING_LOOKUP_TABLE[0][2]};
             return returnArr;
         } else if (distance > SHOOTING_LOOKUP_TABLE[lastIndex][0]) {
             //If the distance is farther than the last setpoint
-            double[] returnArr = {SHOOTING_LOOKUP_TABLE[lastIndex][1], lookUpTableRPMOffset + SHOOTING_LOOKUP_TABLE[lastIndex][2]};
+            double[] returnArr = {SHOOTING_LOOKUP_TABLE[lastIndex][1] + lookUpTableHoodOffset, lookUpTableRPMOffset + SHOOTING_LOOKUP_TABLE[lastIndex][2]};
             return returnArr;
         } else {
             for (int i = 0; i < SHOOTING_LOOKUP_TABLE.length; i ++) {
@@ -111,7 +114,7 @@ public final class Constants {
                     double rpm2 = SHOOTING_LOOKUP_TABLE[i + 1][2];
 
                     //Interpolate in-between values for hood angle and shooter rpm
-                    double newHood = hood1 + (percent * (hood2 - hood1));
+                    double newHood = hood1 + lookUpTableHoodOffset + (percent * (hood2 - hood1));
                     double newRPM = lookUpTableRPMOffset + rpm1 + (percent * (rpm2 - rpm1));
                     
                     double[] returnArr = {newHood, newRPM};

@@ -545,6 +545,8 @@ public class Drive extends SubsystemBase {
     public void teleopDrive() {
         updateOdometryFusedArray();
 
+        double turnLimit = 0.75;
+
         // System.out.println("FUSED X: " + getFusedOdometryX() + " FUSED Y: " + getFusedOdometryY() + " Theta: " + getFusedOdometryTheta());
 
         // this is correct, X is forward in field, so originalX should be the y on the joystick
@@ -558,7 +560,7 @@ public class Drive extends SubsystemBase {
             originalY = 0;
         }
 
-        double turn = -OI.getDriverRightX() * (Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS);
+        double turn = turnLimit * (-OI.getDriverRightX() * (Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
         // turn = 0;
         double navxOffset = Math.toRadians(peripherals.getNavxAngle());
         double xPower = getAdjustedX(originalX, originalY);
