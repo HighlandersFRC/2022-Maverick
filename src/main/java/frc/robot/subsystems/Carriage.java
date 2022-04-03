@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
@@ -77,6 +78,18 @@ public class Carriage extends SubsystemBase {
 
     climberFalcon1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 80, 80, 500));
     climberFalcon1.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35, 500));
+
+    climberFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
+    climberFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
+    climberFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
+    climberFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+    climberFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
+
+    climberFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
+    climberFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
+    climberFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
+    climberFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+    climberFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
   }
 
   public double getclimberFalcon1Position() {

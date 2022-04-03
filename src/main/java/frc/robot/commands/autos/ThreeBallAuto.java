@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.CancelMagazine;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
+import frc.robot.commands.FaceTarget;
 import frc.robot.commands.FireBalls;
 import frc.robot.commands.FireBallsNoVision;
 import frc.robot.commands.FireOneBall;
@@ -69,13 +70,16 @@ public class ThreeBallAuto extends SequentialCommandGroup {
         new ParallelRaceGroup(
             new ContinuousAccelerationInterpolation(drive, pathJSON, false),
             new IntakeBalls(magIntake, lights)),
-        new WaitCommand(0.25),
-        new CancelMagazine(magIntake),
-        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1600, 0.5, 0.01, adjuster, 0, true), 
+        // new WaitCommand(0.25),
+        // new CancelMagazine(magIntake),
+        new ParallelRaceGroup(new IntakeBalls(magIntake, lights), new WaitCommand(0.25)),
+        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1600, 0.5, 0.01, adjuster, 0, true),
         new ParallelRaceGroup(
             new ContinuousAccelerationInterpolation(drive, pathJSON2, false),
             new IntakeBalls(magIntake, lights)),
         new CancelMagazine(magIntake),
+        new WaitCommand(0.25),
+        // new FaceTarget(drive, peripherals, lights, 0),
         new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 16, 1460, 0.5, 1, adjuster, 0.1, true));
     }
   }

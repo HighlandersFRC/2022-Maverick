@@ -29,6 +29,7 @@ public class Peripherals extends SubsystemBase {
   private NetworkTable limeLightTable = NetworkTableInstance.getDefault().getTable("limelight");
   private NetworkTableEntry tableX = limeLightTable.getEntry("tx");
   private NetworkTableEntry tableY = limeLightTable.getEntry("ty");
+  private NetworkTableEntry switchLights = limeLightTable.getEntry("ledMode");
 
   private double limeLightX = -1.0;
   private double limeLightY = -1.0;
@@ -75,11 +76,12 @@ public class Peripherals extends SubsystemBase {
   }
 
   public void turnLightRingOn() {
-    m_pdh.setSwitchableChannel(true);
+    //m_pdh.setSwitchableChannel(true);
+    switchLights.setNumber(3);
   }
 
   public void turnLightRingOff() {
-    m_pdh.setSwitchableChannel(false);
+    switchLights.setNumber(1);
   }
 
   public double getNavxAngle() {

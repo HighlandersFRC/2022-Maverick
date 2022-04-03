@@ -230,6 +230,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("BOTTOM BEAM BREAK", magIntake.getLowerBackBeamBreak());
     SmartDashboard.putBoolean("UPPER BEAM BREAK", magIntake.getUpperBeamBreak());
 
+    SmartDashboard.putNumber("DISTANCE", peripherals.getLimeLightDistanceToTarget());
+
     // climber.postRotatingClimberEncoder();
 
     SmartDashboard.putNumber("VClimber", carriage.getclimberFalcon1Position());
@@ -262,7 +264,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    // peripherals.turnLightRingOff();
+  }
 
   @Override
   public void autonomousInit() {
