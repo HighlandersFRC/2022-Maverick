@@ -33,7 +33,7 @@ public class SetHoodPosition extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    double distance = peripherals.getVisionArray()[0];
+    double distance = peripherals.getLimeLightDistanceToTarget();
     if (useList && distance != -1) {
       position = Constants.getShooterValues(distance)[0] + adjuster.getHoodAdjustment();
     } else {

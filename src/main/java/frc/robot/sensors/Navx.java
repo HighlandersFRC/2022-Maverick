@@ -9,6 +9,7 @@ import com.kauailabs.navx.frc.AHRS;
 public class Navx {
   private double originalAngle;
   private double originalYaw;
+  private double originalPitch;
   private AHRS imu;
   /** Creates a new Navx. */
  
@@ -45,7 +46,7 @@ public class Navx {
   }
 
   public double currentPitch() {
-      return imu.getPitch();
+      return imu.getPitch() - originalPitch;
   }
 
   public double currentRoll() {
@@ -98,6 +99,10 @@ public class Navx {
 
   public void softResetYaw() {
       originalYaw = imu.getYaw();
+  }
+
+  public void softResetPitch(){
+      originalPitch = imu.getPitch();
   }
 
   public double getAngleRate() {

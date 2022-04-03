@@ -23,7 +23,7 @@ public class Hood extends SubsystemBase {
   // method run to set PID values and configure motor settings
   public void init() {
     hoodMotor.config_kP(0, 0.2);
-    hoodMotor.config_kI(0, 0.00001);
+    hoodMotor.config_kI(0, 0.000015);
     hoodMotor.config_kD(0, 1);
     hoodMotor.config_IntegralZone(0, 0.01);
 

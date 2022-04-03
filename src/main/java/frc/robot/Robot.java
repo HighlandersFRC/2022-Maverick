@@ -15,6 +15,8 @@ import frc.robot.commands.ContinuousAccelerationInterpolation;
 import frc.robot.commands.FaceTarget;
 import frc.robot.commands.FireBalls;
 import frc.robot.commands.FireBallsNoVision;
+import frc.robot.commands.FireOneBall;
+import frc.robot.commands.HoldRotatingArmOnBar;
 import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.LoadedRobotClimb;
 import frc.robot.commands.LockDriveWheels;
@@ -160,7 +162,7 @@ public class Robot extends TimedRobot {
     }
     else if(OI.is3BallAuto()) {
       try {
-        pathingFile = new File("/home/lvuser/deploy/Adj3Ball.json");
+        pathingFile = new File("/home/lvuser/deploy/5BallPart1.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
         // System.out.println(pathJSON);
@@ -171,7 +173,7 @@ public class Robot extends TimedRobot {
     }
     else if(OI.is5BallAuto()) {
       try {
-        pathingFile = new File("/home/lvuser/deploy/Adj3Ball.json");
+        pathingFile = new File("/home/lvuser/deploy/5BallPart1.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
         // System.out.println(pathJSON);
@@ -211,6 +213,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     lights.periodic();
+    SmartDashboard.putNumber("Lime Light X", peripherals.getLimeLightX());
+    SmartDashboard.putNumber("Lime Light Y", peripherals.getLimeLightY());
     // if(!magIntake.getUpperBeamBreak()) {
     //   lights.setMode(LEDMode.RAINBOW);
     // }
@@ -232,6 +236,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("RCLIMBER", climber.getRotatingMotorPosition());
 
     SmartDashboard.putBoolean("CLIMB LIMIT SWITCH", climber.getLimitSwitch());
+    SmartDashboard.putNumber("ROLL", peripherals.getNavxPitch());
+
+    SmartDashboard.putNumber("ROTATING TEMPERATURE", climber.getRotatingMotorTemperature());
     }
   
 
@@ -320,24 +327,26 @@ public class Robot extends TimedRobot {
     OI.driverY.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 9.25, 1400, 0.5, 0.5, shotAdjuster));
     OI.driverX.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 30, 1650, 0.75, 0.75, shotAdjuster));
     // OI.driverMenuButton.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 23, 1530, 0.5, 0.5, shotAdjuster));
-    OI.driverMenuButton.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 0.5, shotAdjuster, 0 , false));
+    // OI.driverMenuButton.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 0.5, shotAdjuster, 0 , false));
 
+    OI.driverMenuButton.whenPressed(new FireOneBall(drive, magIntake, shooter, hood, peripherals, lights, 10, 1400, 0.75, 0.75, shotAdjuster, 0, true));
 
-    OI.operatorB.whileHeld(new LockDriveWheels(drive));
+    // OI.operatorB.whileHeld(new LockDriveWheels(drive));
 
     OI.driverViewButton.whileHeld(new ZeroNavxMidMatch(drive));
 
     OI.operatorA.whenPressed(new LoadedRobotClimb(carriage, 0));
-    OI.operatorY.whenPressed(new PositionVerticalClimber(carriage, 19));
+    OI.operatorY.whenPressed(new PositionVerticalClimber(carriage, 21));
     OI.operatorX.whenPressed(new ClimbSequence(climber, carriage));
-    OI.operatorB.whenPressed(new ClimbSequenceP2(climber, carriage));
+    // OI.operatorB.whenPressed(new ClimbSequenceP2(climber, carriage));
+    OI.operatorB.whenPressed(new HoldRotatingArmOnBar(climber, 30, peripherals));
 
     OI.operatorViewButton.whenPressed(new ResetClimber(climber, carriage));
 
     OI.operatorRT.whileHeld(new RunVerticalClimber(carriage, 0.15));
     OI.operatorLT.whileHeld(new RunVerticalClimber(carriage, -0.15));
     OI.operatorRB.whileHeld(new RunRotatingClimber(climber, 0.1));
-    OI.operatorLB.whileHeld(new RunRotatingClimber(climber, -0.1));
+    OI.operatorLB.whileHeld(new RunRotatingClimber(climber, -0.35));
   }
 
   /** This function is called periodically during operator control. */

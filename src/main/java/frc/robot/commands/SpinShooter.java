@@ -37,7 +37,7 @@ public class SpinShooter extends CommandBase {
   @Override
   public void initialize() {
     hasConsistentRPM = 0;
-    double distance = peripherals.getVisionArray()[0];
+    double distance = peripherals.getLimeLightDistanceToTarget();
     if (useList && distance != -1) {
       rpm = Constants.getShooterValues(distance)[1] + adjuster.getRPMAdjustment();
     } else {

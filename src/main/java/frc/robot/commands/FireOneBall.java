@@ -37,7 +37,7 @@ public class FireOneBall extends SequentialCommandGroup {
           new SetHoodPosition(hood, peripherals, hoodPosition, adjuster, useList)
       ),
       // new FaceTarget(drive, peripherals, offset),
-      new TurnBackMag(magIntake, 360)
+      new TurnBackMag(magIntake, 720)
     );
   }
 }

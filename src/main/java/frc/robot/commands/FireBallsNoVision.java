@@ -35,7 +35,7 @@ public class FireBallsNoVision extends SequentialCommandGroup {
         //   new VisionAlignment(drive, peripherals),
           new SetHoodPosition(hood, peripherals, hoodPosition, adjuster, false)
       ),
-      new LockDriveWheels(drive),
+      // new LockDriveWheels(drive),
       new TurnBackMag(magIntake, 360),
       //new EjectBalls(magIntake, lights, 0.55, 0.85, firstBallTimeout),
       //new EjectBalls(magIntake, 0.0, 0, 0.001),

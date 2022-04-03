@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.SPI.Port;
@@ -23,6 +26,13 @@ public class Peripherals extends SubsystemBase {
 
   private final VisionCamera visionCamera = new VisionCamera();
 
+  private NetworkTable limeLightTable = NetworkTableInstance.getDefault().getTable("limelight");
+  private NetworkTableEntry tableX = limeLightTable.getEntry("tx");
+  private NetworkTableEntry tableY = limeLightTable.getEntry("ty");
+
+  private double limeLightX = -1.0;
+  private double limeLightY = -1.0;
+
   private MqttSubscribe mqttSubscribe;
 
   private final PowerDistribution m_pdh = new PowerDistribution(1, ModuleType.kRev);
@@ -37,6 +47,23 @@ public class Peripherals extends SubsystemBase {
     zeroNavx();
     turnLightRingOn();
     setDefaultCommand(new PeripheralsDefault(this));
+  }
+
+  public double getLimeLightX() {
+    limeLightX = Math.PI * (tableX.getDouble(-1.0))/180;
+    return limeLightX;
+  }
+
+  public double getLimeLightY() {
+    limeLightY = tableY.getDouble(-100);
+    return limeLightY;
+  }
+
+  public double getLimeLightDistanceToTarget() {
+    if(getLimeLightY() != -100) {
+      return (102.75 * (Math.pow(Math.E, -0.026 * getLimeLightY())));
+    }
+    return -1.0;
   }
 
   public boolean hasLock() {
@@ -64,8 +91,14 @@ public class Peripherals extends SubsystemBase {
     return navx.getRawAngle();
   }
 
+  public double getNavxAngleRotating() {
+    return navx.currentAngle();
+  }
+
   public void zeroNavx() {
     navx.softResetYaw();
+    navx.softResetPitch();
+    // navx.softResetAngle();
 }
 
   public double getNavxYaw(){
@@ -73,7 +106,7 @@ public class Peripherals extends SubsystemBase {
   }
 
   public double getNavxPitch(){
-    return navx.currentPitch();
+    return -navx.currentPitch();
   }
 
   public double getNavxRoll(){

@@ -41,13 +41,13 @@ public class FireBalls extends SequentialCommandGroup {
       new TurnBackMag(magIntake, 360),
       //new EjectBalls(magIntake, lights, 0.55, 0.85, firstBallTimeout),
       //new EjectBalls(magIntake, 0.0, 0, 0.001),
-      new WaitCommand(0.25),
-      new TurnBackMag(magIntake, 810),
-      new WaitCommand(0.25),
+      new WaitCommand(0.1),
+      new TurnBackMag(magIntake, 720),
+      new WaitCommand(0.1),
       //new EjectBalls(magIntake, lights, 0.35, 0.45, secondBallTimeout)
       //new EjectBalls(magIntake, 0.0, 0, 0.1)
       //new TurnBackMag(magIntake)
-      new TurnBackMag(magIntake, 550)
+      new TurnBackMag(magIntake, 360)
       // new WaitCommand(0.5),
       // new TurnBackMag(magIntake, 270)
     );

@@ -21,7 +21,7 @@ public class ClimbSequence extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(climber, carriage);
     addCommands(
-      new PositionVerticalClimber(carriage, 19),
+      new PositionVerticalClimber(carriage, 21),
       new PositionRotatingClimber(climber, 30),
       new PositionVerticalClimber(carriage, 23),
       new PositionRotatingClimber(climber, 43),

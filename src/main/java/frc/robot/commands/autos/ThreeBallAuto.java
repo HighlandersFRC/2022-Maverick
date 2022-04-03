@@ -17,6 +17,7 @@ import frc.robot.commands.CancelMagazine;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
 import frc.robot.commands.FireBalls;
 import frc.robot.commands.FireBallsNoVision;
+import frc.robot.commands.FireOneBall;
 import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.IntakeDown;
 import frc.robot.subsystems.Drive;
@@ -35,28 +36,46 @@ public class ThreeBallAuto extends SequentialCommandGroup {
   private File pathingFile;
   private JSONArray pathJSON;
 
+  private File pathingFile2;
+  private JSONArray pathJSON2;
+
+  private File pathingFile3;
+  private JSONArray pathJSON3;
+
   private ShotAdjuster adjuster = new ShotAdjuster();
 
   public ThreeBallAuto(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights) {
     try {
-      pathingFile = new File("/home/lvuser/deploy/Adj3Ball.json");
+      pathingFile = new File("/home/lvuser/deploy/5BallPart1.json");
       FileReader scanner = new FileReader(pathingFile);
       pathJSON = new JSONArray(new JSONTokener(scanner));
     }
     catch(Exception e) {
       System.out.println("ERROR WITH PATH FILE " + e);
     }
+
+    try {
+        pathingFile2 = new File("/home/lvuser/deploy/5BallPart2.json");
+        FileReader scanner = new FileReader(pathingFile2);
+        pathJSON2 = new JSONArray(new JSONTokener(scanner));
+    }
+    catch(Exception e) {
+        System.out.println("ERROR WITH PATH FILE " + e);
+    }
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake);
     addCommands(new IntakeDown(magIntake),
-    new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 14, 1430, 0.5, 0.01, adjuster, 0, false), 
-    new ParallelRaceGroup(
-        new ContinuousAccelerationInterpolation(drive, pathJSON, false),
-        new IntakeBalls(magIntake, lights)),
-    new CancelMagazine(magIntake),
-    new WaitCommand(0.5),
-    new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1580, 0.5, 1, adjuster, 0, false));
+        new ParallelRaceGroup(
+            new ContinuousAccelerationInterpolation(drive, pathJSON, false),
+            new IntakeBalls(magIntake, lights)),
+        new WaitCommand(0.25),
+        new CancelMagazine(magIntake),
+        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1600, 0.5, 0.01, adjuster, 0, true), 
+        new ParallelRaceGroup(
+            new ContinuousAccelerationInterpolation(drive, pathJSON2, false),
+            new IntakeBalls(magIntake, lights)),
+        new CancelMagazine(magIntake),
+        new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 16, 1460, 0.5, 1, adjuster, 0.1, true));
+    }
   }
-}
-
