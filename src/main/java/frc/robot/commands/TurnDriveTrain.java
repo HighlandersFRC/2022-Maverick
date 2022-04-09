@@ -65,11 +65,11 @@ public class TurnDriveTrain extends CommandBase {
       angleSettled = 0;
     }
 
-    // if (peripherals.getVisionArray()[2] != 0) {
-    //   lights.setMode(LEDMode.GREEN);
-    // } else {
-    //   lights.setMode(LEDMode.REDFLASH);
-    // }
+    if (peripherals.getLimeLightX()!= -1.0) {
+      lights.setMode(LEDMode.GREEN);
+    } else {
+      lights.setMode(LEDMode.REDFLASH);
+    }
   }
 
   // Called once the command ends or is interrupted.

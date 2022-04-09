@@ -87,7 +87,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
     new CancelMagazine(magIntake),
     new WaitCommand(0.15),
     // new FaceTarget(drive, peripherals, lights, 0),
-    new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 16, 1460, 0.5, 1, adjuster, 0.1, true),
+    new FireOneBall(drive, magIntake, shooter, hood, peripherals, lights, 16, 1460, 0.5, 1, adjuster, 0.1, true),
     new ParallelRaceGroup(
         new ContinuousAccelerationInterpolation(drive, pathJSON3, false),
         new IntakeBalls(magIntake, lights)),

@@ -50,7 +50,7 @@ public class MagIntake extends SubsystemBase {
     intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
     intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
     intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
-    intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+    intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 10000);
     intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
     intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 1000);
     intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000);
@@ -60,7 +60,7 @@ public class MagIntake extends SubsystemBase {
     frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
     frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
     frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
-    frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+    frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 10000);
     frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
     frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 1000);
     frontMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000);
@@ -70,12 +70,12 @@ public class MagIntake extends SubsystemBase {
     backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
     backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
     backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
-    backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+    backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 10000);
     backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
-    // backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 1000);
-    // backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000);
-    // backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 1000);
-    // backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 1000);
+    backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 1000);
+    backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 1000);
+    backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 1000);
+    backMagazine.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 1000);
   }
 
   public double rotateBackMag(double degrees) {

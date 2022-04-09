@@ -82,13 +82,13 @@ public class Carriage extends SubsystemBase {
     climberFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
     climberFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
     climberFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
-    climberFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+    climberFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 10000);
     climberFalcon1.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
 
     climberFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 100);
     climberFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100);
     climberFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 1000);
-    climberFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 1000);
+    climberFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 10000);
     climberFalcon2.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 1000);
   }
 

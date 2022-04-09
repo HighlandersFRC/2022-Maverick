@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.CancelMagazine;
 import frc.robot.commands.ContinuousAccelerationInterpolation;
 import frc.robot.commands.FireBalls;
+import frc.robot.commands.FireBallsNoVision;
 import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.TwoBallAutonomousShot;
@@ -30,15 +31,17 @@ import frc.robot.tools.ShotAdjuster;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TwoBallAuto extends SequentialCommandGroup {
-  /** Creates a new TwoBallAuto. */
+public class TwoBallSteal extends SequentialCommandGroup {
+  /** Creates a new TwoBallSteal. */
   private File pathingFile;
   private JSONArray pathJSON;
+  private File pathingFile2;
+  private JSONArray pathJSON2;
 
   private ShotAdjuster adjuster = new ShotAdjuster();
 
 
-  public TwoBallAuto(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights) {
+  public TwoBallSteal(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights) {
     try {
       pathingFile = new File("/home/lvuser/deploy/2BallAuto.json");
       FileReader scanner = new FileReader(pathingFile);
@@ -47,10 +50,18 @@ public class TwoBallAuto extends SequentialCommandGroup {
     catch(Exception e) {
       System.out.println("ERROR WITH PATH FILE " + e);
     }
+    try {
+      pathingFile2 = new File("/home/lvuser/deploy/2BallAuto.json");
+      FileReader scanner2 = new FileReader(pathingFile2);
+      pathJSON2 = new JSONArray(new JSONTokener(scanner2));
+    }
+    catch(Exception e) {
+      System.out.println("ERROR WITH PATH FILE " + e);
+    }
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake);
-    addCommands(new IntakeDown(magIntake), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON, false), new IntakeBalls(magIntake, lights)), new ParallelRaceGroup(new WaitCommand(1), new IntakeBalls(magIntake, lights)), new CancelMagazine(magIntake), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 1, adjuster, 0, true));
+    addCommands(new IntakeDown(magIntake), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON, false), new IntakeBalls(magIntake, lights)), new ParallelRaceGroup(new WaitCommand(1), new IntakeBalls(magIntake, lights)), new CancelMagazine(magIntake), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 1, adjuster, 0, true), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON2, false), new IntakeBalls(magIntake, lights)), new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 0, 600, 0.5, 0.5, adjuster));
   }
 }
 
