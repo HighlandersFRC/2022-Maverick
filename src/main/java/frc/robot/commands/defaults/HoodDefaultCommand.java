@@ -5,15 +5,20 @@
 package frc.robot.commands.defaults;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.OI;
 import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Peripherals;
 
 public class HoodDefaultCommand extends CommandBase {
   /** Creates a new HoodDefaultCommand. */
 
   private Hood hood;
+  private Peripherals peripherals;
 
-  public HoodDefaultCommand(Hood hood) {
+  public HoodDefaultCommand(Hood hood, Peripherals peripherals) {
     this.hood = hood;
+    this.peripherals = peripherals;
     addRequirements(hood);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -25,6 +30,9 @@ public class HoodDefaultCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // if(OI.operatorB.get()) {
+      // hood.setHoodPosition(Constants.getShooterValues(peripherals.getLimeLightDistanceToTarget())[0]);
+    // } else 
     if (!hood.getLowerLimitSwitch()) {
       hood.setHoodPercent(0);
       hood.zeroHood();

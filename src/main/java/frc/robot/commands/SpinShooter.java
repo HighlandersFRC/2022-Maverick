@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -19,11 +20,23 @@ public class SpinShooter extends CommandBase {
   private double rpm;
   private int hasConsistentRPM = 0;
   private ShotAdjuster adjuster;
+  private Boolean neverEnds = false;
+  private double startTime;
 
   private Boolean useList = false;
 
   //private double[] rpmList = {1400, 1400, 1400, 1430, 1430, 1440, 1440, 1470, 1470, 1470, 1500, 1530, 1530, 1530, 1530, 1530, 1530, 1560, 1560};
   //private double[] distanceList = {58, 63, 67, 73, 79, 84, 88, 93, 98, 104, 109, 116, 121, 129, 136, 142, 147, 157, 167};
+
+  public SpinShooter(Shooter shooter, Peripherals peripherals, double rpm, ShotAdjuster adjuster, Boolean useList, Boolean neverEnds) {
+    this.shooter = shooter;
+    this.initialRPM = rpm;
+    this.adjuster = adjuster;
+    this.useList = useList;
+    this.peripherals = peripherals;
+    this.neverEnds = neverEnds;
+    addRequirements(shooter);
+  }
 
   public SpinShooter(Shooter shooter, Peripherals peripherals, double rpm, ShotAdjuster adjuster, Boolean useList) {
     this.shooter = shooter;
@@ -37,17 +50,19 @@ public class SpinShooter extends CommandBase {
   @Override
   public void initialize() {
     hasConsistentRPM = 0;
-    double distance = peripherals.getLimeLightDistanceToTarget();
-    if (useList && distance != -1) {
-      rpm = Constants.getShooterValues(distance)[1] + adjuster.getRPMAdjustment();
-    } else {
-      rpm = initialRPM + adjuster.getRPMAdjustment();
-    }
+    startTime = Timer.getFPGATimestamp();
   }
 
   @Override
   public void execute() {
     //System.out.println("RPM: " + shooter.getShooterRPM());
+    double distance = peripherals.getLimeLightDistanceToTarget();
+    SmartDashboard.putNumber("hasConsistentRPM", hasConsistentRPM);
+    if (useList && distance != -1) {
+      rpm = Constants.getShooterValues(distance)[1] + adjuster.getRPMAdjustment();
+    } else {
+      rpm = initialRPM + adjuster.getRPMAdjustment();
+    }
     shooter.setShooterRPM(rpm);
     if(Math.abs(shooter.getShooterRPM() - rpm) < 50) {
       hasConsistentRPM++;
@@ -66,7 +81,7 @@ public class SpinShooter extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    if(hasConsistentRPM > 5) {
+    if(hasConsistentRPM > 5 || Timer.getFPGATimestamp() - startTime > 1 && !neverEnds) {
       // System.out.println("00000000000000000000000000000000000");
       return true;
     }

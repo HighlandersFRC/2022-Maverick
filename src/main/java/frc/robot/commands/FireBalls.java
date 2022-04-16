@@ -39,11 +39,24 @@ public class FireBalls extends SequentialCommandGroup {
       ),
       // new SpinShooter(shooter, peripherals, shooterRPM, adjuster, useList),
       // new SetHoodPosition(hood, peripherals, hoodPosition, adjuster, useList),
-      new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 1500, false), new WaitCommand(0.25)),
-      new WaitCommand(0.1),
-      new TurnBackMag(magIntake, 360),
-      new WaitCommand(0.1),
-      new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 1500, false), new WaitCommand(0.25))
+      new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 2500, false), new WaitCommand(0.7))
+      // new TurnBackMag(magIntake, 360),
+      // //new EjectBalls(magIntake, lights, 0.55, 0.85, firstBallTimeout),
+      // //new EjectBalls(magIntake, 0.0, 0, 0.001),
+      // new WaitCommand(0.1),
+      // new TurnBackMag(magIntake, 720),
+      // new WaitCommand(0.1),
+      // //new EjectBalls(magIntake, lights, 0.35, 0.45, secondBallTimeout)
+      // //new EjectBalls(magIntake, 0.0, 0, 0.1)
+      // //new TurnBackMag(magIntake)
+      // new TurnBackMag(magIntake, 360)
+      // new SpinShooter(shooter, peripherals, shooterRPM, adjuster, useList),
+      // new SetHoodPosition(hood, peripherals, hoodPosition, adjuster, useList),
+      // new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 1500, false), new WaitCommand(0.25)),
+      // new WaitCommand(0.1),
+      // new TurnBackMag(magIntake, 360, true),
+      // new WaitCommand(0.1),
+      // new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 1500, false), new WaitCommand(0.25))
       // // new LockDriveWheels(drive),
       // // new FaceTarget(drive, peripherals, offset),
       // new TurnBackMag(magIntake, 360),

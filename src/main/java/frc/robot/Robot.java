@@ -84,8 +84,7 @@ public class Robot extends TimedRobot {
   private MqttPublish publish = new MqttPublish();
   private MqttSubscribe subscribe = new MqttSubscribe();
 
-  private final Shooter shooter = new Shooter();
-  private final Hood hood  = new Hood();
+  
 
   private final Climber climber = new Climber(pneumatics);
   private final Carriage carriage = new Carriage(pneumatics);
@@ -94,6 +93,8 @@ public class Robot extends TimedRobot {
 
   private final Peripherals peripherals = new Peripherals(subscribe, lights);
   private final Drive drive = new Drive(peripherals, publish);
+  private final Shooter shooter = new Shooter(peripherals);
+  private final Hood hood  = new Hood(peripherals);
 
   private MagIntake magIntake = new MagIntake(pneumatics);
 
@@ -333,12 +334,12 @@ public class Robot extends TimedRobot {
     OI.driverRT.whileHeld(new IntakeBalls(magIntake, lights));
     OI.driverLT.whileHeld(new Outtake(magIntake));
 
-    OI.driverA.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 0.0, 1400, 0.75, 0.75, shotAdjuster));
-    OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 10, 1400, 0.75, 0.75, shotAdjuster, 0, true));
-    OI.driverY.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 9.25, 1400, 0.5, 0.5, shotAdjuster));
-    OI.driverX.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 30, 1650, 0.75, 0.75, shotAdjuster));
+    OI.driverA.whenHeld(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 0.0, 1400, 0.75, 0.75, shotAdjuster));
+    OI.driverB.whenHeld(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 10, 1400, 0.75, 0.75, shotAdjuster, 0, true));
+    OI.driverY.whenHeld(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 9.25, 1400, 0.5, 0.5, shotAdjuster));
+    OI.driverX.whenHeld(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 30, 1650, 0.75, 0.75, shotAdjuster));
 
-    OI.driverRB.whileHeld(new HubCentricAutoRanging(drive, hood, shooter, shotAdjuster, peripherals));
+    OI.driverRB.whenHeld(new HubCentricAutoRanging(drive, hood, shooter, shotAdjuster, peripherals));
 
     OI.driverViewButton.whileHeld(new ZeroNavxMidMatch(drive));
 

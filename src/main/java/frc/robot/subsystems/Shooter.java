@@ -19,9 +19,10 @@ public class Shooter extends SubsystemBase {
  private final TalonFX leftShooter = new TalonFX(10);
  private final TalonFX rightShooter = new TalonFX(9);
 
-  /** Creates a new Intake. */
-  public Shooter() {
-    
+ private Peripherals peripherals;
+
+  public Shooter(Peripherals peripherals) {
+    this.peripherals = peripherals;
   }
 
   // method run to set PID values and sets motors to Coast
@@ -47,7 +48,7 @@ public class Shooter extends SubsystemBase {
     rightShooter.config_kD(0, 0);
     // rightShooter.config_IntegralZone(0, 100);
     leftShooter.set(ControlMode.Follower, 9);
-    setDefaultCommand(new ShooterDefault(this));
+    setDefaultCommand(new ShooterDefault(this, peripherals));
   }
 
   public double getNumRPMValues(double[] rpmArray) {

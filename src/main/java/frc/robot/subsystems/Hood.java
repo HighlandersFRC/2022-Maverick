@@ -18,7 +18,11 @@ public class Hood extends SubsystemBase {
 
   private TalonFX hoodMotor = new TalonFX(13);
 
-  public Hood() {}
+  private Peripherals peripherals;
+
+  public Hood(Peripherals peripherals) {
+    this.peripherals = peripherals;
+  }
 
   // method run to set PID values and configure motor settings
   public void init() {
@@ -38,7 +42,7 @@ public class Hood extends SubsystemBase {
 
     hoodMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 
-    setDefaultCommand(new HoodDefaultCommand(this));
+    setDefaultCommand(new HoodDefaultCommand(this, peripherals));
 
   }
 

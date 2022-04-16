@@ -28,7 +28,7 @@ public class SetBackMagSpeed extends CommandBase {
   @Override
   public void execute() {
     magIntake.setBackMagRPM(rpm);
-    magIntake.setFrontMagazine(0.2);
+    magIntake.setFrontMagazine(0.25);
   }
 
   // Called once the command ends or is interrupted.

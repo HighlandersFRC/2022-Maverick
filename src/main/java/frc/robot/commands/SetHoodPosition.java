@@ -19,6 +19,18 @@ public class SetHoodPosition extends CommandBase {
   private double position;
   private ShotAdjuster adjuster;
   private Boolean useList = false;
+  private Boolean neverEnds = false;
+
+  public SetHoodPosition(Hood hood, Peripherals peripherals, double wantedPosition, ShotAdjuster adjuster, Boolean useList, Boolean neverEnds) {
+    this.hood = hood;
+    this.peripherals = peripherals;
+    this.initialPosition = wantedPosition;
+    this.adjuster = adjuster;
+    this.useList = useList;
+    this.neverEnds = neverEnds;
+    addRequirements(hood);
+    // Use addRequirements() here to declare subsystem dependencies.
+  }
 
   public SetHoodPosition(Hood hood, Peripherals peripherals, double wantedPosition, ShotAdjuster adjuster, Boolean useList) {
     this.hood = hood;
@@ -33,17 +45,18 @@ public class SetHoodPosition extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
     double distance = peripherals.getLimeLightDistanceToTarget();
     if (useList && distance != -1) {
       position = Constants.getShooterValues(distance)[0] + adjuster.getHoodAdjustment();
     } else {
       position = initialPosition + adjuster.getHoodAdjustment();
     }
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
     hood.setHoodPosition(position);
     SmartDashboard.putNumber("WANTED HOOD", position);
     // hood.setHoodPercent(position);
@@ -59,7 +72,7 @@ public class SetHoodPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(Math.abs(hood.getHoodPosition() - (position)) < 0.5){
+    if(Math.abs(hood.getHoodPosition() - (position)) < 0.5 && !neverEnds){
       // System.out.println("`````````````````````````");
       return true;
     }

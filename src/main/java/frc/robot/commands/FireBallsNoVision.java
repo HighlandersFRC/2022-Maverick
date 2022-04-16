@@ -37,8 +37,14 @@ public class FireBallsNoVision extends SequentialCommandGroup {
           new SetHoodPosition(hood, peripherals, hoodPosition, adjuster, false)
           // new SetBackMagSpeed(magIntake, 1000, true)
       ),
-      // new LockDriveWheels(drive),
-      new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 1500, false), new WaitCommand(3))
+      new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 2500, false), new WaitCommand(0.6))
+      // new WaitCommand(0.1),
+      // new TurnBackMag(magIntake, 360, true),
+      // new WaitCommand(0.1),
+      // new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 1500, false), new WaitCommand(0.25))
+      // new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 1500, false), new WaitCommand(0.25)),
+      // new WaitCommand(0.1),
+      // new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 1500, false), new WaitCommand(0.25))
       //new EjectBalls(magIntake, lights, 0.55, 0.85, firstBallTimeout),
       //new EjectBalls(magIntake, 0.0, 0, 0.001),
       // new WaitCommand(1),

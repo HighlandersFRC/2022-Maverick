@@ -22,6 +22,6 @@ public class HubCentricAutoRanging extends SequentialCommandGroup {
     
     addRequirements(drive, hood, shooter);
 
-    addCommands(new ParallelCommandGroup(new HubCentricDrive(drive, peripherals), new SetHoodPosition(hood, peripherals, 0, adjuster, true), new SpinShooter(shooter, peripherals, 1400, adjuster, true)));
+    addCommands(new ParallelCommandGroup(new HubCentricDrive(drive, peripherals), new SetHoodPosition(hood, peripherals, 0, adjuster, true, true), new SpinShooter(shooter, peripherals, 1400, adjuster, true, true)));
   }
 }

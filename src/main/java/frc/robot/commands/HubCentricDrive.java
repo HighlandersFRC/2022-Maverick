@@ -16,9 +16,13 @@ public class HubCentricDrive extends CommandBase {
 
   private PID pid;
 
-  private double kP = 6;
-  private double kI = 0.15;
-  private double kD = 0.6;
+  // private double kP = 6;
+  // private double kI = 0.15;
+  // private double kD = 0.6;
+
+  private double kP = 15;
+  private double kI = 0;
+  private double kD = 0;
 
   public HubCentricDrive(Drive drive, Peripherals peripherals) {
     this.drive = drive;

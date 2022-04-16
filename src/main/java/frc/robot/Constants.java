@@ -46,9 +46,9 @@ public final class Constants {
 
     public static final double MODULE_OFFSET = inchesToMeters(3);
 
-    public static final double lookUpTableRPMOffset = 0; // changed from 0;
+    public static final double lookUpTableRPMOffset = -30; // changed from 0;
 
-    public static final double lookUpTableHoodOffset = 0; // changed from 0;
+    public static final double lookUpTableHoodOffset = 4; // changed from 0;
 
 
     public static double getClimberFalconTics(double inches) {
@@ -84,13 +84,13 @@ public final class Constants {
         // {170.0, 24.0, 1560.0},
         // {180.0, 25.0, 1580.0},
         // {190.0, 27.5, 1650.0}
-        {70.0, 8.75, 1400.0},
-        {90.0, 11.25, 1400.0},
-        {110.0, 14.25, 1460.0},
-        {130.0, 15.0, 1490.0},
-        {150.0, 19.75, 1560.0},
-        {170.0, 22, 1660},
-        {190.0, 30, 1740}
+        {70.0, 10.0, 1430.0},
+        {90.0, 13.25, 1460.0},
+        {110.0, 15.75, 1470.0},
+        {130.0, 17.5, 1530.0},
+        {150.0, 22, 1560.0},
+        {170.0, 24.75, 1620},
+        {190.0, 30.25, 1650}
     };
     
     public static double[] getShooterValues(double distance) {

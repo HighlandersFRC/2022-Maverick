@@ -23,9 +23,13 @@ public class TurnDriveTrain extends CommandBase {
 
   private PID pid;
 
-  private double kP = 6;
-  private double kI = 0.15;
-  private double kD = 0.6;
+  // private double kP = 6;
+  // private double kI = 0.15;
+  // private double kD = 0.6;
+
+  private double kP = 10;
+  private double kI = 0;
+  private double kD = 0;
 
   private int angleSettled = 0;
 
@@ -55,8 +59,9 @@ public class TurnDriveTrain extends CommandBase {
     pid.updatePID(turn);
     double result = pid.getResult();
     System.out.println("RESULT:   " + result);
-    SmartDashboard.putNumber("RESULT", result);
+    SmartDashboard.putNumber("Angle Settled", angleSettled);
     drive.autoDrive(new Vector(0, 0), result);
+
 
     if((Math.abs(peripherals.getLimeLightX()) <= 0.03) && Math.abs(peripherals.getLimeLightX()) != 0) {
       angleSettled++;
@@ -65,7 +70,7 @@ public class TurnDriveTrain extends CommandBase {
       angleSettled = 0;
     }
 
-    if (peripherals.getLimeLightX()!= -1.0) {
+    if (peripherals.getLimeLightX()!= (-Math.PI)/180) {
       lights.setMode(LEDMode.GREEN);
     } else {
       lights.setMode(LEDMode.REDFLASH);
