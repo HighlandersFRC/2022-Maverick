@@ -3,11 +3,13 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.ClimbSequenceP2;
@@ -17,6 +19,8 @@ import frc.robot.commands.FireBalls;
 import frc.robot.commands.FireBallsNoVision;
 import frc.robot.commands.FireOneBall;
 import frc.robot.commands.HoldRotatingArmOnBar;
+import frc.robot.commands.HubCentricAutoRanging;
+import frc.robot.commands.HubCentricDrive;
 import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.LoadedRobotClimb;
 import frc.robot.commands.LockDriveWheels;
@@ -134,6 +138,13 @@ public class Robot extends TimedRobot {
     lights.init();
     climber.init();
 
+    PortForwarder.add(5800, "limelight.local", 5800);
+    PortForwarder.add(5801, "limelight.local", 5801);
+    PortForwarder.add(5802, "limelight.local", 5802);
+    PortForwarder.add(5803, "limelight.local", 5803);
+    PortForwarder.add(5804, "limelight.local", 5804);
+    PortForwarder.add(5805, "limelight.local", 5805);
+
     // publish.publish(pubCameraTopic);
     subscribe.subscribe(subCameraTopic);
     // m_robotContainer = new RobotContainer();
@@ -215,10 +226,6 @@ public class Robot extends TimedRobot {
     lights.periodic();
     SmartDashboard.putNumber("Lime Light X", peripherals.getLimeLightX());
     SmartDashboard.putNumber("Lime Light Y", peripherals.getLimeLightY());
-    // if(!magIntake.getUpperBeamBreak()) {
-    //   lights.setMode(LEDMode.RAINBOW);
-    // }
-    //System.out.println(peripherals.getVisionArray());
     CommandScheduler.getInstance().run();
 
     SmartDashboard.putBoolean("LIMIT SWITCH", hood.getLowerLimitSwitch());
@@ -241,6 +248,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("ROLL", peripherals.getNavxPitch());
 
     SmartDashboard.putNumber("ROTATING TEMPERATURE", climber.getRotatingMotorTemperature());
+
+    magIntake.postGreenWheelVelocity();
     }
   
 
@@ -324,25 +333,18 @@ public class Robot extends TimedRobot {
     OI.driverRT.whileHeld(new IntakeBalls(magIntake, lights));
     OI.driverLT.whileHeld(new Outtake(magIntake));
 
-    //OI.driverA.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 6.25, 1400, 0.5, 0.5, shotAdjuster));
     OI.driverA.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 0.0, 1400, 0.75, 0.75, shotAdjuster));
-    // OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 22.0, 1490, 0.75, 0.75, shotAdjuster, 0, true));
     OI.driverB.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 10, 1400, 0.75, 0.75, shotAdjuster, 0, true));
     OI.driverY.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 9.25, 1400, 0.5, 0.5, shotAdjuster));
     OI.driverX.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 30, 1650, 0.75, 0.75, shotAdjuster));
-    // OI.driverMenuButton.whenPressed(new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 23, 1530, 0.5, 0.5, shotAdjuster));
-    // OI.driverMenuButton.whenPressed(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 0.5, shotAdjuster, 0 , false));
 
-    OI.driverMenuButton.whenPressed(new FireOneBall(drive, magIntake, shooter, hood, peripherals, lights, 10, 1400, 0.75, 0.75, shotAdjuster, 0, true));
-
-    // OI.operatorB.whileHeld(new LockDriveWheels(drive));
+    OI.driverRB.whileHeld(new HubCentricAutoRanging(drive, hood, shooter, shotAdjuster, peripherals));
 
     OI.driverViewButton.whileHeld(new ZeroNavxMidMatch(drive));
 
     OI.operatorA.whenPressed(new LoadedRobotClimb(carriage, 0));
     OI.operatorY.whenPressed(new PositionVerticalClimber(carriage, 21));
     OI.operatorX.whenPressed(new ClimbSequence(climber, carriage));
-    // OI.operatorB.whenPressed(new ClimbSequenceP2(climber, carriage));
     OI.operatorB.whenPressed(new HoldRotatingArmOnBar(climber, 30, peripherals));
 
     OI.operatorViewButton.whenPressed(new ResetClimber(climber, carriage));

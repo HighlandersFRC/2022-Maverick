@@ -14,7 +14,15 @@ public class TurnBackMag extends CommandBase {
   private double endPosition;
   private double startTime;
   private double angle;
+  private Boolean isQueue = false;
   /** Creates a new TurnBackMag. */
+  public TurnBackMag(MagIntake magIntake, double angle, Boolean queuing) {
+    this.magIntake = magIntake;
+    this.angle = angle;
+    isQueue = queuing;
+    addRequirements(magIntake);
+  }
+
   public TurnBackMag(MagIntake magIntake, double angle) {
     this.magIntake = magIntake;
     this.angle = angle;
@@ -24,7 +32,9 @@ public class TurnBackMag extends CommandBase {
   @Override
   public void initialize() {
     endPosition = magIntake.rotateBackMag(angle);
-    magIntake.setFrontMagazine(0.5);
+    if(isQueue) {
+      magIntake.setFrontMagazine(0.5);
+    }
     startTime = Timer.getFPGATimestamp();
   }
 

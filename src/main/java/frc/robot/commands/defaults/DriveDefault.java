@@ -1,6 +1,7 @@
 package frc.robot.commands.defaults;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.OI;
 import frc.robot.subsystems.Drive;
 
 public class DriveDefault extends CommandBase {
@@ -23,8 +24,6 @@ public class DriveDefault extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // System.out.println("FAksdjlfjald;kfja");
-    // drive.setDriveMotors();
     drive.teleopDrive();
   }
 

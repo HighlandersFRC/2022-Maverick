@@ -513,8 +513,14 @@ public class Drive extends SubsystemBase {
     }
 
     // NOT WORKING method to accepts controller input of which way to drive but stay aligned to the target
-    public void driveAutoAligned(double turnRadiansPerSec) {
+    public void driveAutoAligned(double cameraTurnAdjustment) {
         updateOdometryFusedArray();
+
+        double turn = (-OI.getDriverRightX() * (Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
+
+        // double cameraTurnAdjustment = -peripherals.getLimeLightX();
+
+        double turnRadiansPerSec = turn + cameraTurnAdjustment;
 
         double originalX = -OI.getDriverLeftY();
         double originalY = -OI.getDriverLeftX();
@@ -547,6 +553,14 @@ public class Drive extends SubsystemBase {
 
         double turnLimit = 0.75;
 
+        if(OI.driverController.getLeftBumper()) {
+            // activate speedy spin
+            turnLimit = 1;
+        }
+        else {
+            turnLimit = 0.75;
+
+        }
         // System.out.println("FUSED X: " + getFusedOdometryX() + " FUSED Y: " + getFusedOdometryY() + " Theta: " + getFusedOdometryTheta());
 
         // this is correct, X is forward in field, so originalX should be the y on the joystick

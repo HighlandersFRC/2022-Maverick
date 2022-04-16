@@ -20,6 +20,7 @@ public class OI {
 
     public static TriggerButton driverRT = new TriggerButton(driverController, 3);
     public static TriggerButton driverLT = new TriggerButton(driverController, 2);
+    public static JoystickButton driverRB = new JoystickButton(driverController, 6);
 
     public static JoystickButton operatorX = new JoystickButton(operatorController, 3);
     public static JoystickButton operatorB = new JoystickButton(operatorController, 2);
@@ -36,6 +37,8 @@ public class OI {
 
     public static JoystickButton operatorViewButton = new JoystickButton(operatorController, 7);
     public static JoystickButton driverMenuButton = new JoystickButton(driverController, 8);
+
+    public static JoystickButton operatorMenButton = new JoystickButton(operatorController, 8);
 
     public static Joystick autoChooser = new Joystick(2);
 

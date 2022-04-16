@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.defaults.MagIntakeDefault;
@@ -32,8 +33,13 @@ public class MagIntake extends SubsystemBase {
     frontMagazine.configFactoryDefault();
     intakeMotor.configFactoryDefault();
 
-    backMagazine.config_kP(0, 0.75);
-    backMagazine.config_kI(0, 0);
+    // backMagazine.config_kP(0, 0.75);
+    // backMagazine.config_kI(0, 0);
+    // backMagazine.config_kD(0, 0);
+    // backMagazine.config_IntegralZone(0, 0);
+
+    backMagazine.config_kP(0, 0.25);
+    backMagazine.config_kI(0, 0.0000025);
     backMagazine.config_kD(0, 0);
     backMagazine.config_IntegralZone(0, 0);
 
@@ -142,6 +148,10 @@ public class MagIntake extends SubsystemBase {
   public void setMagazinePercents(double backPercent, double frontPercent) {
     backMagazine.set(ControlMode.PercentOutput, backPercent);
     frontMagazine.set(ControlMode.PercentOutput, frontPercent);
+  }
+
+  public void postGreenWheelVelocity() {
+    SmartDashboard.putNumber("GW VELOCITY", getBackMagRPM());
   }
 
   public void setBackMagazine(double percent) {
