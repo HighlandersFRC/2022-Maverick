@@ -120,7 +120,7 @@ public class MagIntake extends SubsystemBase {
     return Constants.unitsPer100MsToRPM(backMagazine.getSelectedSensorVelocity());
   }
 
-  private final DigitalInput lowerBackBeamBreak = new DigitalInput(2);
+  private final DigitalInput lowerBackBeamBreak = new DigitalInput(0);
   private final DigitalInput upperBeamBreak = new DigitalInput(1);
 
   public Boolean getLowerBackBeamBreak() {

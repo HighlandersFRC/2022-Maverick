@@ -44,9 +44,9 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.setSensorPhase(true);
         angleMotor.selectProfileSlot(0, 0);
         angleMotor.config_kF(0, 0.0);
-        angleMotor.config_kP(0, 0.85);
-        angleMotor.config_kI(0, 0.005);
-        angleMotor.config_kD(0, 5);
+        angleMotor.config_kP(0, 0.2);
+        angleMotor.config_kI(0, 0);
+        angleMotor.config_kD(0, 0.1);
         angleMotor.config_IntegralZone(0, 0.01);
 
         // sets drive motor to brake
@@ -136,9 +136,13 @@ public class SwerveModule extends SubsystemBase {
         angleMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35 , 0.5));
         angleMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 60, 60, 0.5));
 
-        angleMotor.config_kP(0, 0.25);
+        angleMotor.config_kP(0, 0.2);
         angleMotor.config_kI(0, 0.0);
         angleMotor.config_kD(0, 0.1);
+
+        // angleMotor.config_kP(0, 0.1);
+        // angleMotor.config_kI(0, 0.0);
+        // angleMotor.config_kD(0, 0.1);
 
         angleMotor.configAllowableClosedloopError(0, radiansToTics(degreesToRadians(2)), 10);
 

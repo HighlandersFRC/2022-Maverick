@@ -130,6 +130,8 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
  
         }
 
+    System.out.println(strOdomList);
+
     // call autoDrive function to move the robot
     drive.autoDrive(velocityVector, desiredThetaChange);
 

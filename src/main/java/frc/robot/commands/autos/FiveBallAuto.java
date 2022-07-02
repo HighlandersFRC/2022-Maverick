@@ -20,6 +20,8 @@ import frc.robot.commands.FireBallsNoVision;
 import frc.robot.commands.FireOneBall;
 import frc.robot.commands.IntakeBalls;
 import frc.robot.commands.IntakeDown;
+import frc.robot.commands.SetHoodPosition;
+import frc.robot.commands.SpinShooter;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.MagIntake;
 import frc.robot.subsystems.Peripherals;
@@ -76,6 +78,8 @@ public class FiveBallAuto extends SequentialCommandGroup {
     addCommands(new IntakeDown(magIntake),
     new ParallelRaceGroup(
         new ContinuousAccelerationInterpolation(drive, pathJSON, false),
+        // new SpinShooter(shooter, peripherals, 1600, adjuster, true),
+        // new SetHoodPosition(hood, peripherals, 24, adjuster, true),
         new IntakeBalls(magIntake, lights)),
     // new WaitCommand(0.25),
     // new CancelMagazine(magIntake),

@@ -12,10 +12,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.defaults.PeripheralsDefault;
 import frc.robot.sensors.Navx;
 import frc.robot.sensors.VisionCamera;
+import frc.robot.tools.RobotCoordinateCalculator;
 
 public class Peripherals extends SubsystemBase {
   private final AHRS ahrs = new AHRS(Port.kMXP);
@@ -24,7 +26,11 @@ public class Peripherals extends SubsystemBase {
 
   private Lights lights;
 
+  private double limeLightHFOV = 59.6;
+
   private final VisionCamera visionCamera = new VisionCamera();
+
+  private final RobotCoordinateCalculator coordinateCalculator = new RobotCoordinateCalculator(this);
 
   private NetworkTable limeLightTable = NetworkTableInstance.getDefault().getTable("limelight");
   private NetworkTableEntry tableX = limeLightTable.getEntry("tx");
@@ -51,7 +57,7 @@ public class Peripherals extends SubsystemBase {
   }
 
   public double getLimeLightX() {
-    limeLightX = Math.PI * (tableX.getDouble(-1.0))/180;
+    limeLightX = Math.PI * (tableX.getDouble(0))/180;
     return limeLightX;
   }
 
@@ -60,9 +66,11 @@ public class Peripherals extends SubsystemBase {
     return limeLightY;
   }
 
-  public double getLimeLightDistanceToTarget() {
-    if(getLimeLightY() != -100) {
-      return (102.75 * (Math.pow(Math.E, -0.026 * getLimeLightY())));
+  public double getLimeLightYOffssetToTarget() {
+    double x = getLimeLightY();
+    if(x != -100) {
+      double distance = 133.185 - (3.3797 * x) + (0.0484411 * Math.pow(x, 2)) + (-0.0025609 *  Math.pow(x, 3)) + (0.000100128 * Math.pow(x, 4));
+      return distance;
     }
     return -1.0;
   }
@@ -121,6 +129,36 @@ public class Peripherals extends SubsystemBase {
 
   public void setNavxAngle(double angle) {
     navx.setNavxAngle(angle);
+  }
+
+  public double getLimeLightDistanceToTarget() {
+    double yOffsetToTarget = getLimeLightYOffssetToTarget();
+    double angleToTarget = (getLimeLightX());
+    double xOffsetToTarget = yOffsetToTarget * (Math.tan(angleToTarget));
+    double realDistanceToTarget = Math.sqrt((Math.pow(yOffsetToTarget, 2)) + (Math.pow(xOffsetToTarget, 2)));
+    return realDistanceToTarget;
+  }
+
+  public double[] calculateRobotPosFromCamera() {
+    double distToTarget = getLimeLightDistanceToTarget();
+    double angleToTargetInFrame = (180/Math.PI) * 32/25 * (getLimeLightX());
+    // double angleToTarget = 180 * (angleToTargetInFrame/limeLightHFOV);
+    double idealAngle = getNavxAngle() - angleToTargetInFrame;
+
+    SmartDashboard.putNumber("NAVX", getNavxAngle());
+    SmartDashboard.putNumber("ANGLE TO TARGET", angleToTargetInFrame);
+
+    // System.out.println("IDEAL ANGLE: " + idealAngle + "NAVX: " + getNavxAngle() + "CAMERA: " + angleToTarget);
+
+    SmartDashboard.putNumber("IDEAL ANGLE", idealAngle);
+
+    double[] targetCenterCoordinates = new double[3];
+    targetCenterCoordinates[0] = distToTarget;
+    targetCenterCoordinates[1] = Math.toRadians(idealAngle);
+    // targetCenterCoordinates[3] = idealAngle;
+
+    double[] coordinates = coordinateCalculator.getCameraAdjustedCoordinates(targetCenterCoordinates, getNavxAngle());
+    return coordinates;
   }
 
   @Override

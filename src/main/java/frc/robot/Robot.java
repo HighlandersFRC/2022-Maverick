@@ -34,9 +34,11 @@ import frc.robot.commands.TurnDriveTrain;
 import frc.robot.commands.ZeroNavxMidMatch;
 import frc.robot.commands.autos.FiveBallAuto;
 import frc.robot.commands.autos.OneBallAuto;
+import frc.robot.commands.autos.SquareDemo;
 import frc.robot.commands.autos.TestAuto;
 import frc.robot.commands.autos.ThreeBallAuto;
 import frc.robot.commands.autos.TwoBallAuto;
+import frc.robot.commands.autos.TwoBallSteal;
 import frc.robot.subsystems.Carriage;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
@@ -106,7 +108,9 @@ public class Robot extends TimedRobot {
 
   private FiveBallAuto fiveBallAuto = new FiveBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
-  private TestAuto testAuto = new TestAuto(drive);
+  private TwoBallSteal twoBallSteal1 = new TwoBallSteal(drive, magIntake, shooter, hood, peripherals, lights);
+
+  private SquareDemo squareDemo = new SquareDemo(drive, magIntake, shooter, hood, peripherals, lights);
 
   private UsbCamera cameraBack;
   private UsbCamera cameraFront;
@@ -194,9 +198,9 @@ public class Robot extends TimedRobot {
         // System.out.println("ERROR WITH PATH FILE " + e);
       }
     }
-    else if(OI.isTestAuto()) {
+    else if(OI.is2BallSteal1()) {
       try {
-        pathingFile = new File("/home/lvuser/deploy/TestNoTurn.json");
+        pathingFile = new File("/home/lvuser/deploy/2BallSteal1.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
         // System.out.println(pathJSON);
@@ -207,7 +211,7 @@ public class Robot extends TimedRobot {
     }
     else {
       try {
-        pathingFile = new File("/home/lvuser/deploy/1BallAuto.json");
+        pathingFile = new File("/home/lvuser/deploy/Square.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
         // System.out.println(pathJSON);
@@ -297,11 +301,11 @@ public class Robot extends TimedRobot {
     else if(OI.is5BallAuto()) {
       fiveBallAuto.schedule();
     }
-    else if(OI.isTestAuto()) {
-      testAuto.schedule();
+    else if(OI.is2BallSteal1()) {
+      twoBallSteal1.schedule();
     }
     else {
-      testAuto.schedule();
+      squareDemo.schedule();
     }
   }
 
@@ -359,9 +363,13 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    double[] location = peripherals.calculateRobotPosFromCamera();
     SmartDashboard.putNumber("Controller Y", OI.getDriverLeftY());
     SmartDashboard.putNumber("Controller X", OI.getDriverLeftX());
     SmartDashboard.putNumber("RPM", shooter.getShooterRPM());
+
+    SmartDashboard.putNumber("RobotPosCamX", location[0]);
+    SmartDashboard.putNumber("RobotPosCamY", location[1]);
 
     // if (OI.getDriverA()) {
     //   System.out.println("+");

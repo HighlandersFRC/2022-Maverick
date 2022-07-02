@@ -70,7 +70,7 @@ public class TurnDriveTrain extends CommandBase {
       angleSettled = 0;
     }
 
-    if (peripherals.getLimeLightX()!= (-Math.PI)/180) {
+    if (peripherals.getLimeLightX()!= (0)/180) {
       lights.setMode(LEDMode.GREEN);
     } else {
       lights.setMode(LEDMode.REDFLASH);

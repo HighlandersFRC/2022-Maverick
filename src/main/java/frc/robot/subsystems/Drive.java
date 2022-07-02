@@ -297,7 +297,7 @@ public class Drive extends SubsystemBase {
 
         double cameraXVal = cameraCoordinates[0];
         double cameraYVal = cameraCoordinates[1];
-        double cameraConfidence = cameraCoordinates[2];
+        // double cameraConfidence = cameraCoordinates[2];
 
         // System.out.println("1: " + cameraXVal + " 2: " + cameraYVal);
 
@@ -328,7 +328,7 @@ public class Drive extends SubsystemBase {
         previousEstimateY = estimatedY;
         previousEstimateTheta = estimatedTheta;
 
-        cameraConfidence = 0;
+        double cameraConfidence = 0;
 
         if(cameraConfidence == 0) {
             // System.out.println("Confidence: " + cameraConfidence);
@@ -551,7 +551,7 @@ public class Drive extends SubsystemBase {
     public void teleopDrive() {
         updateOdometryFusedArray();
 
-        double turnLimit = 0.75;
+        double turnLimit = 1;
 
         if(OI.driverController.getLeftBumper()) {
             // activate speedy spin
@@ -564,8 +564,8 @@ public class Drive extends SubsystemBase {
         // System.out.println("FUSED X: " + getFusedOdometryX() + " FUSED Y: " + getFusedOdometryY() + " Theta: " + getFusedOdometryTheta());
 
         // this is correct, X is forward in field, so originalX should be the y on the joystick
-        double originalX = -OI.getDriverLeftY();
-        double originalY = -OI.getDriverLeftX();
+        double originalX = -(Math.copySign(OI.getDriverLeftY() * OI.getDriverLeftY(), OI.getDriverLeftY()));
+        double originalY = -(Math.copySign(OI.getDriverLeftX() * OI.getDriverLeftX(), OI.getDriverLeftX()));
 
         if(Math.abs(originalX) < 0.05) {
             originalX = 0;
@@ -574,7 +574,7 @@ public class Drive extends SubsystemBase {
             originalY = 0;
         }
 
-        double turn = turnLimit * (-OI.getDriverRightX() * (Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
+        double turn = turnLimit * (-(Math.copySign(OI.getDriverRightX() * OI.getDriverRightX(), OI.getDriverRightX())) * (Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
         // turn = 0;
         double navxOffset = Math.toRadians(peripherals.getNavxAngle());
         double xPower = getAdjustedX(originalX, originalY);
@@ -623,8 +623,9 @@ public class Drive extends SubsystemBase {
         odometryList[1] = getFusedOdometryY();
         odometryList[2] = getFusedOdometryTheta();
 
+
         
-        // System.out.println("STRING ODOM LIST:" + strOdomList);
+        System.out.println("X: " + getFusedOdometryX() + "Y: " + getFusedOdometryY());
 
         // MqttMessage message = new MqttMessage(strOdomList.getBytes());
 

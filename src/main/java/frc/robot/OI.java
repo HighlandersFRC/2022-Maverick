@@ -78,7 +78,7 @@ public class OI {
         return autoChooser.getRawButton(8);
     }
 
-    public static Boolean isTestAuto() {
+    public static Boolean is2BallSteal1() {
         return autoChooser.getRawButton(2);
     }
 
