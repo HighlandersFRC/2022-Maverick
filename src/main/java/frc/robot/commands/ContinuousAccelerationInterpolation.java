@@ -132,6 +132,13 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
 
     System.out.println(strOdomList);
 
+    try {
+      out.write(strOdomList);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
     // call autoDrive function to move the robot
     drive.autoDrive(velocityVector, desiredThetaChange);
 
@@ -155,17 +162,17 @@ public class ContinuousAccelerationInterpolation extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     drive.autoDrive(new Vector(0, 0), 0);
-    try {
-      for(int i = 0; i < pointsList.size(); i++) {
-        out.write(pointsList.get(i));
-      }
-      // out.write(pointsList);
-      writer.close();
-      // out.close();
-  } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-  }
+  //   try {
+  //     for(int i = 0; i < pointsList.size(); i++) {
+  //       out.write(pointsList.get(i));
+  //     }
+  //     // out.write(pointsList);
+  //     writer.close();
+  //     // out.close();
+  // } catch (IOException e) {
+  //     // TODO Auto-generated catch block
+  //     e.printStackTrace();
+  // }
   }
 
   // Returns true when the command should end.

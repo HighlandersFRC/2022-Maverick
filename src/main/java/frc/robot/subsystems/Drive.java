@@ -292,8 +292,9 @@ public class Drive extends SubsystemBase {
     public void updateOdometryFusedArray() {
         double navxOffset = Math.toRadians(peripherals.getNavxAngle());
 
-        double[] cameraDistsToTarget = peripherals.getVisionArray();
-        double[] cameraCoordinates = coordinateCalculator.getCameraAdjustedCoordinates(cameraDistsToTarget, navxOffset);
+        double cameraDistanceToTarget = peripherals.getLimeLightDistanceToTarget();
+
+        double[] cameraCoordinates = peripherals.calculateRobotPosFromCamera();
 
         double cameraXVal = cameraCoordinates[0];
         double cameraYVal = cameraCoordinates[1];
@@ -328,107 +329,127 @@ public class Drive extends SubsystemBase {
         previousEstimateY = estimatedY;
         previousEstimateTheta = estimatedTheta;
 
-        double cameraConfidence = 0;
+        // double cameraConfidence = 0;
 
-        if(cameraConfidence == 0) {
+        // if(cameraDistanceToTarget != -1.0) {
+        //     estimatedX = estimatedX * 0.15;
+        //     estimatedY = estimatedY * 0.15;
+        //     estimatedTheta = estimatedTheta * 0.5;
+
+        //     currentX = currentX * 0.15;
+        //     currentY = currentY * 0.15;
+        //     currentTheta = currentTheta * 0.5; 
+
+        //     cameraXVal = cameraXVal * 0.7;
+        //     cameraYVal = cameraYVal * 0.7;
+
+        //     averagedX = estimatedX + currentX + cameraXVal;
+        //     averagedY = estimatedY + currentY + cameraYVal;
+        //     averagedTheta = currentTheta + estimatedTheta;
+        // }
+        // else {
             // System.out.println("Confidence: " + cameraConfidence);
-            estimatedX = estimatedX * 0.5;
-            estimatedY = estimatedY * 0.5;
-            estimatedTheta = estimatedTheta * 0.5;
+        estimatedX = estimatedX * 0.5;
+        estimatedY = estimatedY * 0.5;
+        estimatedTheta = estimatedTheta * 0.5;
 
-            currentX = currentX * 0.5;
-            currentY = currentY * 0.5;
-            currentTheta = currentTheta * 0.5;
+        currentX = currentX * 0.5;
+        currentY = currentY * 0.5;
+        currentTheta = currentTheta * 0.5;
 
-            cameraXVal = cameraXVal * 0;
-            cameraYVal = cameraYVal * 0;
+        cameraXVal = cameraXVal * 0;
+        cameraYVal = cameraYVal * 0;
 
-            averagedX = estimatedX + currentX + cameraXVal;
-            averagedY = estimatedY + currentY + cameraYVal;
-            averagedTheta = currentTheta + estimatedTheta;
+        averagedX = estimatedX + currentX + cameraXVal;
+        averagedY = estimatedY + currentY + cameraYVal;
+        averagedTheta = currentTheta + estimatedTheta;
+        // }
 
-        }
-        else if(cameraConfidence < 3) {
-            // average the odometry position with estimated position
-            estimatedX = estimatedX * 0.45;
-            estimatedY = estimatedY * 0.45;
-            estimatedTheta = estimatedTheta * 0.5;
+        // if(cameraConfidence == 0) {
+            
 
-            currentX = currentX * 0.45;
-            currentY = currentY * 0.45;
-            currentTheta = currentTheta * 0.5;
+        // }
+        // else if(cameraConfidence < 3) {
+        //     // average the odometry position with estimated position
+        //     estimatedX = estimatedX * 0.45;
+        //     estimatedY = estimatedY * 0.45;
+        //     estimatedTheta = estimatedTheta * 0.5;
 
-            cameraXVal = cameraXVal * 0.1;
-            cameraYVal = cameraYVal * 0.1;
+        //     currentX = currentX * 0.45;
+        //     currentY = currentY * 0.45;
+        //     currentTheta = currentTheta * 0.5;
 
-            averagedX = estimatedX + currentX + cameraXVal;
-            averagedY = estimatedY + currentY + cameraYVal;
-            averagedTheta = currentTheta + estimatedTheta;
-        }
-        else if(cameraConfidence == 3) {
-            estimatedX = estimatedX * 0.425;
-            estimatedY = estimatedY * 0.425;
-            estimatedTheta = estimatedTheta * 0.5;
+        //     cameraXVal = cameraXVal * 0.1;
+        //     cameraYVal = cameraYVal * 0.1;
 
-            currentX = currentX * 0.425;
-            currentY = currentY * 0.425;
-            currentTheta = currentTheta * 0.5;
+        //     averagedX = estimatedX + currentX + cameraXVal;
+        //     averagedY = estimatedY + currentY + cameraYVal;
+        //     averagedTheta = currentTheta + estimatedTheta;
+        // }
+        // else if(cameraConfidence == 3) {
+        //     estimatedX = estimatedX * 0.425;
+        //     estimatedY = estimatedY * 0.425;
+        //     estimatedTheta = estimatedTheta * 0.5;
 
-            cameraXVal = cameraXVal * 0.15;
-            cameraYVal = cameraYVal * 0.15;
+        //     currentX = currentX * 0.425;
+        //     currentY = currentY * 0.425;
+        //     currentTheta = currentTheta * 0.5;
 
-            averagedX = estimatedX + currentX + cameraXVal;
-            averagedY = estimatedY + currentY + cameraYVal;
-            averagedTheta = currentTheta + estimatedTheta;
-        }
-        else if(cameraConfidence == 4) {
-            estimatedX = estimatedX * 0.35;
-            estimatedY = estimatedY * 0.35;
-            estimatedTheta = estimatedTheta * 0.5;
+        //     cameraXVal = cameraXVal * 0.15;
+        //     cameraYVal = cameraYVal * 0.15;
 
-            currentX = currentX * 0.35;
-            currentY = currentY * 0.35;
-            currentTheta = currentTheta * 0.5;
+        //     averagedX = estimatedX + currentX + cameraXVal;
+        //     averagedY = estimatedY + currentY + cameraYVal;
+        //     averagedTheta = currentTheta + estimatedTheta;
+        // }
+        // else if(cameraConfidence == 4) {
+        //     estimatedX = estimatedX * 0.35;
+        //     estimatedY = estimatedY * 0.35;
+        //     estimatedTheta = estimatedTheta * 0.5;
 
-            cameraXVal = cameraXVal * 0.3;
-            cameraYVal = cameraYVal * 0.3;
+        //     currentX = currentX * 0.35;
+        //     currentY = currentY * 0.35;
+        //     currentTheta = currentTheta * 0.5;
 
-            averagedX = estimatedX + currentX + cameraXVal;
-            averagedY = estimatedY + currentY + cameraYVal;
-            averagedTheta = currentTheta + estimatedTheta;
-        }
-        else if(cameraConfidence == 5) {
-            estimatedX = estimatedX * 0.3;
-            estimatedY = estimatedY * 0.3;
-            estimatedTheta = estimatedTheta * 0.5;
+        //     cameraXVal = cameraXVal * 0.3;
+        //     cameraYVal = cameraYVal * 0.3;
 
-            currentX = currentX * 0.3;
-            currentY = currentY * 0.3;
-            currentTheta = currentTheta * 0.5; 
+        //     averagedX = estimatedX + currentX + cameraXVal;
+        //     averagedY = estimatedY + currentY + cameraYVal;
+        //     averagedTheta = currentTheta + estimatedTheta;
+        // }
+        // else if(cameraConfidence == 5) {
+        //     estimatedX = estimatedX * 0.3;
+        //     estimatedY = estimatedY * 0.3;
+        //     estimatedTheta = estimatedTheta * 0.5;
 
-            cameraXVal = cameraXVal * 0.4;
-            cameraYVal = cameraYVal * 0.4;
+        //     currentX = currentX * 0.3;
+        //     currentY = currentY * 0.3;
+        //     currentTheta = currentTheta * 0.5; 
 
-            averagedX = estimatedX + currentX + cameraXVal;
-            averagedY = estimatedY + currentY + cameraYVal;
-            averagedTheta = currentTheta + estimatedTheta;
-        }
-        else if(cameraConfidence > 5) {
-            estimatedX = estimatedX * 0.5;
-            estimatedY = estimatedY * 0.5;
-            estimatedTheta = estimatedTheta * 0.5;
+        //     cameraXVal = cameraXVal * 0.4;
+        //     cameraYVal = cameraYVal * 0.4;
 
-            currentX = currentX * 0.5;
-            currentY = currentY * 0.5;
-            currentTheta = currentTheta * 0.5;
+        //     averagedX = estimatedX + currentX + cameraXVal;
+        //     averagedY = estimatedY + currentY + cameraYVal;
+        //     averagedTheta = currentTheta + estimatedTheta;
+        // }
+        // else if(cameraConfidence > 5) {
+        //     estimatedX = estimatedX * 0.5;
+        //     estimatedY = estimatedY * 0.5;
+        //     estimatedTheta = estimatedTheta * 0.5;
 
-            cameraXVal = cameraXVal * 0;
-            cameraYVal = cameraYVal * 0;
+        //     currentX = currentX * 0.5;
+        //     currentY = currentY * 0.5;
+        //     currentTheta = currentTheta * 0.5;
 
-            averagedX = estimatedX + currentX + cameraXVal;
-            averagedY = estimatedY + currentY + cameraYVal;
-            averagedTheta = currentTheta + estimatedTheta;
-        }
+        //     cameraXVal = cameraXVal * 0;
+        //     cameraYVal = cameraYVal * 0;
+
+        //     averagedX = estimatedX + currentX + cameraXVal;
+        //     averagedY = estimatedY + currentY + cameraYVal;
+        //     averagedTheta = currentTheta + estimatedTheta;
+        // }
 
         // averagedX = estimatedX;
         // averagedY = estimatedY;

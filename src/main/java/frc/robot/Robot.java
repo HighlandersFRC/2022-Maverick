@@ -370,6 +370,8 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("RobotPosCamX", location[0]);
     SmartDashboard.putNumber("RobotPosCamY", location[1]);
+    SmartDashboard.putNumber("MAG RPM", magIntake.getBackMagRPM());
+
 
     // if (OI.getDriverA()) {
     //   System.out.println("+");

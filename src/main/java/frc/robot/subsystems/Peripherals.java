@@ -133,10 +133,15 @@ public class Peripherals extends SubsystemBase {
 
   public double getLimeLightDistanceToTarget() {
     double yOffsetToTarget = getLimeLightYOffssetToTarget();
-    double angleToTarget = (getLimeLightX());
-    double xOffsetToTarget = yOffsetToTarget * (Math.tan(angleToTarget));
-    double realDistanceToTarget = Math.sqrt((Math.pow(yOffsetToTarget, 2)) + (Math.pow(xOffsetToTarget, 2)));
-    return realDistanceToTarget;
+    if(yOffsetToTarget != -1.0) {
+      double angleToTarget = (getLimeLightX());
+      double xOffsetToTarget = yOffsetToTarget * (Math.tan(angleToTarget));
+      double realDistanceToTarget = Math.sqrt((Math.pow(yOffsetToTarget, 2)) + (Math.pow(xOffsetToTarget, 2)));
+      return realDistanceToTarget;
+    }
+    else {
+      return -1.0;
+    }    
   }
 
   public double[] calculateRobotPosFromCamera() {

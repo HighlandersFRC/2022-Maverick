@@ -46,7 +46,7 @@ public final class Constants {
 
     public static final double MODULE_OFFSET = inchesToMeters(3);
 
-    public static final double lookUpTableRPMOffset = -30; // changed from 0;
+    public static final double lookUpTableRPMOffset = -50; // changed from 0;
 
     public static final double lookUpTableHoodOffset = 4; // changed from 0;
 
@@ -86,13 +86,13 @@ public final class Constants {
         // {190.0, 27.5, 1650.0}
         {70.0, 10.0, 1430.0},
         {90.0, 13.25, 1460.0},
-        {110.0, 15.75, 1470.0},
-        {130.0, 17.1, 1510.0},
+        {110.0, 15.25, 1460.0},
+        {130.0, 19, 1510.0},
         {150.0, 22, 1560.0},
         {165.0, 23.5, 1580},
-        {170.0, 24.25, 1610},
+        {170.0, 25.25, 1610},
         {190.0, 30.25, 1650},
-        {210.0, 31, 1700},
+        {210.0, 31, 1730},
         {230.0, 32, 1780}
     };
     

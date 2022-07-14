@@ -39,7 +39,7 @@ public class FireBalls extends SequentialCommandGroup {
       ),
       // new SpinShooter(shooter, peripherals, shooterRPM, adjuster, useList),
       // new SetHoodPosition(hood, peripherals, hoodPosition, adjuster, useList),
-      new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 2500, false), new WaitCommand(0.7))
+      new ParallelRaceGroup(new SetBackMagSpeed(magIntake, 2500, false), new WaitCommand(0.8))
       // new TurnBackMag(magIntake, 360),
       // //new EjectBalls(magIntake, lights, 0.55, 0.85, firstBallTimeout),
       // //new EjectBalls(magIntake, 0.0, 0, 0.001),

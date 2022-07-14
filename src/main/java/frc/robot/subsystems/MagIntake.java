@@ -38,9 +38,9 @@ public class MagIntake extends SubsystemBase {
     // backMagazine.config_kD(0, 0);
     // backMagazine.config_IntegralZone(0, 0);
 
-    backMagazine.config_kP(0, 0.25);
-    backMagazine.config_kI(0, 0.0000025);
-    backMagazine.config_kD(0, 0);
+    backMagazine.config_kP(0, 0.17);
+    backMagazine.config_kI(0, 0.0006);
+    backMagazine.config_kD(0, 0.025);
     backMagazine.config_IntegralZone(0, 0);
 
     frontMagazine.config_kP(0, 0.2);
