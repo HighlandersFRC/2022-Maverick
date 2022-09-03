@@ -43,7 +43,7 @@ public class TwoBallSteal extends SequentialCommandGroup {
 
   public TwoBallSteal(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights) {
     try {
-      pathingFile = new File("/home/lvuser/deploy/2BallAuto.json");
+      pathingFile = new File("/home/lvuser/deploy/2BallSteal1.json");
       FileReader scanner = new FileReader(pathingFile);
       pathJSON = new JSONArray(new JSONTokener(scanner));
     }
@@ -51,7 +51,7 @@ public class TwoBallSteal extends SequentialCommandGroup {
       System.out.println("ERROR WITH PATH FILE " + e);
     }
     try {
-      pathingFile2 = new File("/home/lvuser/deploy/2BallAuto.json");
+      pathingFile2 = new File("/home/lvuser/deploy/2BallSteal2.json");
       FileReader scanner2 = new FileReader(pathingFile2);
       pathJSON2 = new JSONArray(new JSONTokener(scanner2));
     }

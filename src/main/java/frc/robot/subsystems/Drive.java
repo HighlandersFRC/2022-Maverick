@@ -462,6 +462,10 @@ public class Drive extends SubsystemBase {
         // m_odometry.resetPosition(new Pose2d(new Translation2d(averagedX, averagedY),  new Rotation2d(navxOffset)), new Rotation2d(navxOffset));
     }
 
+    public void setOdometryXYTheta(double x, double y) {
+        m_odometry.resetPosition(new Pose2d(new Translation2d(x, y),  new Rotation2d(Math.PI/2)), new Rotation2d(Math.PI/2));
+    }
+
     // getFusedOdometryX
     public double getFusedOdometryX() {
         return currentFusedOdometry[0];
@@ -531,6 +535,62 @@ public class Drive extends SubsystemBase {
         else {
             return op2;
         }
+    }
+
+    public void robotCentericDrive() {
+        updateOdometryFusedArray();
+
+        double turnLimit = 0.4;
+
+        double speedLimit = 0.5;
+
+        // this is correct, X is forward in field, so originalX should be the y on the joystick
+        double originalX = speedLimit * (Math.copySign(OI.getDriverLeftY() * OI.getDriverLeftY(), OI.getDriverLeftY()));
+        double originalY = speedLimit * (Math.copySign(OI.getDriverLeftX() * OI.getDriverLeftX(), OI.getDriverLeftX()));
+
+        if(Math.abs(originalX) < 0.05) {
+            originalX = 0;
+        }
+        if(Math.abs(originalY) < 0.05) {
+            originalY = 0;
+        }
+
+        double turn = turnLimit * (-(Math.copySign(OI.getDriverRightX() * OI.getDriverRightX(), OI.getDriverRightX())) * (Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
+        // turn = 0;
+        double navxOffset = Math.toRadians(peripherals.getNavxAngle());
+        double xPower = getAdjustedX(originalX, originalY);
+        double yPower = getAdjustedY(originalX, originalY);
+
+        double xSpeed = xPower * Constants.TOP_SPEED;
+        double ySpeed = yPower * Constants.TOP_SPEED;
+
+        Vector controllerVector = new Vector(xSpeed, ySpeed);
+
+        double[] odometryList = new double[3];
+
+        odometryList[0] = getFusedOdometryX();
+        odometryList[1] = getFusedOdometryY();
+        odometryList[2] = getFusedOdometryTheta();
+
+        // String strOdomList = (odometryList[0] + "," + odometryList[1] + ","+ odometryList[2]); 
+        // // System.out.println("STRING ODOM LIST:" + strOdomList);
+
+        // MqttMessage message = new MqttMessage(strOdomList.getBytes());
+
+        // publish.publish("/pathTool", message);
+
+        // System.out.println("X: " + getFusedOdometryX() + " Y: " + getFusedOdometryY() + " Theta: " + getFusedOdometryTheta());
+
+        leftFront.velocityDrive(controllerVector, turn, 0);
+        rightFront.velocityDrive(controllerVector, turn, 0);
+        leftBack.velocityDrive(controllerVector, turn, 0);
+        rightBack.velocityDrive(controllerVector, turn, 0);
+
+        // leftFront.testDrive();
+        // rightFront.testDrive();
+        // leftBack.testDrive();
+        // rightBack.testDrive();
+
     }
 
     // NOT WORKING method to accepts controller input of which way to drive but stay aligned to the target
@@ -865,9 +925,13 @@ public class Drive extends SubsystemBase {
             double idealVelocityTheta = t1Theta + (idealAccelTheta * interpTime);
 
             // determine the desired velocity of the robot based on difference between our ideal position and current position time a correction coefficient + the ideal velocity
-            velocityX = (idealPositionX - currentX) * interpolationCorrection + idealVelocityX;
-            velocityY = (idealPositionY - currentY) * interpolationCorrection + idealVelocityY;
-            thetaChange = (idealPositionTheta - currentTheta) * interpolationCorrection + idealVelocityTheta;
+            // velocityX = (idealPositionX - currentX) * interpolationCorrection + idealVelocityX;
+            // velocityY = (idealPositionY - currentY) * interpolationCorrection + idealVelocityY;
+            // thetaChange = (idealPositionTheta - currentTheta) * interpolationCorrection + idealVelocityTheta;
+
+            velocityX = (idealPositionX - currentX)/cyclePeriod;
+            velocityY = (idealPositionY - currentY)/cyclePeriod;
+            thetaChange = (idealPositionTheta - currentTheta)/cyclePeriod;
         }
         // if past the interpolation range and on the line segment towards next point
         else if(time >= t2) {

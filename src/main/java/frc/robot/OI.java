@@ -38,7 +38,7 @@ public class OI {
     public static JoystickButton operatorViewButton = new JoystickButton(operatorController, 7);
     public static JoystickButton driverMenuButton = new JoystickButton(driverController, 8);
 
-    public static JoystickButton operatorMenButton = new JoystickButton(operatorController, 8);
+    public static JoystickButton operatorMenuButton = new JoystickButton(operatorController, 8);
 
     public static Joystick autoChooser = new Joystick(2);
 
@@ -71,7 +71,7 @@ public class OI {
     }
 
     public static Boolean is3BallAuto() {
-        return autoChooser.getRawButton(7);
+        return autoChooser.getRawButton(2);
     }
 
     public static Boolean is5BallAuto() {
@@ -79,7 +79,7 @@ public class OI {
     }
 
     public static Boolean is2BallSteal1() {
-        return autoChooser.getRawButton(2);
+        return autoChooser.getRawButton(7);
     }
 
     public static int getPOV() {

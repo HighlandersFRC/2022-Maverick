@@ -11,10 +11,10 @@ import frc.robot.subsystems.Climber;
 public class PositionVerticalClimber extends CommandBase {
   private Carriage climber;
   private double inches;
-  public PositionVerticalClimber(Carriage climber, double inches) {
+  public PositionVerticalClimber(Carriage climber, Climber carriage, double inches) {
     this.climber = climber;
     this.inches = inches;
-    addRequirements(climber);
+    addRequirements(climber, carriage);
   }
 
   @Override
@@ -23,14 +23,16 @@ public class PositionVerticalClimber extends CommandBase {
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+    System.out.println("INSIDEEEEEEEEE");
+  }
 
   @Override
   public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
-    if(Math.abs(climber.getclimberFalcon1Position() - inches) < 0.5) {
+    if(Math.abs(climber.getclimberFalcon1Position() - inches) < 1) {
       return true;
     }
     return false;

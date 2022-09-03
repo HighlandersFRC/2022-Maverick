@@ -23,6 +23,7 @@ public final class Constants {
     public static final double WHEEL_CIRCUMFRENCE = Math.PI * WHEEL_DIAMETER; // m
 
     public static final double TOP_SPEED = feetToMeters(16.3); // m/sec
+    // public static final double TOP_SPEED = feetToMeters(8); // m/sec
 
     // public static final double TOP_SPEED = 3; // m/sec
 
@@ -84,8 +85,8 @@ public final class Constants {
         // {170.0, 24.0, 1560.0},
         // {180.0, 25.0, 1580.0},
         // {190.0, 27.5, 1650.0}
-        {70.0, 10.0, 1430.0},
-        {90.0, 13.25, 1460.0},
+        {70.0, 10.0, 1400.0},
+        {90.0, 13.25, 1444.0},
         {110.0, 15.25, 1460.0},
         {130.0, 19, 1510.0},
         {150.0, 22, 1560.0},

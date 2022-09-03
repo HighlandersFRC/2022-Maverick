@@ -36,7 +36,7 @@ public class SquareDemo extends SequentialCommandGroup {
 
   public SquareDemo(Drive drive, MagIntake magIntake, Shooter shooter, Hood hood, Peripherals peripherals, Lights lights) {
     try {
-      pathingFile = new File("/home/lvuser/deploy/Square.json");
+      pathingFile = new File("/home/lvuser/deploy/5BallTogether.json");
       FileReader scanner = new FileReader(pathingFile);
       pathJSON = new JSONArray(new JSONTokener(scanner));
     }

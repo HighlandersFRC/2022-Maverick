@@ -27,11 +27,15 @@ import frc.robot.commands.LockDriveWheels;
 import frc.robot.commands.Outtake;
 import frc.robot.commands.PositionRotatingClimber;
 import frc.robot.commands.PositionVerticalClimber;
+import frc.robot.commands.ResetAutoOdometry;
 import frc.robot.commands.ResetClimber;
+import frc.robot.commands.ResetOdometry;
+import frc.robot.commands.RobotCentricDrive;
 import frc.robot.commands.RunRotatingClimber;
 import frc.robot.commands.RunVerticalClimber;
 import frc.robot.commands.TurnDriveTrain;
 import frc.robot.commands.ZeroNavxMidMatch;
+import frc.robot.commands.autos.Chezy5BallAuto;
 import frc.robot.commands.autos.FiveBallAuto;
 import frc.robot.commands.autos.OneBallAuto;
 import frc.robot.commands.autos.SquareDemo;
@@ -106,7 +110,7 @@ public class Robot extends TimedRobot {
 
   private TwoBallAuto twoBallAuto = new TwoBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
-  private FiveBallAuto fiveBallAuto = new FiveBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
+  private Chezy5BallAuto fiveBallAuto = new Chezy5BallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
   private TwoBallSteal twoBallSteal1 = new TwoBallSteal(drive, magIntake, shooter, hood, peripherals, lights);
 
@@ -189,7 +193,7 @@ public class Robot extends TimedRobot {
     }
     else if(OI.is5BallAuto()) {
       try {
-        pathingFile = new File("/home/lvuser/deploy/5BallPart1.json");
+        pathingFile = new File("/home/lvuser/deploy/Chezy5Pt1.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
         // System.out.println(pathJSON);
@@ -211,7 +215,7 @@ public class Robot extends TimedRobot {
     }
     else {
       try {
-        pathingFile = new File("/home/lvuser/deploy/Square.json");
+        pathingFile = new File("/home/lvuser/deploy/5BallTogether.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
         // System.out.println(pathJSON);
@@ -348,7 +352,7 @@ public class Robot extends TimedRobot {
     OI.driverViewButton.whileHeld(new ZeroNavxMidMatch(drive));
 
     OI.operatorA.whenPressed(new LoadedRobotClimb(carriage, 0));
-    OI.operatorY.whenPressed(new PositionVerticalClimber(carriage, 21));
+    OI.operatorY.whenPressed(new PositionVerticalClimber(carriage, climber, 21));
     OI.operatorX.whenPressed(new ClimbSequence(climber, carriage));
     OI.operatorB.whenPressed(new HoldRotatingArmOnBar(climber, 30, peripherals));
 
@@ -358,6 +362,11 @@ public class Robot extends TimedRobot {
     OI.operatorLT.whileHeld(new RunVerticalClimber(carriage, -0.15));
     OI.operatorRB.whileHeld(new RunRotatingClimber(climber, 0.1));
     OI.operatorLB.whileHeld(new RunRotatingClimber(climber, -0.35));
+
+    OI.operatorMenuButton.whileHeld(new RobotCentricDrive(drive));
+
+    OI.driverMenuButton.whileHeld(new ResetOdometry(drive, 7.5, 1.67));
+
   }
 
   /** This function is called periodically during operator control. */
