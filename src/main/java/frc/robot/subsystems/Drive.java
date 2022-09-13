@@ -798,7 +798,7 @@ public class Drive extends SubsystemBase {
             previousPoint = pathPointsJSON.getJSONObject(currentPointIndex - 1);
             // check if within one cycle of endpoint and set velocities
             // only occurs when interpolation range is 1
-            if(Math.abs((currentPointTime - time)) < cyclePeriod) {
+            if(Math.abs((currentPointTime - time)) < 6 * cyclePeriod) {
                 velocityX = currentXVelocity;
                 velocityY = currentYVelocity;
                 thetaChange = currentThetaVelocity;
@@ -821,7 +821,7 @@ public class Drive extends SubsystemBase {
             double nextPointTime = nextPoint.getDouble("time");
             // check if within one cycle of endpoint and set velocities
             // only occurs when interpolation range is 1
-            if(Math.abs((nextPointTime - time)) < cyclePeriod) {
+            if(Math.abs((nextPointTime - time)) < 6 * cyclePeriod) {
                 velocityX = currentXVelocity;
                 velocityY = currentYVelocity;
                 thetaChange = currentThetaVelocity;
@@ -869,7 +869,7 @@ public class Drive extends SubsystemBase {
         if(time < t1) {
             // check if within one cycle of endpoint and set velocities
             // only occurs when interpolation range is 1
-            if(Math.abs((currentPointTime - time)) < cyclePeriod) {
+            if(Math.abs((currentPointTime - time)) < 6 * cyclePeriod) {
                 velocityX = currentXVelocity;
                 velocityY = currentYVelocity;
                 thetaChange = currentThetaVelocity;
@@ -883,6 +883,11 @@ public class Drive extends SubsystemBase {
         }
         // if in the interpolation range and curving towards next line segment between current point and next point
         else if(time >= t1 && time < t2) {
+            if(Math.abs((currentPointTime - time)) < 3  * cyclePeriod) {
+                velocityX = currentXVelocity;
+                velocityY = currentYVelocity;
+                thetaChange = currentThetaVelocity;
+            }
             // |||||||||||||||||||| VELOCITIES ||||||||||||||||||||||||||
             // determine velocities when on line segment going towards t1
             double t1X = (currentPoint.getDouble("x") - previousPoint.getDouble("x"))/timeDiffT1;
@@ -937,7 +942,7 @@ public class Drive extends SubsystemBase {
         else if(time >= t2) {
             // check if within one cycle of endpoint and set velocities
             // only occurs when interpolation range is 1
-            if(Math.abs((nextPointTime - time)) < cyclePeriod) {
+            if(Math.abs((nextPointTime - time)) < 6 * cyclePeriod) {
                 velocityX = currentXVelocity;
                 velocityY = currentYVelocity;
                 thetaChange = currentThetaVelocity;
