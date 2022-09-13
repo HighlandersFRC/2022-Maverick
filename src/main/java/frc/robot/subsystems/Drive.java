@@ -902,7 +902,6 @@ public class Drive extends SubsystemBase {
             double t2X = (nextPoint.getDouble("x") - currentPoint.getDouble("x"))/timeDiffT2;
             double t2Y = (nextPoint.getDouble("y") - currentPoint.getDouble("y"))/timeDiffT2;
 
-
             angleDifference = getShortestAngle(t1Angle, t2Angle);
 
             // determine the ideal accelerations on interpolation curve

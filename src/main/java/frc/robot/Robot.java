@@ -35,6 +35,7 @@ import frc.robot.commands.RunRotatingClimber;
 import frc.robot.commands.RunVerticalClimber;
 import frc.robot.commands.TurnDriveTrain;
 import frc.robot.commands.ZeroNavxMidMatch;
+import frc.robot.commands.autos.Chezy2BallSteal;
 import frc.robot.commands.autos.Chezy5BallAuto;
 import frc.robot.commands.autos.FiveBallAuto;
 import frc.robot.commands.autos.OneBallAuto;
@@ -112,7 +113,9 @@ public class Robot extends TimedRobot {
 
   private Chezy5BallAuto fiveBallAuto = new Chezy5BallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
-  private TwoBallSteal twoBallSteal1 = new TwoBallSteal(drive, magIntake, shooter, hood, peripherals, lights);
+  // private TwoBallSteal twoBallSteal1 = new TwoBallSteal(drive, magIntake, shooter, hood, peripherals, lights);
+
+  private Chezy2BallSteal twoBallSteal1 = new Chezy2BallSteal(drive, magIntake, shooter, hood, peripherals, lights);
 
   private SquareDemo squareDemo = new SquareDemo(drive, magIntake, shooter, hood, peripherals, lights);
 
