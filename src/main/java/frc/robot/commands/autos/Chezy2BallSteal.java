@@ -61,7 +61,7 @@ public class Chezy2BallSteal extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(drive, magIntake);
-    addCommands(new WaitCommand(2), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 1, adjuster, 0, true), new IntakeDown(magIntake), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON, false), new IntakeBalls(magIntake, lights)), new ParallelRaceGroup(new WaitCommand(1), new IntakeBalls(magIntake, lights)), new CancelMagazine(magIntake), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 1, adjuster, 0, true), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON2, false), new IntakeBalls(magIntake, lights)), new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 0, 600, 0.5, 0.5, adjuster));
+    addCommands(new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 1, adjuster, 0, true), new IntakeDown(magIntake), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON, false), new IntakeBalls(magIntake, lights)), new ParallelRaceGroup(new WaitCommand(1), new IntakeBalls(magIntake, lights)), new CancelMagazine(magIntake), new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1560, 0.5, 1, adjuster, 0, true), new ParallelRaceGroup(new ContinuousAccelerationInterpolation(drive, pathJSON2, false), new IntakeBalls(magIntake, lights)), new FireBallsNoVision(drive, magIntake, shooter, hood, peripherals, lights, 5, 1000, 0.5, 0.5, adjuster));
   }
 }
 
