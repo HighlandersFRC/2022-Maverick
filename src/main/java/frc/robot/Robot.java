@@ -111,11 +111,11 @@ public class Robot extends TimedRobot {
 
   private TwoBallAuto twoBallAuto = new TwoBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
-  private Chezy5BallAuto fiveBallAuto = new Chezy5BallAuto(drive, magIntake, shooter, hood, peripherals, lights);
+  private FiveBallAuto fiveBallAuto = new FiveBallAuto(drive, magIntake, shooter, hood, peripherals, lights);
 
   // private TwoBallSteal twoBallSteal1 = new TwoBallSteal(drive, magIntake, shooter, hood, peripherals, lights);
 
-  private Chezy2BallSteal twoBallSteal1 = new Chezy2BallSteal(drive, magIntake, shooter, hood, peripherals, lights);
+  private TwoBallSteal twoBallSteal1 = new TwoBallSteal(drive, magIntake, shooter, hood, peripherals, lights);
 
   private SquareDemo squareDemo = new SquareDemo(drive, magIntake, shooter, hood, peripherals, lights);
 
@@ -196,7 +196,7 @@ public class Robot extends TimedRobot {
     }
     else if(OI.is5BallAuto()) {
       try {
-        pathingFile = new File("/home/lvuser/deploy/Chezy5Pt1.json");
+        pathingFile = new File("/home/lvuser/deploy/5BallPart1.json");
         FileReader scanner = new FileReader(pathingFile);
         pathJSON = new JSONArray(new JSONTokener(scanner));
         // System.out.println(pathJSON);
