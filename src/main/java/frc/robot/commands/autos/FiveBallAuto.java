@@ -77,24 +77,24 @@ public class FiveBallAuto extends SequentialCommandGroup {
     addRequirements(drive, magIntake);
     addCommands(new IntakeDown(magIntake),
     new ParallelRaceGroup(
-        new ContinuousAccelerationInterpolation(drive, pathJSON, false)),
+        new ContinuousAccelerationInterpolation(drive, pathJSON, false),
         // new SpinShooter(shooter, peripherals, 1600, adjuster, true),
         // new SetHoodPosition(hood, peripherals, 24, adjuster, true),
-        // new IntakeBalls(magIntake, lights)),
+        new IntakeBalls(magIntake, lights)),
     // new WaitCommand(0.25),
     // new CancelMagazine(magIntake),
     // new ParallelRaceGroup(new IntakeBalls(magIntake, lights), new WaitCommand(0.35)),
     new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 24, 1600, 0.5, 0.01, adjuster, 0, true),
     new ParallelRaceGroup(
-        new ContinuousAccelerationInterpolation(drive, pathJSON2, false)),
-        // new IntakeBalls(magIntake, lights)),
-    new CancelMagazine(magIntake),
+        new ContinuousAccelerationInterpolation(drive, pathJSON2, false),
+        new IntakeBalls(magIntake, lights)),
+    // new CancelMagazine(magIntake),
     new WaitCommand(0.15),
     // new FaceTarget(drive, peripherals, lights, 0),
     new FireOneBall(drive, magIntake, shooter, hood, peripherals, lights, 16, 1460, 0.5, 1, adjuster, 0.1, true),
     new ParallelRaceGroup(
-        new ContinuousAccelerationInterpolation(drive, pathJSON3, false)),
-        // new IntakeBalls(magIntake, lights)),
+        new ContinuousAccelerationInterpolation(drive, pathJSON3, false),
+        new IntakeBalls(magIntake, lights)),
     new CancelMagazine(magIntake),
     new WaitCommand(0.2),
     new FireBalls(drive, magIntake, shooter, hood, peripherals, lights, 27, 1500, 0.5, 1, adjuster, 0.1, true));

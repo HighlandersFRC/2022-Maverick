@@ -49,7 +49,7 @@ public final class Constants {
 
     public static final double lookUpTableRPMOffset = -50; // changed from 0;
 
-    public static final double lookUpTableHoodOffset = 1.5; // changed from 0;
+    public static final double lookUpTableHoodOffset = 0.5; // changed from 0;
 
 
     public static double getClimberFalconTics(double inches) {
@@ -89,11 +89,11 @@ public final class Constants {
         {90.0, 10.0, 1430.0},
         {110.0, 15.25, 1460.0},
         {130.0, 19, 1510.0},
-        {150.0, 23, 1560.0},
-        {165.0, 24.25, 1600},
-        {170.0, 26.0, 1620},
-        {190.0, 30.25, 1680},
-        {210.0, 31, 1750},
+        {150.0, 21, 1560.0},
+        {165.0, 23.0, 1600},
+        {170.0, 25.65, 1620},
+        {190.0, 27.0, 1680},
+        {210.0, 27.5, 1720},
         {230.0, 32, 1780}
     };
     

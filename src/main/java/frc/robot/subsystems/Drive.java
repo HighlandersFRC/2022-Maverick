@@ -929,13 +929,13 @@ public class Drive extends SubsystemBase {
             double idealVelocityTheta = t1Theta + (idealAccelTheta * interpTime);
 
             // determine the desired velocity of the robot based on difference between our ideal position and current position time a correction coefficient + the ideal velocity
-            // velocityX = (idealPositionX - currentX) * interpolationCorrection + idealVelocityX;
-            // velocityY = (idealPositionY - currentY) * interpolationCorrection + idealVelocityY;
-            // thetaChange = (idealPositionTheta - currentTheta) * interpolationCorrection + idealVelocityTheta;
+            velocityX = (idealPositionX - currentX) * interpolationCorrection + idealVelocityX;
+            velocityY = (idealPositionY - currentY) * interpolationCorrection + idealVelocityY;
+            thetaChange = (idealPositionTheta - currentTheta) * interpolationCorrection + idealVelocityTheta;
 
-            velocityX = (idealPositionX - currentX)/cyclePeriod;
-            velocityY = (idealPositionY - currentY)/cyclePeriod;
-            thetaChange = (idealPositionTheta - currentTheta)/cyclePeriod;
+            // velocityX = (idealPositionX - currentX)/cyclePeriod;
+            // velocityY = (idealPositionY - currentY)/cyclePeriod;
+            // thetaChange = (idealPositionTheta - currentTheta)/cyclePeriod;
         }
         // if past the interpolation range and on the line segment towards next point
         else if(time >= t2) {
